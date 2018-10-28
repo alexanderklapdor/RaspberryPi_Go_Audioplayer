@@ -10,19 +10,24 @@ import "strings"
 import "path/filepath"
 import "path"
 import "io/ioutil"
+import "./logger"
+
 //import "strconv"
 
 func main() {
+
+	// Set up Logger
+	logger.SetUpLogger()
 	fmt.Println("############################################")
 	fmt.Println("#            Music Player                  #")
 	fmt.Println("############################################")
 
-	// available Arguments (arguments are pointer!) 
-	input 		:= flag.String("i", "", "input music file/folder") 
-	volume 		:= flag.Int("v", 50, 	"music volume in percent (default 50)")
-	shuffle 	:= flag.Bool("s", false,"shuffle (default false)")
-	fadeIn 		:= flag.Int("fi", 0, 	"fadein in milliseconds (default 0)")
-	fadeOut 	:= flag.Int("fo", 0, 	"fadeout in milliseconds (default 0)")
+	// available Arguments (arguments are pointer!)
+	input := flag.String("i", "", "input music file/folder")
+	volume := flag.Int("v", 50, "music volume in percent (default 50)")
+	shuffle := flag.Bool("s", false, "shuffle (default false)")
+	fadeIn := flag.Int("fi", 0, "fadein in milliseconds (default 0)")
+	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
 
 	flag.Parse()
 
@@ -37,7 +42,7 @@ func main() {
 	supportedFormats := getSupportedFormats()
 	fmt.Println("Supported formats:")
 	for _, format := range supportedFormats {
-		fmt.Print(" ",format)
+		fmt.Print(" ", format)
 	}
 	fmt.Println()
 
@@ -49,10 +54,10 @@ func main() {
 	}
 
 	fmt.Println("input given")
-	switch mode := fi.Mode();{
+	switch mode := fi.Mode(); {
 	case mode.IsDir():
 		fmt.Println("Found directory")
-		fileList := getFilesInFolder(*input, supportedFormats,2)
+		fileList := getFilesInFolder(*input, supportedFormats, 2)
 		fmt.Println("Supported Files: ")
 		for _, fileElement := range fileList {
 			fmt.Println(fileElement)
@@ -82,7 +87,7 @@ func getFilesInFolder(folder string, supportedExtensions []string, depth int) []
 			log.Fatal(err)
 		}
 		for _, file := range files {
-			filename := joinPath(folder,file.Name())
+			filename := joinPath(folder, file.Name())
 
 			fi, err := os.Stat(filename)
 			if err != nil {
@@ -91,7 +96,7 @@ func getFilesInFolder(folder string, supportedExtensions []string, depth int) []
 
 			switch mode := fi.Mode(); {
 			case mode.IsDir():
-				newFolder :=  filename + "/"
+				newFolder := filename + "/"
 				newFiles := getFilesInFolder(newFolder, supportedExtensions, depth-1)
 				for _, newFile := range newFiles {
 					fileList = append(fileList, newFile)
@@ -116,7 +121,7 @@ func joinPath(source, target string) string {
 	return path.Join(path.Dir(source), target)
 }
 
-func getSupportedFormats() []string{
+func getSupportedFormats() []string {
 	// get supported audio formats of 'supportedFormats.cfg' file
 	fmt.Println("Get supported audio formats")
 	supportedFormats := make([]string, 0)
@@ -143,7 +148,6 @@ func getSupportedFormats() []string{
 	}
 	return supportedFormats
 }
-
 
 func stringInArray(str string, list []string) bool {
 	// check if string is in string-list
