@@ -3,6 +3,11 @@ package main
 
 import "flag"
 import "fmt"
+import "bufio"
+import "log"
+import "os"
+import "strings"
+//import "strconv"
 
 func main() {
 	fmt.Println("############################################")
@@ -27,8 +32,47 @@ func main() {
 	fmt.Println("Fade out: ", *fadeOut)
 	fmt.Println("Tail:     ", flag.Args())
 
+	// check supported formats
+	supportedFormats := getSupportedFormats()
+	fmt.Println("Supported formats:")
+	for _, format := range supportedFormats {
+		fmt.Print(" ",format)
+	}
 
+
+	fmt.Println("")
 	fmt.Println("********************************************")
 	fmt.Println("*             Shutdown                     *")
 	fmt.Println("********************************************")
 }
+
+
+func getSupportedFormats() []string{
+	// get supported audio formats of 'supportedFormats.cfg' file
+	fmt.Println("Get supported audio formats")
+	supportedFormats := make([]string, 0)
+
+	// Opening file
+	file, err := os.Open("supportedFormats.cfg")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		//fmt.Println(line)
+		if !strings.ContainsAny(line, "#") {
+			supportedFormats = append(supportedFormats, line)
+			//fmt.Println("format", line)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return supportedFormats
+}
+
+
