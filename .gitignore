@@ -13,3 +13,6 @@ main
 
 # Swap files
 *.swp
+
+# example files
+example-files/
