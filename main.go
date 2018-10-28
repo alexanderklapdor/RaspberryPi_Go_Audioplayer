@@ -10,16 +10,16 @@ import "path/filepath"
 import "path"
 import "io/ioutil"
 import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
-
+import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 import "strconv"
 
 func main() {
 
 	// Set up Logger
 	logger.SetUpLogger()
-	fmt.Println("############################################")
-	fmt.Println("#            Music Player                  #")
-	fmt.Println("############################################")
+
+	// Start Screen
+	screener.StartScreen()
 
 	// available Arguments (arguments are pointer!)
 	input := flag.String("i", "", "input music file/folder")
@@ -35,7 +35,7 @@ func main() {
 	logger.Log.Info("Input:    " + *input)
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
-	fmt.Println("Shuffle:  " , *shuffle)
+	fmt.Println("Shuffle:  ", *shuffle)
 	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
@@ -64,10 +64,9 @@ func main() {
 		logger.Log.Info("Directory found")
 		logger.Log.Notice("Getting files inside of the folder")
 		fileList := getFilesInFolder(*input, supportedFormats, *depth)
-		logger.Log.Notice("Supported Files: ")
-		for _, fileElement := range fileList {
-			logger.Log.Info(fileElement)
-		}
+		//Print Supported Filelist
+		screener.PrintFiles(fileList)
+
 	case mode.IsRegular():
 		// file given
 		logger.Log.Info("File found")
@@ -79,10 +78,8 @@ func main() {
 		}
 	}
 
-	fmt.Println("")
-	fmt.Println("********************************************")
-	fmt.Println("*             Shutdown                     *")
-	fmt.Println("********************************************")
+	// End Screen
+	screener.EndScreen()
 }
 
 func getFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
