@@ -4,15 +4,14 @@ package main
 import "flag"
 import "fmt"
 import "bufio"
-import "log"
 import "os"
 import "strings"
 import "path/filepath"
 import "path"
 import "io/ioutil"
-import "./logger"
+import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 
-//import "strconv"
+import "strconv"
 
 func main() {
 
@@ -25,50 +24,58 @@ func main() {
 	// available Arguments (arguments are pointer!)
 	input := flag.String("i", "", "input music file/folder")
 	volume := flag.Int("v", 50, "music volume in percent (default 50)")
+	depth := flag.Int("d", 2, "audio file searching depth (default/recommended 2)")
 	shuffle := flag.Bool("s", false, "shuffle (default false)")
 	fadeIn := flag.Int("fi", 0, "fadein in milliseconds (default 0)")
 	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
 
+	logger.Log.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
-	fmt.Println("Input:    ", *input)
-	fmt.Println("Volume:   ", *volume)
-	fmt.Println("Shuffle:  ", *shuffle)
-	fmt.Println("Fade in:  ", *fadeIn)
-	fmt.Println("Fade out: ", *fadeOut)
-	fmt.Println("Tail:     ", flag.Args())
+	logger.Log.Info("Input:    " + *input)
+	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
+	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
+	fmt.Println("Shuffle:  " , *shuffle)
+	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
+	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
+	//logger.Log.Info("Tail:     " + flag.Args())
 
 	// check supported formats
+	logger.Log.Notice("Parsing supported formats")
 	supportedFormats := getSupportedFormats()
-	fmt.Println("Supported formats:")
+	formatString := "  "
 	for _, format := range supportedFormats {
-		fmt.Print(" ", format)
+		formatString = formatString + format + ", "
 	}
-	fmt.Println()
+	formatString = formatString[:len(formatString)-2] // todo: Exception handling
+	logger.Log.Info("Supported formats: " + formatString)
 
-	// check if file exists
+	// check if given file/folder exists
+	logger.Log.Notice("Check if folder/(file exists")
 	fi, err := os.Stat(*input)
 	if err != nil {
-		fmt.Println(err)
+		logger.Log.Error(err)
 		return
 	}
 
-	fmt.Println("input given")
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		fmt.Println("Found directory")
-		fileList := getFilesInFolder(*input, supportedFormats, 2)
-		fmt.Println("Supported Files: ")
+		// directory given
+		logger.Log.Info("Directory found")
+		logger.Log.Notice("Getting files inside of the folder")
+		fileList := getFilesInFolder(*input, supportedFormats, *depth)
+		logger.Log.Notice("Supported Files: ")
 		for _, fileElement := range fileList {
-			fmt.Println(fileElement)
+			logger.Log.Info(fileElement)
 		}
 	case mode.IsRegular():
-		fmt.Println("Found file")
+		// file given
+		logger.Log.Info("File found")
 		var extension = filepath.Ext(*input)
 		if stringInArray(extension, supportedFormats) {
-			fmt.Println("Extension supported")
+			logger.Log.Notice("Extension supported")
 		} else {
-			fmt.Println("Extension not supported")
+			logger.Log.Warning("Extension not supported")
 		}
 	}
 
@@ -79,19 +86,19 @@ func main() {
 }
 
 func getFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
-	fmt.Println("get files in ", folder)
+	// fmt.Println("get files in ", folder)
 	fileList := make([]string, 0)
 	if depth > 0 {
 		files, err := ioutil.ReadDir(folder)
 		if err != nil {
-			log.Fatal(err)
+			logger.Log.Error(err)
 		}
 		for _, file := range files {
 			filename := joinPath(folder, file.Name())
 
 			fi, err := os.Stat(filename)
 			if err != nil {
-				fmt.Println(err)
+				logger.Log.Error(err)
 			}
 
 			switch mode := fi.Mode(); {
@@ -123,13 +130,12 @@ func joinPath(source, target string) string {
 
 func getSupportedFormats() []string {
 	// get supported audio formats of 'supportedFormats.cfg' file
-	fmt.Println("Get supported audio formats")
 	supportedFormats := make([]string, 0)
 
 	// Opening file
 	file, err := os.Open("supportedFormats.cfg")
 	if err != nil {
-		log.Fatal(err)
+		logger.Log.Error(err)
 	}
 	defer file.Close()
 
@@ -144,7 +150,7 @@ func getSupportedFormats() []string {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		logger.Log.Error(err)
 	}
 	return supportedFormats
 }
