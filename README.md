@@ -39,6 +39,21 @@ logger.Log.Critical("crit")
 
 **Critical** - Any error that is forcing a shutdown of the service or application to prevent data loss (or further data loss). I reserve these only for the most heinous errors and situations where there is guaranteed to have been data corruption or loss.
 
+### Portaudio
+
+[Portaudio Repository](https://github.com/gordonklaus/portaudio)
+
+### Installed packages
+
+```
+sudo apt-get install libmpg123-dev
+sudo apt-get install libasound-dev
+sudo apt-get install portaudio19-dev
+sudo apt-get install pkg-config
+sudo apt-get install xauth
+sudo apt-get install jackd2
+```
+
 ### Start portaudio without X11
 
 ```
