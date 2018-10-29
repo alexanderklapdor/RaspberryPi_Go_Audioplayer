@@ -54,10 +54,7 @@ func main() {
 	// check if given file/folder exists
 	logger.Log.Notice("Check if folder/(file exists")
 	fi, err := os.Stat(*input)
-	if err != nil {
-		logger.Log.Error(err)
-		return
-	}
+	util.Check(err)
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
@@ -88,16 +85,12 @@ func getFilesInFolder(folder string, supportedExtensions []string, depth int) []
 	fileList := make([]string, 0)
 	if depth > 0 {
 		files, err := ioutil.ReadDir(folder)
-		if err != nil {
-			logger.Log.Error(err)
-		}
+		util.Check(err)
 		for _, file := range files {
 			filename := joinPath(folder, file.Name())
 
 			fi, err := os.Stat(filename)
-			if err != nil {
-				logger.Log.Error(err)
-			}
+			util.Check(err)
 
 			switch mode := fi.Mode(); {
 			case mode.IsDir():
@@ -132,9 +125,7 @@ func getSupportedFormats() []string {
 
 	// Opening file
 	file, err := os.Open("supportedFormats.cfg")
-	if err != nil {
-		logger.Log.Error(err)
-	}
+	util.Check(err)
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -147,9 +138,8 @@ func getSupportedFormats() []string {
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		logger.Log.Error(err)
-	}
-	return supportedFormats
+	 util.Check(scanner.Err())
+	 return supportedFormats
+
 }
 
