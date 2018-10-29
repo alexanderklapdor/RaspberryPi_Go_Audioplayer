@@ -3,7 +3,7 @@ package screener
 //Imports
 import (
 	"fmt"
-
+	"strconv"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 )
 
@@ -28,12 +28,14 @@ func EndScreen() {
 }
 
 // Print Files
-func PrintFiles(fileList []string) {
+func PrintFiles(fileList []string, printFiles bool) {
 
-	fmt.Println("")
-	fmt.Println("*********Filelist (Supported Files)*********")
-	for _, fileElement := range fileList {
-		logger.Log.Info(fileElement)
+	logger.Log.Info("Found " + strconv.Itoa(len(fileList)) + " supported files")
+	if printFiles {
+		logger.Log.Info("*********Filelist (Supported Files)*********")
+		for _, fileElement := range fileList {
+			logger.Log.Info(fileElement)
+		}
 	}
 
 }

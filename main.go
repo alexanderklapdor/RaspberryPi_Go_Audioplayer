@@ -11,6 +11,7 @@ import "path"
 import "io/ioutil"
 import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 import "strconv"
 
 func main() {
@@ -65,13 +66,13 @@ func main() {
 		logger.Log.Notice("Getting files inside of the folder")
 		fileList := getFilesInFolder(*input, supportedFormats, *depth)
 		//Print Supported Filelist
-		screener.PrintFiles(fileList)
+		screener.PrintFiles(fileList, false)
 
 	case mode.IsRegular():
 		// file given
 		logger.Log.Info("File found")
 		var extension = filepath.Ext(*input)
-		if stringInArray(extension, supportedFormats) {
+		if util.StringInArray(extension, supportedFormats) {
 			logger.Log.Notice("Extension supported")
 		} else {
 			logger.Log.Warning("Extension not supported")
@@ -107,7 +108,7 @@ func getFilesInFolder(folder string, supportedExtensions []string, depth int) []
 				}
 			case mode.IsRegular():
 				var extension = filepath.Ext(filename)
-				if stringInArray(extension, supportedExtensions) {
+				if util.StringInArray(extension, supportedExtensions) {
 					fileList = append(fileList, filename)
 				}
 			}
@@ -152,12 +153,3 @@ func getSupportedFormats() []string {
 	return supportedFormats
 }
 
-func stringInArray(str string, list []string) bool {
-	// check if string is in string-list
-	for _, element := range list {
-		if element == str {
-			return true
-		}
-	}
-	return false
-}
