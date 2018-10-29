@@ -39,4 +39,13 @@ logger.Log.Critical("crit")
 
 **Critical** - Any error that is forcing a shutdown of the service or application to prevent data loss (or further data loss). I reserve these only for the most heinous errors and situations where there is guaranteed to have been data corruption or loss.
 
+### Start portaudio without X11
 
+```
+ if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
+        eval `dbus-launch --sh-syntax`
+        echo "D-Bus per-session daemon address is:"
+        echo "$DBUS_SESSION_BUS_ADDRESS"
+    fi
+```
+[Link to solution post](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=690530)
