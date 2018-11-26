@@ -78,3 +78,11 @@ go run mp3.go *MP3 Datei*
 
 ```
 
+### Für Fade-IN und Fade-OUT und Volume generell
+```
+pactl set-sink-mute 0 toggle  # toggle mute
+pactl set-sink-volume 0 0     # mute (force)
+pactl set-sink-volume 0 100%  # max
+pactl set-sink-volume 0 +5%   # +5% (up)
+pactl set-sink-volume 0 -5%   # -5% (down)
+```
