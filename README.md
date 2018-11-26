@@ -64,3 +64,17 @@ sudo apt-get install jackd2
     fi
 ```
 [Link to solution post](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=690530)
+
+### Play Music works perfect
+alsamixer
+portaudio
+pulseaudio
+
+```
+(Raspberry auf Analog Output stellen)
+alsamixer (nur zum überprüfen)
+pulseaudio -D
+go run mp3.go *MP3 Datei*
+
+```
+
