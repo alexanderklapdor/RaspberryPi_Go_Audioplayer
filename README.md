@@ -42,6 +42,9 @@ logger.Log.Critical("crit")
 ### Portaudio
 
 [Portaudio Repository](https://github.com/gordonklaus/portaudio)
+Wird benötigt:
+https://github.com/gordonklaus/portaudio
+https://github.com/bobertlo/go-mpg123
 
 ### Installed packages
 
@@ -69,6 +72,7 @@ sudo apt-get install jackd2
 alsamixer
 portaudio
 pulseaudio
+Raspberry Pi Update!
 
 ```
 (Raspberry auf Analog Output stellen)

@@ -16,6 +16,12 @@ import "strconv"
 
 func main() {
 
+	//Check if arguments are transfer
+	if len(os.Args) < 2 {
+		fmt.Println("missing required arguments")
+		return
+	}
+
 	// Set up Logger
 	logger.SetUpLogger()
 
@@ -138,8 +144,7 @@ func getSupportedFormats() []string {
 		}
 	}
 
-	 util.Check(scanner.Err())
-	 return supportedFormats
+	util.Check(scanner.Err())
+	return supportedFormats
 
 }
-
