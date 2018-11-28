@@ -14,7 +14,7 @@ import (
 )
 
 // PlayAudio Function
-func PlayAudio(filename string) {
+func PlayAudio(fileName string) {
 	fmt.Println("Playing.  Press Ctrl-C to stop.")
 
 	sig := make(chan os.Signal, 1)
