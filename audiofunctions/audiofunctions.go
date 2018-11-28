@@ -5,11 +5,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"os/signal"
 
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/bobertlo/go-mpg123/mpg123"
 	"github.com/gordonklaus/portaudio"
@@ -78,7 +78,7 @@ func SetVolume(volumeValue string) {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", volumeValue+"%")
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
 }
 
@@ -87,7 +87,7 @@ func SetVolumeUp() {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", "+1%")
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
 }
 
@@ -96,7 +96,7 @@ func SetVolumeDown() {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", "-1%")
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
 }
 
@@ -105,7 +105,7 @@ func StartPulseaudio() {
 	cmd := exec.Command("pulseaudio", "-D")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatal("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
