@@ -17,7 +17,7 @@ import (
 
 // PlayAudio Function
 func PlayAudio(fileName string) {
-	fmt.Println("Playing.  Press Ctrl-C to stop.")
+	fmt.Println("Playing audiofile.  Press Ctrl-C to stop.")
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, os.Kill)
@@ -76,13 +76,26 @@ func EndAudio(fileList []string, printFiles bool) {
 // SetVolume Function
 func SetVolume(volumeValue string) {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", volumeValue+"%")
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
 	err := cmd.Run()
 	if err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-	fmt.Printf("out:\n%s\nerr:\n%s\n", outStr, errStr)
+}
+
+// SetVolume Function
+func SetVolumeUp() {
+	cmd := exec.Command("pactl", "set-sink-volume", "0", "+1%")
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+}
+
+// SetVolume Function
+func SetVolumeDown() {
+	cmd := exec.Command("pactl", "set-sink-volume", "0", "-1%")
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
 }

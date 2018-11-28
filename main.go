@@ -54,7 +54,7 @@ func main() {
 	// check supported formats
 	logger.Log.Notice("Parsing supported formats")
 	supportedFormats := getSupportedFormats()
-	formatString := "  "
+	formatString := ""
 	for _, format := range supportedFormats {
 		formatString = formatString + format + ", "
 	}
