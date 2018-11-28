@@ -78,7 +78,7 @@ func SetVolume(volumeValue string) {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", volumeValue+"%")
 	err := cmd.Run()
 	if err != nil {
-		logger.Log.Error("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("SetVolume failed with " + err + "\n")
 	}
 }
 
@@ -87,7 +87,7 @@ func SetVolumeUp() {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", "+1%")
 	err := cmd.Run()
 	if err != nil {
-		logger.Log.Error("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("SetVolumeUp failed with " + err + "\n")
 	}
 }
 
@@ -96,16 +96,15 @@ func SetVolumeDown() {
 	cmd := exec.Command("pactl", "set-sink-volume", "0", "-1%")
 	err := cmd.Run()
 	if err != nil {
-		logger.Log.Error("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("SetVolumeDown failed with " + err + "\n")
 	}
 }
 
 // StartPulseaudio
 func StartPulseaudio() {
 	cmd := exec.Command("pulseaudio", "-D")
-	out, err := cmd.CombinedOutput()
+	err := cmd.Run()
 	if err != nil {
-		logger.Log.Error("cmd.Run() failed with %s\n", err)
+		logger.Log.Error("StartPulseaudio failed with " + err + "\n")
 	}
-	fmt.Printf("combined out:\n%s\n", string(out))
 }
