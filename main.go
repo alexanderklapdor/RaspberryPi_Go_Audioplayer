@@ -1,18 +1,22 @@
 // main function
 package main
 
-import "flag"
-import "fmt"
-import "bufio"
-import "os"
-import "strings"
-import "path/filepath"
-import "path"
-import "io/ioutil"
-import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
-import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
-import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
-import "strconv"
+import (
+	"bufio"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
+	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+)
 
 func main() {
 
@@ -77,6 +81,7 @@ func main() {
 		var extension = filepath.Ext(*input)
 		if util.StringInArray(extension, supportedFormats) {
 			logger.Log.Notice("Extension supported")
+			audiofunctions.PlayAudio(*input)
 		} else {
 			logger.Log.Warning("Extension not supported")
 		}
