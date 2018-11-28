@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/bobertlo/go-mpg123/mpg123"
 	"github.com/gordonklaus/portaudio"
 )
@@ -21,9 +22,9 @@ func PlayAudio(filename string) {
 
 	// create mpg123 decoder instance
 	decoder, err := mpg123.NewDecoder("")
-	check(err)
+	util.Check(err)
 
-	check(decoder.Open(fileName))
+	util.Check(decoder.Open(fileName))
 	defer decoder.Close()
 
 	// get audio format information
@@ -37,10 +38,10 @@ func PlayAudio(filename string) {
 	defer portaudio.Terminate()
 	out := make([]int16, 8192)
 	stream, err := portaudio.OpenDefaultStream(0, channels, float64(rate), len(out), &out)
-	check(err)
+	util.Check(err)
 	defer stream.Close()
 
-	check(stream.Start())
+	util.Check(stream.Start())
 	defer stream.Stop()
 	for {
 		audio := make([]byte, 2*len(out))
@@ -48,10 +49,10 @@ func PlayAudio(filename string) {
 		if err == mpg123.EOF {
 			break
 		}
-		check(err)
+		util.Check(err)
 
-		check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out))
-		check(stream.Write())
+		util.Check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out))
+		util.Check(stream.Write())
 		select {
 		case <-sig:
 			return
