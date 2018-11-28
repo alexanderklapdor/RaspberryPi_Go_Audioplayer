@@ -105,7 +105,7 @@ func StartPulseaudio() {
 	cmd := exec.Command("pulseaudio", "-D")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		log.Fatal("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
