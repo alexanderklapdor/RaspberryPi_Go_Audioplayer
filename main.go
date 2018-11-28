@@ -46,7 +46,7 @@ func main() {
 	logger.Log.Info("Input:    " + *input)
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
-	fmt.Println("Shuffle:  ", *shuffle)
+	logger.Log.Info("Shuffle:  ", *shuffle)
 	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
@@ -77,10 +77,13 @@ func main() {
 
 	case mode.IsRegular():
 		// file given
-		logger.Log.Info("File found")
+		logger.Log.Notice("File found")
 		var extension = filepath.Ext(*input)
 		if util.StringInArray(extension, supportedFormats) {
 			logger.Log.Notice("Extension supported")
+			logger.Log.Notice("Set Volume")
+			audiofunctions.SetVolume(strconv.Itoa(*volume))
+			logger.Log.Notice("Play Audo File")
 			audiofunctions.PlayAudio(*input)
 		} else {
 			logger.Log.Warning("Extension not supported")

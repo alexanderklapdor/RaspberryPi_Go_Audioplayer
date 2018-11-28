@@ -5,7 +5,9 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 	"os/signal"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
@@ -69,4 +71,18 @@ func StopAudio() {
 // EndAudio Function
 func EndAudio(fileList []string, printFiles bool) {
 
+}
+
+// SetVolume Function
+func SetVolume(volumeValue string) {
+	cmd := exec.Command("pactl", "set-sink-volume", "0", volumeValue+"%")
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	fmt.Printf("out:\n%s\nerr:\n%s\n", outStr, errStr)
 }
