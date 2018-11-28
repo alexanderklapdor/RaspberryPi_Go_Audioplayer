@@ -81,9 +81,11 @@ func main() {
 		var extension = filepath.Ext(*input)
 		if util.StringInArray(extension, supportedFormats) {
 			logger.Log.Notice("Extension supported")
+			logger.Log.Notice("Starting Pulseaudio Daemon")
+			audiofunctions.StartPulseaudio()
 			logger.Log.Notice("Set Volume")
 			audiofunctions.SetVolume(strconv.Itoa(*volume))
-			logger.Log.Notice("Play Audo File")
+			logger.Log.Notice("Play Audio File")
 			audiofunctions.PlayAudio(*input)
 		} else {
 			logger.Log.Warning("Extension not supported")
