@@ -68,6 +68,16 @@ sudo apt-get install jackd2
 ```
 [Link to solution post](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=690530)
 
+###Update Raspberry Pi
+ -> [Link](https://www.datenreise.de/raspberry-pi-firmware-update/)
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install rpi-update
+sudo rpi-update
+```
+
+
 ### Play Music works perfect
 alsamixer
 portaudio
