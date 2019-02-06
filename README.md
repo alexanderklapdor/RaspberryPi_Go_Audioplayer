@@ -79,6 +79,7 @@ Raspberry Pi Update!
 alsamixer (nur zum überprüfen)
 pulseaudio -D
 go run mp3.go *MP3 Datei*
+    -> go run ./main.go -i="/home/pi/Music/testmusic/JNSPTRS - Chasing.mp3" -v=100
 
 ```
 
