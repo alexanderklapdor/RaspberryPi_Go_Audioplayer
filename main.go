@@ -43,7 +43,8 @@ func main() {
 	logger.Log.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
-	logger.Log.Info("Input:    " + *input)
+        // print arguments
+	logger.Log.Info("Input:   _" + *input + "_")
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
 	logger.Log.Info("Shuffle:  ", *shuffle)
@@ -51,18 +52,32 @@ func main() {
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
 
+        // check arguments
+        logger.Log.Info(strconv.Itoa(len(*input)))
+        if len(*input) == 0 {
+                logger.Log.Error(fmt.Errorf("no input file given"))
+                return
+        }
+        if *volume < 0 || *depth < 0 || *fadeIn < 0 || *fadeOut < 0 {
+                logger.Log.Error(fmt.Errorf("no negative values allowed"))
+                return
+        }
+
 	// check supported formats
 	logger.Log.Notice("Parsing supported formats")
 	supportedFormats := getSupportedFormats()
+        // print supported formats
 	formatString := ""
 	for _, format := range supportedFormats {
-		formatString = formatString + format + ", "
-	}
-	formatString = formatString[:len(formatString)-2] // todo: Exception handling
+            if formatString != "" {
+                formatString = formatString + ", "
+            } // end of if
+            formatString = formatString + format
+	} // end of for
 	logger.Log.Info("Supported formats: " + formatString)
 
 	// check if given file/folder exists
-	logger.Log.Notice("Check if folder/(file exists")
+	logger.Log.Notice("Check if folder/file exists", *input)
 	fi, err := os.Stat(*input)
 	util.Check(err)
 
