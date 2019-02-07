@@ -75,7 +75,7 @@ func EndAudio(fileList []string, printFiles bool) {
 
 // SetVolume Function
 func SetVolume(volumeValue string) {
-	cmd := exec.Command("pactl", "set-sink-volume", "0", volumeValue+"%")
+	cmd := exec.Command("amixer", "set", "Master", volumeValue+"%")
 	err := cmd.Run()
 	if err != nil {
 		logger.Log.Error("SetVolume failed with " + err.Error() + "\n")
@@ -84,7 +84,7 @@ func SetVolume(volumeValue string) {
 
 // SetVolumeUp Function
 func SetVolumeUp() {
-	cmd := exec.Command("pactl", "set-sink-volume", "0", "+1%")
+	cmd := exec.Command("amixer", "set", "Master", "2%+")
 	err := cmd.Run()
 	if err != nil {
 		logger.Log.Error("SetVolumeUp failed with " + err.Error() + "\n")
@@ -93,7 +93,7 @@ func SetVolumeUp() {
 
 // SetVolumeDown Function
 func SetVolumeDown() {
-	cmd := exec.Command("pactl", "set-sink-volume", "0", "-1%")
+	cmd := exec.Command("amixer", "set", "Master", "2%-")
 	err := cmd.Run()
 	if err != nil {
 		logger.Log.Error("SetVolumeDown failed with " + err.Error() + "\n")
