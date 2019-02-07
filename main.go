@@ -62,6 +62,10 @@ func main() {
                 logger.Log.Error(fmt.Errorf("no negative values allowed"))
                 return
         }
+        if *volume > 100 {
+                logger.Log.Info("No volume above 100 allowed")
+                *volume = 100
+        }
 
 	// check supported formats
 	logger.Log.Notice("Parsing supported formats")
