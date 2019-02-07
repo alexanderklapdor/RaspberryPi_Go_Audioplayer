@@ -1,12 +1,20 @@
 package main
 
 import (
+        "bufio"
+        "encoding/json"
+	"io/ioutil"
         "log"
         "net"
-        "encoding/json"
         "os"
+        "path"
+	"path/filepath"
         "syscall"
+        "strings"
+
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 )
 
 type Request struct {
@@ -22,6 +30,9 @@ type Data struct {
     Shuffle bool
     Volume  int
 }
+
+var supportedFormats []string
+var songs []string
 
 func receiveCommand(c net.Conn) {
     // read message
@@ -41,6 +52,7 @@ func receiveCommand(c net.Conn) {
     data := received.Data
     logger.Log.Notice("Command: " + command)
     //logger.Log.Notice("Data   : " + string(data))
+
 
     // switch case commands
     switch command {
@@ -88,42 +100,53 @@ func closeConnection(c net.Conn) {
 
 func playMusic(data Data) {
     logger.Log.Info("Executing: Play Music")
-}
+    logger.Log.Info("Path given " + data.Path)
+    songs = parseSongs(data.Path, supportedFormats, data.Depth)
+    if len(songs) != 0 {
+        logger.Log.Info(songs[0])
+    }
+} // end of playMusic
 
 
 func pauseMusic(data Data) {
     logger.Log.Info("Executing: Pause Music")
-}
+} // end of pauseMusic
 
 func setVolume(data Data) {
     logger.Log.Info("Executing: Set Volume")
-}
+} // end of setVolume
 
 func addToQueue(data Data) {
     logger.Log.Info("Executing: Add to queue")
-}
+} // end of addToQueue
 
 func increaseVolume() {
     logger.Log.Info("Executing: Increase volume")
-}
+} // end of increaseVolume
 
 func decreaseVolume() {
     logger.Log.Info("Executing: Decrease volume")
-}
+} // end of decreaseVolume
 
 func printInfo() {
     logger.Log.Info("Executing: Print info ")
-}
+} // end of printInfo
 
 func main() {
-    unixSocket := "/tmp/mp.sock"
     // create server socket mp.sock
+    unixSocket := "/tmp/mp.sock"
     logger.Log.Notice("Creating unixSocket.")
     logger.Log.Info("Listening on " + unixSocket)
     ln, err := net.Listen("unix", unixSocket)
     if err != nil {
         log.Fatal("listen error", err)
     }
+
+    // check supported formats
+    logger.Log.Notice("Parsing supported formats")
+    supportedFormats = getSupportedFormats()
+    // print supported formats
+    printSupportedFormats(supportedFormats)
 
     for {
         conn, err := ln.Accept()
@@ -134,7 +157,7 @@ func main() {
     }
 } // end of main
 
-func parseSongs(path string, depth int) []string {
+func parseSongs(path string, supportedFormats []string, depth int) []string {
     // check if given file/folder exists
     logger.Log.Notice("Check if folder/file exists", path)
     fi, err := os.Stat(path)
@@ -153,78 +176,91 @@ func parseSongs(path string, depth int) []string {
         // file given
         logger.Log.Notice("File found")
         var extension = filepath.Ext(path)
+        logger.Log.Info("Extension: " + extension)
         if util.StringInArray(extension, supportedFormats) {
             logger.Log.Notice("Extension supported")
-            return path
+            var songs []string
+            return append(songs, path)
         } else {
             logger.Log.Warning("Extension not supported")
-            return []
+            var songs []string
+            return songs
         }
     default:
         logger.Log.Error("Path is not a file or a folder")
-        return []
+        var songs []string
+        return songs
     } // end of switch
-}
+} // end of parseSongs
 
 func getFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
-	// fmt.Println("get files in ", folder)
-	fileList := make([]string, 0)
-	if depth > 0 {
-		files, err := ioutil.ReadDir(folder)
-		util.Check(err)
-		for _, file := range files {
-			filename := joinPath(folder, file.Name())
+    // fmt.Println("get files in ", folder)
+    fileList := make([]string, 0)
+    if depth > 0 {
+        files, err := ioutil.ReadDir(folder)
+        util.Check(err)
+        for _, file := range files {
+            filename := joinPath(folder, file.Name())
 
-			fi, err := os.Stat(filename)
-			util.Check(err)
+            fi, err := os.Stat(filename)
+            util.Check(err)
 
-			switch mode := fi.Mode(); {
-			case mode.IsDir():
-				newFolder := filename + "/"
-				newFiles := getFilesInFolder(newFolder, supportedExtensions, depth-1)
-				for _, newFile := range newFiles {
-					fileList = append(fileList, newFile)
-				}
-			case mode.IsRegular():
-				var extension = filepath.Ext(filename)
-				if util.StringInArray(extension, supportedExtensions) {
-					fileList = append(fileList, filename)
-				}
-			}
-		}
-	} else {
-		//fmt.Println("Max depth reached")
-	}
-	return fileList
-}
+            switch mode := fi.Mode(); {
+                case mode.IsDir():
+                    newFolder := filename + "/"
+                    newFiles := getFilesInFolder(newFolder, supportedExtensions, depth-1)
+                    for _, newFile := range newFiles {
+                        fileList = append(fileList, newFile)
+                    } // end of for
+                case mode.IsRegular():
+                    var extension = filepath.Ext(filename)
+                    if util.StringInArray(extension, supportedExtensions) {
+                        fileList = append(fileList, filename)
+                    } // end of if
+            } // end of switch
+        } // end of for
+    } else {
+        logger.Log.Info("Max depth reached")
+    }
+    return fileList
+} // end of getFilesInFolder
 
 func joinPath(source, target string) string {
-	if path.IsAbs(target) {
-		return target
-	}
-	return path.Join(path.Dir(source), target)
-}
+    if path.IsAbs(target) {
+        return target
+    } // end of if
+    return path.Join(path.Dir(source), target)
+} // end of JoinPath
 
 func getSupportedFormats() []string {
-	// get supported audio formats of 'supportedFormats.cfg' file
-	supportedFormats := make([]string, 0)
+    // get supported audio formats of 'supportedFormats.cfg' file
+    supportedFormats := make([]string, 0)
 
-	// Opening file
-	file, err := os.Open("supportedFormats.cfg")
-	util.Check(err)
-	defer file.Close()
+    // Opening file
+    file, err := os.Open("supportedFormats.cfg")
+    util.Check(err)
+    defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		//fmt.Println(line)
-		if !strings.ContainsAny(line, "#") {
-			supportedFormats = append(supportedFormats, line)
-			//fmt.Println("format", line)
-		}
-	}
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        //fmt.Println(line)
+        if !strings.ContainsAny(line, "#") {
+            supportedFormats = append(supportedFormats, line)
+            //fmt.Println("format", line)
+        } //end of if
+    } // end of for
+    util.Check(scanner.Err())
+    return supportedFormats
+} // End of getSupportedFormats
 
-	util.Check(scanner.Err())
-	return supportedFormats
-
-}
+func printSupportedFormats(supportedFormats []string) {
+    formatString := ""
+    for _, format := range supportedFormats {
+        if formatString != "" {
+            formatString = formatString + ", "
+        } // end of if
+        formatString = formatString + format
+    } // end of for
+    logger.Log.Info("Supported formats: " + formatString)
+} // end of printSupportedFormats
