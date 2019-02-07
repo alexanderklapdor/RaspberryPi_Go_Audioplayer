@@ -15,6 +15,11 @@ import (
 	"github.com/gordonklaus/portaudio"
 )
 
+//global var definition
+var needPause bool = false
+var needStop bool = false
+var stream *portaudio.Stream
+
 // PlayAudio Function
 func PlayAudio(fileName string) {
 	fmt.Println("Playing audiofile.  Press Ctrl-C to stop.")
@@ -39,13 +44,19 @@ func PlayAudio(fileName string) {
 	portaudio.Initialize()
 	defer portaudio.Terminate()
 	out := make([]int16, 8192)
-	stream, err := portaudio.OpenDefaultStream(0, channels, float64(rate), len(out), &out)
+	stream, err = portaudio.OpenDefaultStream(0, channels, float64(rate), len(out), &out)
 	util.Check(err)
 	defer stream.Close()
 
 	util.Check(stream.Start())
 	defer stream.Stop()
 	for {
+		if needPause != false {
+			stream.Stop()
+			for needPause == true {}
+			stream.Start()
+		}
+		if needStop != false {return}
 		audio := make([]byte, 2*len(out))
 		_, err = decoder.Read(audio)
 		if err == mpg123.EOF {
@@ -65,12 +76,17 @@ func PlayAudio(fileName string) {
 
 // StopAudio Function
 func StopAudio() {
-
+	needStop = true
 }
 
-// EndAudio Function
-func EndAudio(fileList []string, printFiles bool) {
+//PauseAudio Function
+func PauseAudio() {
+	needPause = true
+}
 
+// ResumeAudio Function
+func ResumeAudio() {
+	needPause = false
 }
 
 // SetVolume Function
