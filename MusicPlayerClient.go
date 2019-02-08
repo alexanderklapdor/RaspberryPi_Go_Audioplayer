@@ -24,6 +24,7 @@ type Data struct {
 	FadeOut int
 	Path    string
 	Shuffle bool
+	Loop    bool
 	Volume  int
 }
 
@@ -46,6 +47,7 @@ func main() {
 	volume := flag.Int("v", 50, "music volume in percent (default 50)")
 	depth := flag.Int("d", 2, "audio file searching depth (default/recommended 2)")
 	shuffle := flag.Bool("s", false, "shuffle (default false)")
+	loop := flag.Bool("l", false, "loop (default false)")
 	fadeIn := flag.Int("fi", 0, "fadein in milliseconds (default 0)")
 	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
 
@@ -80,6 +82,7 @@ func main() {
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
 	logger.Log.Info("Shuffle:  ", *shuffle)
+	logger.Log.Info("Loop:  ", *loop)
 	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
@@ -94,6 +97,7 @@ func main() {
 		FadeIn:  *fadeIn,
 		FadeOut: *fadeOut,
 		Shuffle: *shuffle,
+		Loop:    *loop,
 		Path:    *input,
 		Volume:  *volume}
 	requestInfo := &Request{

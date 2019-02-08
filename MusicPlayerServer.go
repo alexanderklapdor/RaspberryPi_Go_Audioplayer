@@ -34,12 +34,14 @@ type Data struct {
 	FadeOut int
 	Path    string
 	Shuffle bool
+	Loop    bool
 	Volume  int
 }
 
 var supportedFormats []string
 var songQueue []string
 var currentSong int = 0
+var saveLoop bool
 
 func receiveCommand(c net.Conn) {
 	// read message
@@ -73,7 +75,7 @@ func receiveCommand(c net.Conn) {
 	case "resume":
 		resumeMusic()
 	case "next":
-		nextMusic()
+		nextMusic(data)
 	case "setVolume":
 		setVolume(data)
 	case "addToQueue":
@@ -143,6 +145,8 @@ func playMusic(data Data) {
 		}
 		logger.Log.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
+		// set loop variable
+		saveLoop = data.Loop
 	} // end of if
 } // end of playMusic
 
@@ -156,7 +160,11 @@ func resumeMusic() {
 	go audiofunctions.ResumeAudio()
 }
 
-func nextMusic() {
+func nextMusic(data Data) {
+	//check if loop was set by "playMusic" - if yes..than change data.loop to true
+	if saveLoop == true {
+		data.Loop = true
+	}
 	if currentSong < (len(songQueue) - 1) {
 		currentSong += 1
 	} else {
@@ -167,8 +175,12 @@ func nextMusic() {
 		logger.Log.Info("A song is currently playing")
 		stopMusic()
 	}
-	logger.Log.Info(songQueue[currentSong])
-	go audiofunctions.PlayAudio(songQueue[currentSong])
+	if data.Loop == false && currentSong == 0 {
+		logger.Log.Info("Loop is not activate and Queue has ended -> Music stops")
+	} else {
+		logger.Log.Info(songQueue[currentSong])
+		go audiofunctions.PlayAudio(songQueue[currentSong])
+	}
 
 }
 
