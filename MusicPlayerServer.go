@@ -243,7 +243,15 @@ func main() {
 
 func parseSongs(path string, supportedFormats []string, depth int) []string {
 	// check if given file/folder exists
-	logger.Log.Notice("Check if folder/file exists", path)
+	logger.Log.Notice("Check if folder/file exists: ", path)
+
+	// check if path is empty
+	if len(path) == 0 {
+		logger.Log.Error("Path is not a file or a folder")
+		var songs []string
+		return songs
+	}
+
 	fi, err := os.Stat(path)
 	util.Check(err)
 
