@@ -15,6 +15,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 )
 
 type Request struct {
@@ -32,7 +33,7 @@ type Data struct {
 }
 
 var supportedFormats []string
-var songs []string
+var songQueue []string
 
 func receiveCommand(c net.Conn) {
     // read message
@@ -60,16 +61,20 @@ func receiveCommand(c net.Conn) {
         closeConnection(c)
     case "play":
         playMusic(data)
+    case "stop":
+        stopMusic()
     case "pause":
         pauseMusic(data)
+    case "resume":
+        resumeMusic()
     case "setVolume":
         setVolume(data)
     case "addToQueue":
         addToQueue(data)
     case "quieter":
-        increaseVolume()
-    case "louder":
         decreaseVolume()
+    case "louder":
+        increaseVolume()
     case "info":
         printInfo()
     default:
@@ -98,19 +103,34 @@ func closeConnection(c net.Conn) {
     os.Exit(0)
 } // end of closeConnection
 
+func stopMusic() {
+    logger.Log.Info("Execution: Stop Music")
+    go audiofunctions.StopAudio()
+}
+
 func playMusic(data Data) {
     logger.Log.Info("Executing: Play Music")
     logger.Log.Info("Path given " + data.Path)
-    songs = parseSongs(data.Path, supportedFormats, data.Depth)
+    songs := parseSongs(data.Path, supportedFormats, data.Depth)
     if len(songs) != 0 {
+        for _, song := range songs {
+            songQueue = append(songQueue, song)
+        } // end of for
         logger.Log.Info(songs[0])
-    }
+        go audiofunctions.PlayAudio(songs[0]) 
+    } // end of if
 } // end of playMusic
 
 
 func pauseMusic(data Data) {
     logger.Log.Info("Executing: Pause Music")
+    go audiofunctions.PauseAudio()
 } // end of pauseMusic
+
+func resumeMusic() {
+    logger.Log.Info("Execution: Resume Music")
+    go audiofunctions.ResumeAudio()
+}
 
 func setVolume(data Data) {
     logger.Log.Info("Executing: Set Volume")
@@ -118,14 +138,22 @@ func setVolume(data Data) {
 
 func addToQueue(data Data) {
     logger.Log.Info("Executing: Add to queue")
+    songs := parseSongs(data.Path, supportedFormats, data.Depth)
+    if len(songs) != 0 {
+        for _, song := range songs {
+            songQueue = append(songQueue, song)
+        } // end of for
+    } // end of if
 } // end of addToQueue
 
 func increaseVolume() {
     logger.Log.Info("Executing: Increase volume")
+    go audiofunctions.SetVolumeUp()
 } // end of increaseVolume
 
 func decreaseVolume() {
     logger.Log.Info("Executing: Decrease volume")
+    go audiofunctions.SetVolumeDown()
 } // end of decreaseVolume
 
 func printInfo() {
@@ -147,6 +175,10 @@ func main() {
     supportedFormats = getSupportedFormats()
     // print supported formats
     printSupportedFormats(supportedFormats)
+
+    // start pulseAudio
+    logger.Log.Notice("start PulseAudio")
+    audiofunctions.StartPulseaudio()
 
     for {
         conn, err := ln.Accept()
