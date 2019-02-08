@@ -76,6 +76,8 @@ func receiveCommand(c net.Conn) {
 		resumeMusic()
 	case "next":
 		nextMusic(data)
+	case "add":
+		addToQueue(data)
 	case "setVolume":
 		setVolume(data)
 	case "addToQueue":
