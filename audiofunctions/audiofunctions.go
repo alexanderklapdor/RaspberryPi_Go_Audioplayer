@@ -26,6 +26,8 @@ var stream *portaudio.Stream
 func PlayAudio(fileName string) {
 	fmt.Println("Playing audiofile.  Press Ctrl-C to stop.")
 
+	needStop = false
+
 	defer CallNextSong()
 	defer setStatusStop()
 
@@ -70,7 +72,7 @@ func PlayAudio(fileName string) {
 			status = "play"
 		}
 		if needStop != false {
-			needStop = false
+
 			return
 		}
 		audio := make([]byte, 2*len(out))
@@ -95,7 +97,10 @@ func setStatusStop() {
 }
 
 func CallNextSong() {
-	sender.Send([]byte("{\"Command\":\"next\",\"Data\":{}}"))
+	if needStop != true {
+		sender.Send([]byte("{\"Command\":\"next\",\"Data\":{}}"))
+	}
+
 } // end of CallNextSong
 
 // StopAudio Function
