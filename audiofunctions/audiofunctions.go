@@ -10,6 +10,7 @@ import (
 	"os/signal"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/bobertlo/go-mpg123/mpg123"
 	"github.com/gordonklaus/portaudio"
@@ -25,7 +26,7 @@ var stream *portaudio.Stream
 func PlayAudio(fileName string) {
 	fmt.Println("Playing audiofile.  Press Ctrl-C to stop.")
 
-	//defer CallNextSong()
+	defer CallNextSong()
 	defer setStatusStop()
 
 	sig := make(chan os.Signal, 1)
@@ -94,7 +95,7 @@ func setStatusStop() {
 }
 
 func CallNextSong() {
-	fmt.Println("CallNextSong")
+	sender.Send([]byte("{\"Command\":\"next\",\"Data\":{}}"))
 } // end of CallNextSong
 
 // StopAudio Function
