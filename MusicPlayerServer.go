@@ -134,6 +134,8 @@ func playMusic(data Data) {
 	logger.Log.Info("Path given " + data.Path)
 	songs := parseSongs(data.Path, supportedFormats, data.Depth)
 	if len(songs) != 0 {
+		songQueue = songQueue[:0]
+		currentSong = 0
 		for _, song := range songs {
 			songQueue = append(songQueue, song)
 		} // end of for
@@ -147,6 +149,20 @@ func playMusic(data Data) {
 		go audiofunctions.PlayAudio(songQueue[currentSong])
 		// set loop variable
 		saveLoop = data.Loop
+	} else {
+		if len(songQueue) != 0 {
+
+			//Check if a song is currently playing
+			if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
+				logger.Log.Info("A song is currently playing")
+				stopMusic()
+			}
+
+			logger.Log.Info(songQueue[currentSong])
+			go audiofunctions.PlayAudio(songQueue[currentSong])
+		} else {
+			logger.Log.Error("No input file and no Song in Queue")
+		}
 	} // end of if
 } // end of playMusic
 
