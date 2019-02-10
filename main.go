@@ -43,7 +43,7 @@ func main() {
 	logger.Log.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
-        // print arguments
+	// print arguments
 	logger.Log.Info("Input:   _" + *input + "_")
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
@@ -52,31 +52,31 @@ func main() {
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
 
-        // check arguments
-        logger.Log.Info(strconv.Itoa(len(*input)))
-        if len(*input) == 0 {
-                logger.Log.Error(fmt.Errorf("no input file given"))
-                return
-        }
-        if *volume < 0 || *depth < 0 || *fadeIn < 0 || *fadeOut < 0 {
-                logger.Log.Error(fmt.Errorf("no negative values allowed"))
-                return
-        }
-        if *volume > 100 {
-                logger.Log.Info("No volume above 100 allowed")
-                *volume = 100
-        }
+	// check arguments
+	logger.Log.Info(strconv.Itoa(len(*input)))
+	if len(*input) == 0 {
+		logger.Log.Error(fmt.Errorf("no input file given"))
+		return
+	}
+	if *volume < 0 || *depth < 0 || *fadeIn < 0 || *fadeOut < 0 {
+		logger.Log.Error(fmt.Errorf("no negative values allowed"))
+		return
+	}
+	if *volume > 100 {
+		logger.Log.Info("No volume above 100 allowed")
+		*volume = 100
+	}
 
 	// check supported formats
 	logger.Log.Notice("Parsing supported formats")
 	supportedFormats := getSupportedFormats()
-        // print supported formats
+	// print supported formats
 	formatString := ""
 	for _, format := range supportedFormats {
-            if formatString != "" {
-                formatString = formatString + ", "
-            } // end of if
-            formatString = formatString + format
+		if formatString != "" {
+			formatString = formatString + ", "
+		} // end of if
+		formatString = formatString + format
 	} // end of for
 	logger.Log.Info("Supported formats: " + formatString)
 

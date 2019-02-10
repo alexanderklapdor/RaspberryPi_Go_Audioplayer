@@ -3,8 +3,8 @@ package screener
 //Imports
 import (
 	"fmt"
-	"strconv"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"strconv"
 )
 
 // Start Screen

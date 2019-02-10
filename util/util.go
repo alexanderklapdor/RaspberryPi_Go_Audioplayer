@@ -14,7 +14,7 @@ func StringInArray(str string, list []string) bool {
 }
 
 // error check
-func Check(err error){
+func Check(err error) {
 	if err != nil {
 		logger.Log.Error(err)
 		panic(err)
