@@ -18,6 +18,7 @@ type Request struct {
 	Data    Data
 }
 
+// Data struct
 type Data struct {
 	Depth   int
 	FadeIn  int
@@ -25,12 +26,15 @@ type Data struct {
 	Path    string
 	Shuffle bool
 	Loop    bool
+        Values  []string
 	Volume  int
 }
 
+
 func main() {
 	// Set up Logger
-	logger.SetUpLogger()
+        //todo: logging path in configuration file
+	logger.SetUpLogger("logs/client.log")
 
 	// Start Screen
 	screener.StartScreen()
@@ -42,7 +46,7 @@ func main() {
 	}
 
 	// define flags
-	command := flag.String("c", "info", "command for the server")
+	command := flag.String("c", "default", "command for the server")
 	input := flag.String("i", "", "input music file/folder")
 	volume := flag.Int("v", 50, "music volume in percent (default 50)")
 	depth := flag.Int("d", 2, "audio file searching depth (default/recommended 2)")
@@ -55,14 +59,20 @@ func main() {
 	logger.Log.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
+        var values []string
 	// if argument without flagname is given parse it as command
-	if flag.NArg() == 1 {
+	if flag.NArg() > 1 {
 		*command = flag.Arg(0)
-	} else if flag.NArg() != 0 {
-		/*fmt.Println("Too many unknown arguments")
-		  logger.Log.Error("Too many unknown arguments")
-		  return*/
-	}
+                for id, arg := range flag.Args(){
+                        if id != 0 {
+                                values = append(values, arg)
+                        } //end of if
+                } // end of for
+	} else {
+                if flag.NArg() == 1 && *command == "default"{
+                        *command = flag.Arg(0)
+                } // end of if
+	} // end of else
 
 	// check received arguments
 	logger.Log.Notice("Check received arguments")
@@ -81,8 +91,8 @@ func main() {
 	logger.Log.Info("Input:    " + *input)
 	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
 	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
-	logger.Log.Info("Shuffle:  ", *shuffle)
-	logger.Log.Info("Loop:  ", *loop)
+	logger.Log.Info("Shuffle:  " + strconv.FormatBool(*shuffle))
+	logger.Log.Info("Loop:     " + strconv.FormatBool(*loop))
 	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
 	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Log.Info("Tail:     " + flag.Args())
@@ -99,6 +109,7 @@ func main() {
 		Shuffle: *shuffle,
 		Loop:    *loop,
 		Path:    *input,
+                Values:  values,
 		Volume:  *volume}
 	requestInfo := &Request{
 		Command: string(*command),

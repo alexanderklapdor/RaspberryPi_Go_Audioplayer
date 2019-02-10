@@ -14,7 +14,7 @@ This project is a Raspberry API written in GO, which allows to play music from t
 | next | Skips current song and plays the next one |
 | add , addToQueue | Adds a song or a directory to the song queue |
 | setVolume | Sets the volume (value between 0 and 100) |
-| quieter | Decreade the volume by 5 |
+| quieter | Decreases the volume by 5 |
 | louder | Increases the volume by 5 |
 | info | Prints information like the current song or the song queue|
 

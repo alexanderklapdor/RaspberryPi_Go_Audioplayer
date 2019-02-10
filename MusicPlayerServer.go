@@ -36,6 +36,7 @@ type Data struct {
 	Path    string
 	Shuffle bool
 	Loop    bool
+        Values  []string
 	Volume  int
 }
 
@@ -65,30 +66,28 @@ func receiveCommand(c net.Conn) {
 
 	// switch case commands
 	switch command {
+	case "addToQueue", "add":
+		addToQueue(data)
 	case "exit":
 		closeConnection(c)
-	case "play":
-		playMusic(data)
-	case "stop":
-		stopMusic()
-	case "pause":
-		pauseMusic(data)
-	case "resume":
-		resumeMusic()
-	case "next":
-		nextMusic(data)
-	case "add":
-		addToQueue(data)
-	case "setVolume":
-		setVolume(data)
-	case "addToQueue":
-		addToQueue(data)
-	case "quieter":
-		decreaseVolume()
+	case "info", "default":
+		printInfo()
 	case "louder":
 		increaseVolume()
-	case "info":
-		printInfo()
+	case "next":
+		nextMusic(data)
+	case "pause":
+		pauseMusic(data)
+	case "play":
+		playMusic(data)
+	case "quieter":
+		decreaseVolume()
+	case "resume":
+		resumeMusic()
+	case "setVolume":
+		setVolume(data)
+	case "stop":
+		stopMusic()
 	default:
 		logger.Log.Error("Unknown command received")
 	}
@@ -135,7 +134,12 @@ func checkIfStatusStop() {
 func playMusic(data Data) {
 	logger.Log.Info("Executing: Play Music")
 	logger.Log.Info("Path given " + data.Path)
-	songs := parseSongs(data.Path, supportedFormats, data.Depth)
+        var songs []string
+        if len(data.Values) == 0{
+                songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
+        } else{
+                songs = parseSongs(data.Values, supportedFormats, data.Depth)
+        } // end of else
 	if len(songs) != 0 {
 		songQueue = songQueue[:0]
 		currentSong = 0
@@ -204,12 +208,23 @@ func nextMusic(data Data) {
 }
 
 func setVolume(data Data) {
-	logger.Log.Info("Executing: Set Volume")
+        var volume int
+        if len(data.Values) != 0 {
+                volume, _ = strconv.Atoi(data.Values[0])
+        } else {
+                volume = data.Volume
+        } // end of else
+	logger.Log.Info("Executing: Set Volume to " + strconv.Itoa(volume))
 } // end of setVolume
 
 func addToQueue(data Data) {
 	logger.Log.Info("Executing: Add to queue")
-	songs := parseSongs(data.Path, supportedFormats, data.Depth)
+        var songs []string
+        if len(data.Values) == 0{
+                songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
+        } else{
+                songs = parseSongs(data.Values, supportedFormats, data.Depth)
+        } // end of else
 	if len(songs) != 0 {
 		for _, song := range songs {
 			songQueue = append(songQueue, song)
@@ -229,8 +244,12 @@ func decreaseVolume() {
 
 func printInfo() {
 	logger.Log.Info("Executing: Print info ")
-        logger.Log.Info("Current Song: " + songQueue[currentSong])
-        logger.Log.Info("Song Queue")
+        if len(songQueue) != 0{
+                logger.Log.Info("Current Song: " + songQueue[currentSong])
+        } else {
+                logger.Log.Info("Currently there is no song playing")
+        } // end of else
+        logger.Log.Info("Song Queue:")
         for index, song := range songQueue {
                 if index > currentSong {
                         logger.Log.Info(strconv.Itoa(index-currentSong) + ". " + song)
@@ -239,6 +258,9 @@ func printInfo() {
 } // end of printInfo
 
 func main() {
+        // set up logger
+        // todo: logger path in server config.file
+	logger.SetUpLogger("logs/server.log")
 	// create server socket mp.sock
 	unixSocket := "/tmp/mp.sock"
 	logger.Log.Notice("Creating unixSocket.")
@@ -267,48 +289,48 @@ func main() {
 	}
 } // end of main
 
-func parseSongs(path string, supportedFormats []string, depth int) []string {
-	// check if given file/folder exists
-	logger.Log.Notice("Check if folder/file exists: ", path)
+func parseSongs(paths []string, supportedFormats []string, depth int) []string {
+        var songs []string
+        for _, path := range paths {
+                // check if given file/folder exists
+                logger.Log.Notice("Check if folder/file exists: ", path)
 
-	// check if path is empty
-	if len(path) == 0 {
-		logger.Log.Error("Path is not a file or a folder")
-		var songs []string
-		return songs
-	}
+                // check if path is empty
+                if len(path) == 0 {
+                        logger.Log.Error("Path is not a file or a folder")
+                        continue
+                }
 
-	fi, err := os.Stat(path)
-	util.Check(err)
+                fi, err := os.Stat(path)
+                util.Check(err)
 
-	switch mode := fi.Mode(); {
-	case mode.IsDir():
-		// directory given
-		logger.Log.Info("Directory found")
-		logger.Log.Notice("Getting files inside of the folder")
-		fileList := getFilesInFolder(path, supportedFormats, depth)
-		//Print Supported Filelist
-		screener.PrintFiles(fileList, false)
-		return fileList
-	case mode.IsRegular():
-		// file given
-		logger.Log.Notice("File found")
-		var extension = filepath.Ext(path)
-		logger.Log.Info("Extension: " + extension)
-		if util.StringInArray(extension, supportedFormats) {
-			logger.Log.Notice("Extension supported")
-			var songs []string
-			return append(songs, path)
-		} else {
-			logger.Log.Warning("Extension not supported")
-			var songs []string
-			return songs
-		}
-	default:
-		logger.Log.Error("Path is not a file or a folder")
-		var songs []string
-		return songs
-	} // end of switch
+                switch mode := fi.Mode(); {
+                case mode.IsDir():
+                        // directory given
+                        logger.Log.Info("Directory found")
+                        logger.Log.Notice("Getting files inside of the folder")
+                        fileList := getFilesInFolder(path, supportedFormats, depth)
+                        //Print Supported Filelist
+                        screener.PrintFiles(fileList, false)
+                        for _, song := range fileList {
+                                songs = append(songs, song)
+                        }
+                case mode.IsRegular():
+                        // file given
+                        logger.Log.Notice("File found")
+                        var extension = filepath.Ext(path)
+                        logger.Log.Info("Extension: " + extension)
+                        if util.StringInArray(extension, supportedFormats) {
+                                logger.Log.Notice("Extension supported")
+                                songs = append(songs, path)
+                        } else {
+                                logger.Log.Warning("Extension not supported")
+                        }
+                default:
+                        logger.Log.Error("Path is not a file or a folder")
+                } // end of switch
+        } // end of for 
+        return songs
 } // end of parseSongs
 
 func getFilesInFolder(folder string, supportedExtensions []string, depth int) []string {

@@ -16,3 +16,6 @@ main
 
 # example files
 example-files/
+
+# logs
+logs/
