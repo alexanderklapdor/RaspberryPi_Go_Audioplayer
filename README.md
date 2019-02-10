@@ -16,7 +16,7 @@ This project is a Raspberry API written in GO, which allows to play music from t
 | setVolume | Sets the volume (value between 0 and 100) |
 | quieter | Decreade the volume by 5 |
 | louder | Increases the volume by 5 |
-| info | Prints information like the current song or the song queue| 
+| info | Prints information like the current song or the song queue|
 
 ### Console arguments
 

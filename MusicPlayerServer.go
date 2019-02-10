@@ -10,6 +10,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+        "strconv"
 	"sync"
 	"syscall"
 
@@ -228,6 +229,13 @@ func decreaseVolume() {
 
 func printInfo() {
 	logger.Log.Info("Executing: Print info ")
+        logger.Log.Info("Current Song: " + songQueue[currentSong])
+        logger.Log.Info("Song Queue")
+        for index, song := range songQueue {
+                if index > currentSong {
+                        logger.Log.Info(strconv.Itoa(index-currentSong) + ". " + song)
+                } // end of if
+        } // enf of for
 } // end of printInfo
 
 func main() {
