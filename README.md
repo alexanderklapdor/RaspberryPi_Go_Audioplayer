@@ -1,11 +1,29 @@
-# GO_Audioplayer
+# GO Audioplayer
 
 This project is a Raspberry API written in GO, which allows to play music from the console on the Raspberry Pi. It is implemented as part of the student research project at the DHBW Stuttgart.
+
+
+### Commands of the Client
+| Command | Description |
+| ---: | :--- |
+| exit | Terminates the MusicPlayerServer|
+| play | Plays the music. |
+| stop | Stops the music. |
+| pause | Pauses the music |
+| resume | Resumes the music |
+| next | Skips current song and plays the next one |
+| add , addToQueue | Adds a song or a directory to the song queue |
+| setVolume | Sets the volume (value between 0 and 100) |
+| quieter | Decreade the volume by 5 |
+| louder | Increases the volume by 5 |
+| info | Prints information like the current song or the song queue| 
 
 ### Console arguments
 
 ```
-Usage of ./main:
+Usage of ./MusicPlayerClient:
+  -c string
+        command for the server (default:"info")
   -d int
     	audio file searching depth (default/recommended 2) (default 2)
   -fi int
@@ -14,6 +32,7 @@ Usage of ./main:
     	fadeout in milliseconds (default 0)
   -i string
     	input music file/folder
+  -l    loop (default false)
   -s	shuffle (default false)
   -v int
    	music volume in percent (default 50) (default 50)
