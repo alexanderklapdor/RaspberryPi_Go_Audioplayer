@@ -123,25 +123,25 @@ func SetVolume(volumeValue string) {
 	cmd := exec.Command("amixer", "set", "Master", volumeValue+"%")
 	err := cmd.Run()
 	if err != nil {
-		logger.Error("SetVolume failed with " + err.Error() + "\n")
+		logger.Error("SetVolume failed with :" + err.Error() + "\n")
 	}
 } // end of SetVolume
 
 // SetVolumeUp Function
-func SetVolumeUp() {
-	cmd := exec.Command("amixer", "set", "Master", "2%+")
+func SetVolumeUp(value string) {
+	cmd := exec.Command("amixer", "set", "Master", value+"%+")
 	err := cmd.Run()
 	if err != nil {
-		logger.Error("SetVolumeUp failed with " + err.Error() + "\n")
+		logger.Error("SetVolumeUp failed with :" + err.Error() + "\n")
 	}
 } // end of SetVolumeUp
 
 // SetVolumeDown Function
-func SetVolumeDown() {
-	cmd := exec.Command("amixer", "set", "Master", "2%-")
+func SetVolumeDown(value string) {
+	cmd := exec.Command("amixer", "set", "Master", value+"%-")
 	err := cmd.Run()
 	if err != nil {
-		logger.Error("SetVolumeDown failed with " + err.Error() + "\n")
+		logger.Error("SetVolumeDown failed with :" + err.Error() + "\n")
 	}
 } //end of SetVolumeDown
 
@@ -150,7 +150,7 @@ func StartPulseaudio() {
 	cmd := exec.Command("pulseaudio", "-D")
 	err := cmd.Run()
 	if err != nil {
-		logger.Error("StartPulseaudio failed with " + err.Error() + "\n")
+		logger.Error("StartPulseaudio failed with :" + err.Error() + "\n")
 	}
 } // end of StartPulseaudio
 
