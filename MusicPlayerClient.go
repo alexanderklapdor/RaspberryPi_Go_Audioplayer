@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -34,14 +33,14 @@ type Data struct {
 func main() {
 	// Set up Logger
         //todo: logging path in configuration file
-	logger.SetUpLogger("logs/client.log")
+	logger.Setup("logs/client.log", true)
 
 	// Start Screen
 	screener.StartScreen()
 
 	// check if no argument is given
 	if len(os.Args) < 2 {
-		logger.Log.Error("Missing required argument")
+		logger.Error("Missing required argument")
 		return
 	}
 
@@ -56,7 +55,7 @@ func main() {
 	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
 
 	// parsing flags
-	logger.Log.Notice("Start Parsing cli parameters")
+	logger.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
         var values []string
@@ -75,32 +74,32 @@ func main() {
 	} // end of else
 
 	// check received arguments
-	logger.Log.Notice("Check received arguments")
+	logger.Notice("Check received arguments")
 	if *volume < 0 || *depth < 0 || *fadeIn < 0 || *fadeOut < 0 {
-		logger.Log.Error(fmt.Errorf("no negative values allowed"))
+		logger.Error("no negative values allowed")
 		return
 	}
 	if *volume > 100 {
-		logger.Log.Info("No volume above 100 allowed")
+		logger.Info("No volume above 100 allowed")
 		*volume = 100
 	}
 
 	// print received argument
-	logger.Log.Notice("Given arguments:")
-	logger.Log.Info("Commabd   " + *command)
-	logger.Log.Info("Input:    " + *input)
-	logger.Log.Info("Volume:   " + strconv.Itoa(*volume))
-	logger.Log.Info("Depth:    " + strconv.Itoa(*depth))
-	logger.Log.Info("Shuffle:  " + strconv.FormatBool(*shuffle))
-	logger.Log.Info("Loop:     " + strconv.FormatBool(*loop))
-	logger.Log.Info("Fade in:  " + strconv.Itoa(*fadeIn))
-	logger.Log.Info("Fade out: " + strconv.Itoa(*fadeOut))
-	//logger.Log.Info("Tail:     " + flag.Args())
+	logger.Notice("Given arguments:")
+	logger.Info("Commabd   " + *command)
+	logger.Info("Input:    " + *input)
+	logger.Info("Volume:   " + strconv.Itoa(*volume))
+	logger.Info("Depth:    " + strconv.Itoa(*depth))
+	logger.Info("Shuffle:  " + strconv.FormatBool(*shuffle))
+	logger.Info("Loop:     " + strconv.FormatBool(*loop))
+	logger.Info("Fade in:  " + strconv.Itoa(*fadeIn))
+	logger.Info("Fade out: " + strconv.Itoa(*fadeOut))
+	//logger.Info("Tail:     " + flag.Args())
 
 	// parsings songs
 
 	// parsing to json
-	logger.Log.Notice("Parsing argument to json")
+	logger.Notice("Parsing argument to json")
 
 	dataInfo := &Data{
 		Depth:   *depth,
@@ -115,7 +114,7 @@ func main() {
 		Command: string(*command),
 		Data:    *dataInfo}
 	requestJson, _ := json.Marshal(requestInfo)
-	logger.Log.Info("JSON String : " + string(requestJson))
+	logger.Info("JSON String : " + string(requestJson))
 
 	sender.Send(requestJson)
 

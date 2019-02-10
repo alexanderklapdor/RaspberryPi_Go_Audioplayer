@@ -53,16 +53,16 @@ func receiveCommand(c net.Conn) {
 		return
 	}
 	receivedBytes := buf[0:nr]
-	logger.Log.Info("Server received message: " + string(receivedBytes))
+	logger.Info("Server received message: " + string(receivedBytes))
 
 	// convert message back to a request-object
-	logger.Log.Notice("Converting message back to a Request-Object")
+	logger.Notice("Converting message back to a Request-Object")
 	received := Request{}
 	json.Unmarshal(receivedBytes, &received)
 	command := received.Command
 	data := received.Data
-	logger.Log.Notice("Command: " + command)
-	//logger.Log.Notice("Data   : " + string(data))
+	logger.Notice("Command: " + command)
+	//logger.Notice("Data   : " + string(data))
 
 	// switch case commands
 	switch command {
@@ -89,11 +89,11 @@ func receiveCommand(c net.Conn) {
 	case "stop":
 		stopMusic()
 	default:
-		logger.Log.Error("Unknown command received")
+		logger.Error("Unknown command received")
 	}
 
 	// write to client
-	logger.Log.Notice("Send a message back to the client")
+	logger.Notice("Send a message back to the client")
 	message := "Default-message"
 	_, err = c.Write([]byte(message))
 	if err != nil {
@@ -103,18 +103,18 @@ func receiveCommand(c net.Conn) {
 
 func closeConnection(c net.Conn) {
 	socketPath := "/tmp/mp.sock" // todo: should be passed as an argument or be written out of a config file
-	logger.Log.Warning("Connection  will be closed")
+	logger.Warning("Connection  will be closed")
 	defer c.Close()
 	err := syscall.Unlink(socketPath)
 	if err != nil {
-		logger.Log.Error("Error during unlink process of the socket: " + err.Error())
-		logger.Log.Info("Pls run manually unlink 'unlink" + socketPath + "'")
+		logger.Error("Error during unlink process of the socket: " + err.Error())
+		logger.Info("Pls run manually unlink 'unlink" + socketPath + "'")
 	}
 	os.Exit(0)
 } // end of closeConnection
 
 func stopMusic() {
-	logger.Log.Info("Execution: Stop Music")
+	logger.Info("Execution: Stop Music")
 	audiofunctions.StopAudio()
 
 	wg.Add(1)
@@ -132,8 +132,8 @@ func checkIfStatusStop() {
 }
 
 func playMusic(data Data) {
-	logger.Log.Info("Executing: Play Music")
-	logger.Log.Info("Path given " + data.Path)
+	logger.Info("Executing: Play Music")
+	logger.Info("Path given " + data.Path)
         var songs []string
         if len(data.Values) == 0{
                 songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
@@ -149,10 +149,10 @@ func playMusic(data Data) {
 
 		//Check if a song is currently playing
 		if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
-			logger.Log.Info("A song is currently playing")
+			logger.Info("A song is currently playing")
 			stopMusic()
 		}
-		logger.Log.Info(songQueue[currentSong])
+		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
 		// set loop variable
 		saveLoop = data.Loop
@@ -161,25 +161,25 @@ func playMusic(data Data) {
 
 			//Check if a song is currently playing
 			if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
-				logger.Log.Info("A song is currently playing")
+				logger.Info("A song is currently playing")
 				stopMusic()
 			}
 
-			logger.Log.Info(songQueue[currentSong])
+			logger.Info(songQueue[currentSong])
 			go audiofunctions.PlayAudio(songQueue[currentSong])
 		} else {
-			logger.Log.Error("No input file and no Song in Queue")
+			logger.Error("No input file and no Song in Queue")
 		}
 	} // end of if
 } // end of playMusic
 
 func pauseMusic(data Data) {
-	logger.Log.Info("Executing: Pause Music")
+	logger.Info("Executing: Pause Music")
 	go audiofunctions.PauseAudio()
 } // end of pauseMusic
 
 func resumeMusic() {
-	logger.Log.Info("Execution: Resume Music")
+	logger.Info("Execution: Resume Music")
 	go audiofunctions.ResumeAudio()
 }
 
@@ -195,13 +195,13 @@ func nextMusic(data Data) {
 	}
 	//Check if a song is currently playing
 	if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
-		logger.Log.Info("A song is currently playing")
+		logger.Info("A song is currently playing")
 		stopMusic()
 	}
 	if data.Loop == false && currentSong == 0 {
-		logger.Log.Info("Loop is not activate and Queue has ended -> Music stops")
+		logger.Info("Loop is not activate and Queue has ended -> Music stops")
 	} else {
-		logger.Log.Info(songQueue[currentSong])
+		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
 	}
 
@@ -214,11 +214,11 @@ func setVolume(data Data) {
         } else {
                 volume = data.Volume
         } // end of else
-	logger.Log.Info("Executing: Set Volume to " + strconv.Itoa(volume))
+	logger.Info("Executing: Set Volume to " + strconv.Itoa(volume))
 } // end of setVolume
 
 func addToQueue(data Data) {
-	logger.Log.Info("Executing: Add to queue")
+	logger.Info("Executing: Add to queue")
         var songs []string
         if len(data.Values) == 0{
                 songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
@@ -233,26 +233,26 @@ func addToQueue(data Data) {
 } // end of addToQueue
 
 func increaseVolume() {
-	logger.Log.Info("Executing: Increase volume")
+	logger.Info("Executing: Increase volume")
 	go audiofunctions.SetVolumeUp()
 } // end of increaseVolume
 
 func decreaseVolume() {
-	logger.Log.Info("Executing: Decrease volume")
+	logger.Info("Executing: Decrease volume")
 	go audiofunctions.SetVolumeDown()
 } // end of decreaseVolume
 
 func printInfo() {
-	logger.Log.Info("Executing: Print info ")
+	logger.Info("Executing: Print info ")
         if len(songQueue) != 0{
-                logger.Log.Info("Current Song: " + songQueue[currentSong])
+                logger.Info("Current Song: " + songQueue[currentSong])
         } else {
-                logger.Log.Info("Currently there is no song playing")
+                logger.Info("Currently there is no song playing")
         } // end of else
-        logger.Log.Info("Song Queue:")
+        logger.Info("Song Queue:")
         for index, song := range songQueue {
                 if index > currentSong {
-                        logger.Log.Info(strconv.Itoa(index-currentSong) + ". " + song)
+                        logger.Info(strconv.Itoa(index-currentSong) + ". " + song)
                 } // end of if
         } // enf of for
 } // end of printInfo
@@ -260,24 +260,24 @@ func printInfo() {
 func main() {
         // set up logger
         // todo: logger path in server config.file
-	logger.SetUpLogger("logs/server.log")
+	logger.Setup("logs/server.log", false)
 	// create server socket mp.sock
 	unixSocket := "/tmp/mp.sock"
-	logger.Log.Notice("Creating unixSocket.")
-	logger.Log.Info("Listening on " + unixSocket)
+	logger.Notice("Creating unixSocket.")
+	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)
 	if err != nil {
 		log.Fatal("listen error", err)
 	}
 
 	// check supported formats
-	logger.Log.Notice("Parsing supported formats")
+	logger.Notice("Parsing supported formats")
 	supportedFormats = getSupportedFormats()
 	// print supported formats
 	printSupportedFormats(supportedFormats)
 
 	// start pulseAudio
-	logger.Log.Notice("start PulseAudio")
+	logger.Notice("start PulseAudio")
 	audiofunctions.StartPulseaudio()
 
 	for {
@@ -293,11 +293,11 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
         var songs []string
         for _, path := range paths {
                 // check if given file/folder exists
-                logger.Log.Notice("Check if folder/file exists: ", path)
+                logger.Notice("Check if folder/file exists: " + path)
 
                 // check if path is empty
                 if len(path) == 0 {
-                        logger.Log.Error("Path is not a file or a folder")
+                        logger.Error("Path is not a file or a folder")
                         continue
                 }
 
@@ -307,8 +307,8 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
                 switch mode := fi.Mode(); {
                 case mode.IsDir():
                         // directory given
-                        logger.Log.Info("Directory found")
-                        logger.Log.Notice("Getting files inside of the folder")
+                        logger.Info("Directory found")
+                        logger.Notice("Getting files inside of the folder")
                         fileList := getFilesInFolder(path, supportedFormats, depth)
                         //Print Supported Filelist
                         screener.PrintFiles(fileList, false)
@@ -317,17 +317,17 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
                         }
                 case mode.IsRegular():
                         // file given
-                        logger.Log.Notice("File found")
+                        logger.Notice("File found")
                         var extension = filepath.Ext(path)
-                        logger.Log.Info("Extension: " + extension)
+                        logger.Info("Extension: " + extension)
                         if util.StringInArray(extension, supportedFormats) {
-                                logger.Log.Notice("Extension supported")
+                                logger.Notice("Extension supported")
                                 songs = append(songs, path)
                         } else {
-                                logger.Log.Warning("Extension not supported")
+                                logger.Warning("Extension not supported")
                         }
                 default:
-                        logger.Log.Error("Path is not a file or a folder")
+                        logger.Error("Path is not a file or a folder")
                 } // end of switch
         } // end of for 
         return songs
@@ -360,7 +360,7 @@ func getFilesInFolder(folder string, supportedExtensions []string, depth int) []
 			} // end of switch
 		} // end of for
 	} else {
-		logger.Log.Info("Max depth reached")
+		logger.Info("Max depth reached")
 	}
 	return fileList
 } // end of getFilesInFolder
@@ -402,5 +402,5 @@ func printSupportedFormats(supportedFormats []string) {
 		} // end of if
 		formatString = formatString + format
 	} // end of for
-	logger.Log.Info("Supported formats: " + formatString)
+	logger.Info("Supported formats: " + formatString)
 } // end of printSupportedFormats

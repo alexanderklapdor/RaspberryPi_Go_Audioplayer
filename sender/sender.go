@@ -18,8 +18,8 @@ func reader(r io.Reader) {
 		if err != nil {
 			return
 		}
-		logger.Log.Notice("Received response from server")
-		logger.Log.Info("Server: '" + string(buf[0:n]) + "'")
+		logger.Notice("Received response from server")
+		logger.Info("Server: '" + string(buf[0:n]) + "'")
 	}
 }
 
@@ -29,7 +29,7 @@ func Send(requestJson []byte) {
 
 	// Open socket connection
 	socketPath := "/tmp/mp.sock"
-	logger.Log.Notice("Opening socket connection to " + socketPath)
+	logger.Notice("Opening socket connection to " + socketPath)
 	con, err := net.Dial("unix", socketPath)
 	if err != nil {
 		panic(err)
@@ -37,7 +37,7 @@ func Send(requestJson []byte) {
 	defer con.Close()
 
 	go reader(con)
-	logger.Log.Notice("Sending message to Server")
+	logger.Notice("Sending message to Server")
 	_, er := con.Write([]byte(requestJson))
 	if er != nil {
 		log.Fatal("Write error: ", er)

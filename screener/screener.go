@@ -30,11 +30,11 @@ func EndScreen() {
 // Print Files
 func PrintFiles(fileList []string, printFiles bool) {
 
-	logger.Log.Info("Found " + strconv.Itoa(len(fileList)) + " supported files")
+	logger.Info("Found " + strconv.Itoa(len(fileList)) + " supported files")
 	if printFiles {
-		logger.Log.Info("*********Filelist (Supported Files)*********")
+		logger.Info("*********Filelist (Supported Files)*********")
 		for _, fileElement := range fileList {
-			logger.Log.Info(fileElement)
+			logger.Info(fileElement)
 		}
 	}
 
