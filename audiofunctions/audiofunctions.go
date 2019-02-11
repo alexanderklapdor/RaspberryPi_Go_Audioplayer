@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+        "strings"
+        "regexp"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
@@ -153,6 +155,40 @@ func StartPulseaudio() {
 		logger.Error("StartPulseaudio failed with :" + err.Error() + "\n")
 	}
 } // end of StartPulseaudio
+
+func GetVolume() (string, string) {
+        var left_array, right_array []string
+        var left, right string
+        cmd := exec.Command("amixer", "get", "Master")
+        cmd_output, err := cmd.Output()
+        if err != nil {
+                logger.Error("GetVolume failed with: " + err.Error() + "\n")
+        }
+        print(string(cmd_output))
+        reg_perc, _ := regexp.Compile("[[]([0-9]+%)[]]")
+        reg_numb, _ := regexp.Compile("[0-9]+")
+        for _, line := range strings.Split(string(cmd_output), "\n") {
+                if strings.Contains(line, "Left") && strings.Contains(line, "[on]"){
+                        left_array = reg_perc.FindAllString(string(cmd_output), 1)
+                } // end of if
+                if strings.Contains(line, "Right") && strings.Contains(line, "[on]"){
+                        right_array = reg_perc.FindAllString(string(cmd_output), 1)
+                } // end of if
+        } // end of for
+        if len(left_array) != 0{
+                left = left_array[0]
+                left = reg_numb.FindAllString(left, 1)[0]
+        } else {
+                left = "unknown"
+        } //end of else
+        if len(right_array) != 0 {
+                right = right_array[0]
+                right = reg_numb.FindAllString(right, 1)[0]
+        } else {
+                right = "unknown"
+        }
+        return left, right
+} // end of GetVolume
 
 func GetStatus() string {
 	return status
