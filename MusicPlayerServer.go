@@ -237,13 +237,13 @@ func addToQueue(data Data) string {
 
 func increaseVolume() string{
 	logger.Info("Executing: Increase volume")
-	go audiofunctions.SetVolumeUp("10")
-        return "Increased volume by 10"
+	audiofunctions.SetVolumeUp("10")
+        return "Increased volume by 10 \n" + printVolume()
 } // end of increaseVolume
 
 func decreaseVolume() string{
 	logger.Info("Executing: Decrease volume")
-	go audiofunctions.SetVolumeDown("10")
+	audiofunctions.SetVolumeDown("10")
         return "Decreased volume by 10"
 } // end of decreaseVolume
 
@@ -251,6 +251,11 @@ func getVolume() (string, string){
         left, right := audiofunctions.GetVolume()
         return left, right
 } // end of getVolume()
+
+func printVolume() (string) {
+        left, right := getVolume()
+        return "Current Volume:  Left(" + left + ")  Right(" + right + ")"
+}
 
 
 func printInfo() string{
@@ -275,8 +280,7 @@ func printInfo() string{
 		message = message + ("Currently there is no song playing \n")
                 message = message + "The Song Queue is empty. \n"
 	} // end of else
-        left, right := getVolume()
-        message = message + "Volume:  Left(" + left + ")  Right(" + right + ")"
+        message = message + printVolume()
         return message
 } // end of printInfo
 
