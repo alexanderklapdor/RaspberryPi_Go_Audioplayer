@@ -19,7 +19,7 @@ func reader(r io.Reader) {
 			return
 		}
 		logger.Notice("Received response from server")
-		logger.Info("Server: '" + string(buf[0:n]) + "'")
+		logger.Info("Server: " + string(buf[0:n]))
 	}
 }
 

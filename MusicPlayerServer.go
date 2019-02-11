@@ -64,14 +64,15 @@ func receiveCommand(c net.Conn) {
 	logger.Notice("Command: " + command)
 	//logger.Notice("Data   : " + string(data))
 
+	message := "Default-message"
 	// switch case commands
 	switch command {
 	case "addToQueue", "add":
-		addToQueue(data)
+		message = addToQueue(data)
 	case "exit":
 		closeConnection(c)
 	case "info", "default":
-		printInfo()
+		message = printInfo()
 	case "louder", "setVolumeUp":
 		increaseVolume()
 	case "next":
@@ -94,7 +95,6 @@ func receiveCommand(c net.Conn) {
 
 	// write to client
 	logger.Notice("Send a message back to the client")
-	message := "Default-message"
 	_, err = c.Write([]byte(message))
 	if err != nil {
 		log.Fatal("Write: ", err)
@@ -109,6 +109,7 @@ func closeConnection(c net.Conn) {
 	if err != nil {
 		logger.Error("Error during unlink process of the socket: " + err.Error())
 		logger.Info("Pls run manually unlink 'unlink" + socketPath + "'")
+                os.Exit(69)
 	}
 	os.Exit(0)
 } // end of closeConnection
@@ -184,7 +185,7 @@ func resumeMusic() {
 }
 
 func nextMusic(data Data) {
-	//check if loop was set by "playMusic" - if yes..than change data.loop to true
+	// check if loop was set by "playMusic" - if yes..than change data.loop to true
 	if saveLoop == true {
 		data.Loop = true
 	}
@@ -193,7 +194,7 @@ func nextMusic(data Data) {
 	} else {
 		currentSong = 0
 	}
-	//Check if a song is currently playing
+	// Check if a song is currently playing
 	if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
 		logger.Info("A song is currently playing")
 		stopMusic()
@@ -204,21 +205,20 @@ func nextMusic(data Data) {
 		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
 	}
-
-}
+} // end of nextMusic
 
 func setVolume(data Data) {
 	var volume string
 	if len(data.Values) != 0 {
-		volume, _ = data.Values[0]
+		volume = data.Values[0]
 	} else {
-		volume = data.Volume
+		volume = strconv.Itoa(data.Volume)
 	} // end of else
 	audiofunctions.SetVolume(volume)
 	logger.Info("Executing: Set Volume to " + volume)
 } // end of setVolume
 
-func addToQueue(data Data) {
+func addToQueue(data Data) string {
 	logger.Info("Executing: Add to queue")
 	var songs []string
 	if len(data.Values) == 0 {
@@ -231,6 +231,8 @@ func addToQueue(data Data) {
 			songQueue = append(songQueue, song)
 		} // end of for
 	} // end of if
+        message := "Added " + string(len(songs)) + " songs to queue"
+        return message
 } // end of addToQueue
 
 func increaseVolume() {
@@ -243,19 +245,24 @@ func decreaseVolume() {
 	go audiofunctions.SetVolumeDown("10")
 } // end of decreaseVolume
 
-func printInfo() {
+func printInfo() string{
 	logger.Info("Executing: Print info ")
+        message := "\n"
 	if len(songQueue) != 0 {
-		logger.Info("Current Song: " + songQueue[currentSong])
+		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
 	} else {
-		logger.Info("Currently there is no song playing")
+		message = message + ("Currently there is no song playing \n")
 	} // end of else
-	logger.Info("Song Queue:")
+	message = message + ("Song Queue: \n")
 	for index, song := range songQueue {
 		if index > currentSong {
-			logger.Info(strconv.Itoa(index-currentSong) + ". " + song)
+			message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
 		} // end of if
 	} // enf of for
+        for _, line := range strings.Split(message, "\n") {
+                logger.Info(line)
+        }
+        return message
 } // end of printInfo
 
 func main() {
