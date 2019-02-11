@@ -75,17 +75,14 @@ func Critical(message string) {
 	panic(message)
 }
 
-
-
 func appendString(mType string, message string) {
 	//append to file
-        file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	defer file.Close()
-        if err != nil {
-                panic(err)
-        }
+	if err != nil {
+		panic(err)
+	}
 	if _, err = file.WriteString(time.Now().Format("2006.01.02 15:04:05") + " " + mType + " -> " + message + "\n"); err != nil {
 		panic(err)
 	}
 }
-

@@ -109,7 +109,7 @@ func closeConnection(c net.Conn) {
 	if err != nil {
 		logger.Error("Error during unlink process of the socket: " + err.Error())
 		logger.Info("Pls run manually unlink 'unlink" + socketPath + "'")
-                os.Exit(69)
+		os.Exit(69)
 	}
 	os.Exit(0)
 } // end of closeConnection
@@ -174,10 +174,10 @@ func playMusic(data Data) {
 	} // end of if
 } // end of playMusic
 
-func pauseMusic(data Data) string{
+func pauseMusic(data Data) string {
 	logger.Info("Executing: Pause Music")
 	go audiofunctions.PauseAudio()
-        return "Music paused"
+	return "Music paused"
 } // end of pauseMusic
 
 func resumeMusic() {
@@ -202,13 +202,13 @@ func nextMusic(data Data) string {
 	}
 	if data.Loop == false && currentSong == 0 {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
-                return "Loop is not active and queue has ended -> Music stopped"
+		return "Loop is not active and queue has ended -> Music stopped"
 	} else {
 		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
-                return "Now playing" + songQueue[currentSong]
+		return "Now playing" + songQueue[currentSong]
 	}
-        return "Should never be shown " 
+	return "Should never be shown "
 } // end of nextMusic
 
 func setVolume(data Data) {
@@ -235,57 +235,56 @@ func addToQueue(data Data) string {
 			songQueue = append(songQueue, song)
 		} // end of for
 	} // end of if
-        message := "Added " + string(len(songs)) + " songs to queue"
-        return message
+	message := "Added " + string(len(songs)) + " songs to queue"
+	return message
 } // end of addToQueue
 
-func increaseVolume() string{
+func increaseVolume() string {
 	logger.Info("Executing: Increase volume")
 	audiofunctions.SetVolumeUp("10")
-        return "Increased volume by 10 \n" + printVolume()
+	return "Increased volume by 10 \n" + printVolume()
 } // end of increaseVolume
 
-func decreaseVolume() string{
+func decreaseVolume() string {
 	logger.Info("Executing: Decrease volume")
 	audiofunctions.SetVolumeDown("10")
-        return "Decreased volume by 10 \n" + printVolume()
+	return "Decreased volume by 10 \n" + printVolume()
 } // end of decreaseVolume
 
-func getVolume() (string, string){
-        left, right := audiofunctions.GetVolume()
-        return left, right
+func getVolume() (string, string) {
+	left, right := audiofunctions.GetVolume()
+	return left, right
 } // end of getVolume()
 
-func printVolume() (string) {
-        left, right := getVolume()
-        return "Current Volume:  Left(" + left + ")  Right(" + right + ")"
+func printVolume() string {
+	left, right := getVolume()
+	return "Current Volume:  Left(" + left + ")  Right(" + right + ")"
 }
 
-
-func printInfo() string{
+func printInfo() string {
 	logger.Info("Executing: Print info ")
-        message := "\n"
+	message := "\n"
 	if len(songQueue) != 0 {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
-                if (len(songQueue)-currentSong) == 0 { //todo: check if loop is on
-                        message = message + ("Song Queue: \n")
-                        for index, song := range songQueue {
-                                if index > currentSong {
-                                        message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
-                                } // end of if
-                        } // enf of for
-                        for _, line := range strings.Split(message, "\n") {
-                                logger.Info(line)
-                        } // end of for
-                } else {
-                        message = message + "The Song Queue is empty. \n"
-                } // end of else
+		if (len(songQueue) - currentSong) == 0 { //todo: check if loop is on
+			message = message + ("Song Queue: \n")
+			for index, song := range songQueue {
+				if index > currentSong {
+					message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
+				} // end of if
+			} // enf of for
+			for _, line := range strings.Split(message, "\n") {
+				logger.Info(line)
+			} // end of for
+		} else {
+			message = message + "The Song Queue is empty. \n"
+		} // end of else
 	} else {
 		message = message + ("Currently there is no song playing \n")
-                message = message + "The Song Queue is empty. \n"
+		message = message + "The Song Queue is empty. \n"
 	} // end of else
-        message = message + printVolume()
-        return message
+	message = message + printVolume()
+	return message
 } // end of printInfo
 
 func main() {
