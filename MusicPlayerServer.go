@@ -83,12 +83,14 @@ func receiveCommand(c net.Conn) {
 		message = playMusic(data)
 	case "quieter", "setVolumeDown":
 		message = decreaseVolume()
+        case "remove", "delete", "removeAt", "deleteAt":
+                message = removeSong(data)
 	case "resume":
 		message = resumeMusic()
 	case "setVolume":
 		message = setVolume(data)
 	case "stop":
-		stopMusic()
+		message = stopMusic()
 	default:
 		logger.Error("Unknown command received")
 	}
@@ -114,13 +116,36 @@ func closeConnection(c net.Conn) {
 	os.Exit(0)
 } // end of closeConnection
 
-func stopMusic() {
+func removeSong(data Data) string { // todo: loop is missing
+        if len(data.Values) != 0 {
+                number, err := strconv.Atoi(data.Values[0])
+                // todo: remove multiple values (problem with changing position)
+                if err == nil {
+                        if number > 0 && number < (len(songQueue) - currentSong) {
+                                number = number + currentSong
+                                song_name := songQueue[number]
+                                songQueue = append(songQueue[:number], songQueue[number+1:]...)
+                                return "Removed song" + song_name
+                        } else {
+                                return "There is no song with the given number (" + strconv.Itoa(number) + ")"
+                        } // end of else
+                } else {
+                        return "Remove is only allowed with the number of the song in the queue. Pls use 'info' to see the queue"
+                } // else
+        } else {
+                return "No argument given"
+        }
+        return "should never be shown"
+} // end of removeSong
+
+func stopMusic() string{
 	logger.Info("Execution: Stop Music")
 	audiofunctions.StopAudio()
 
 	wg.Add(1)
 	go checkIfStatusStop()
 	wg.Wait()
+        return "Stopped music"
 }
 
 func checkIfStatusStop() {
@@ -151,7 +176,7 @@ func playMusic(data Data) string {
 		//Check if a song is currently playing
 		if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
 			logger.Info("A song is currently playing")
-			stopMusic()
+			_ = stopMusic()
 		}
 		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
@@ -163,7 +188,7 @@ func playMusic(data Data) string {
 			//Check if a song is currently playing
 			if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
 				logger.Info("A song is currently playing")
-				stopMusic()
+				_ = stopMusic()
 			} // end of if
 			logger.Info(songQueue[currentSong])
 			go audiofunctions.PlayAudio(songQueue[currentSong])
@@ -201,7 +226,7 @@ func nextMusic(data Data) string {
 	// Check if a song is currently playing
 	if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
 		logger.Info("A song is currently playing")
-		stopMusic()
+		_ = stopMusic()
 	}
 	if data.Loop == false && currentSong == 0 {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
@@ -270,7 +295,7 @@ func printInfo() string {
 	message := "\n"
 	if len(songQueue) != 0 {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
-		if (len(songQueue) - currentSong) == 0 { //todo: check if loop is on
+		if (len(songQueue) - currentSong) != 0 { //todo: check if loop is on
 			message = message + ("Song Queue: \n")
 			for index, song := range songQueue {
 				if index > currentSong {
