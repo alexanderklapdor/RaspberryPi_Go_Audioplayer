@@ -74,7 +74,7 @@ func receiveCommand(c net.Conn) {
 	case "info", "default":
 		message = printInfo()
 	case "louder", "setVolumeUp":
-		increaseVolume()
+		message = increaseVolume()
 	case "next":
 		nextMusic(data)
 	case "pause":
@@ -82,7 +82,7 @@ func receiveCommand(c net.Conn) {
 	case "play":
 		playMusic(data)
 	case "quieter", "setVolumeDown":
-		decreaseVolume()
+		message = decreaseVolume()
 	case "resume":
 		resumeMusic()
 	case "setVolume":
@@ -235,33 +235,48 @@ func addToQueue(data Data) string {
         return message
 } // end of addToQueue
 
-func increaseVolume() {
+func increaseVolume() string{
 	logger.Info("Executing: Increase volume")
 	go audiofunctions.SetVolumeUp("10")
+        return "Increased volume by 10"
 } // end of increaseVolume
 
-func decreaseVolume() {
+func decreaseVolume() string{
 	logger.Info("Executing: Decrease volume")
 	go audiofunctions.SetVolumeDown("10")
+        return "Decreased volume by 10"
 } // end of decreaseVolume
+
+func getVolume() (string, string){
+        left, right := audiofunctions.GetVolume()
+        return left, right
+} // end of getVolume()
+
 
 func printInfo() string{
 	logger.Info("Executing: Print info ")
         message := "\n"
 	if len(songQueue) != 0 {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
+                if (len(songQueue)-currentSong) == 0 { //todo: check if loop is on
+                        message = message + ("Song Queue: \n")
+                        for index, song := range songQueue {
+                                if index > currentSong {
+                                        message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
+                                } // end of if
+                        } // enf of for
+                        for _, line := range strings.Split(message, "\n") {
+                                logger.Info(line)
+                        } // end of for
+                } else {
+                        message = message + "The Song Queue is empty. \n"
+                } // end of else
 	} else {
 		message = message + ("Currently there is no song playing \n")
+                message = message + "The Song Queue is empty. \n"
 	} // end of else
-	message = message + ("Song Queue: \n")
-	for index, song := range songQueue {
-		if index > currentSong {
-			message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
-		} // end of if
-	} // enf of for
-        for _, line := range strings.Split(message, "\n") {
-                logger.Info(line)
-        }
+        left, right := getVolume()
+        message = message + "Volume:  Left(" + left + ")  Right(" + right + ")"
         return message
 } // end of printInfo
 
