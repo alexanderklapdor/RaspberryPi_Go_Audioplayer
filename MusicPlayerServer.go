@@ -76,7 +76,7 @@ func receiveCommand(c net.Conn) {
 	case "louder", "setVolumeUp":
 		message = increaseVolume()
 	case "next":
-		nextMusic(data)
+		message = nextMusic(data)
 	case "pause":
 		pauseMusic(data)
 	case "play":
@@ -184,7 +184,7 @@ func resumeMusic() {
 	go audiofunctions.ResumeAudio()
 }
 
-func nextMusic(data Data) {
+func nextMusic(data Data) string {
 	// check if loop was set by "playMusic" - if yes..than change data.loop to true
 	if saveLoop == true {
 		data.Loop = true
@@ -200,11 +200,14 @@ func nextMusic(data Data) {
 		stopMusic()
 	}
 	if data.Loop == false && currentSong == 0 {
-		logger.Info("Loop is not activate and Queue has ended -> Music stops")
+		logger.Info("Loop is not active and queue has ended -> Music stopped")
+                return "Loop is not active and queue has ended -> Music stopped"
 	} else {
 		logger.Info(songQueue[currentSong])
 		go audiofunctions.PlayAudio(songQueue[currentSong])
+                return "Now playing" + songQueue[currentSong]
 	}
+        return "Should never be shown " 
 } // end of nextMusic
 
 func setVolume(data Data) {
@@ -244,7 +247,7 @@ func increaseVolume() string{
 func decreaseVolume() string{
 	logger.Info("Executing: Decrease volume")
 	audiofunctions.SetVolumeDown("10")
-        return "Decreased volume by 10"
+        return "Decreased volume by 10 \n" + printVolume()
 } // end of decreaseVolume
 
 func getVolume() (string, string){
