@@ -78,7 +78,7 @@ func receiveCommand(c net.Conn) {
 	case "next":
 		message = nextMusic(data)
 	case "pause":
-		pauseMusic(data)
+		message = pauseMusic(data)
 	case "play":
 		playMusic(data)
 	case "quieter", "setVolumeDown":
@@ -174,9 +174,10 @@ func playMusic(data Data) {
 	} // end of if
 } // end of playMusic
 
-func pauseMusic(data Data) {
+func pauseMusic(data Data) string{
 	logger.Info("Executing: Pause Music")
 	go audiofunctions.PauseAudio()
+        return "Music paused"
 } // end of pauseMusic
 
 func resumeMusic() {
