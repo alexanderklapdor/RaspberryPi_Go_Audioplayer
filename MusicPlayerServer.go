@@ -80,13 +80,13 @@ func receiveCommand(c net.Conn) {
 	case "pause":
 		message = pauseMusic(data)
 	case "play":
-		playMusic(data)
+		message = playMusic(data)
 	case "quieter", "setVolumeDown":
 		message = decreaseVolume()
 	case "resume":
-		resumeMusic()
+		message = resumeMusic()
 	case "setVolume":
-		setVolume(data)
+		message = setVolume(data)
 	case "stop":
 		stopMusic()
 	default:
@@ -132,7 +132,7 @@ func checkIfStatusStop() {
 	}
 }
 
-func playMusic(data Data) {
+func playMusic(data Data) string {
 	logger.Info("Executing: Play Music")
 	logger.Info("Path given " + data.Path)
 	var songs []string
@@ -157,21 +157,23 @@ func playMusic(data Data) {
 		go audiofunctions.PlayAudio(songQueue[currentSong])
 		// set loop variable
 		saveLoop = data.Loop
+                return "Playing " + songQueue[currentSong]
 	} else {
 		if len(songQueue) != 0 {
-
 			//Check if a song is currently playing
 			if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
 				logger.Info("A song is currently playing")
 				stopMusic()
-			}
-
+			} // end of if
 			logger.Info(songQueue[currentSong])
 			go audiofunctions.PlayAudio(songQueue[currentSong])
+                        return "Playing " + songQueue[currentSong]
 		} else {
 			logger.Error("No input file and no Song in Queue")
-		}
+                        return ("No input file and no Song in Queue")
+		} // end foe else
 	} // end of if
+        return "should never be shown"
 } // end of playMusic
 
 func pauseMusic(data Data) string {
@@ -180,9 +182,10 @@ func pauseMusic(data Data) string {
 	return "Music paused"
 } // end of pauseMusic
 
-func resumeMusic() {
+func resumeMusic() string{
 	logger.Info("Execution: Resume Music")
 	go audiofunctions.ResumeAudio()
+        return "Resuming music"
 }
 
 func nextMusic(data Data) string {
@@ -211,7 +214,7 @@ func nextMusic(data Data) string {
 	return "Should never be shown "
 } // end of nextMusic
 
-func setVolume(data Data) {
+func setVolume(data Data) string{
 	var volume string
 	if len(data.Values) != 0 {
 		volume = data.Values[0]
@@ -219,7 +222,8 @@ func setVolume(data Data) {
 		volume = strconv.Itoa(data.Volume)
 	} // end of else
 	audiofunctions.SetVolume(volume)
-	logger.Info("Executing: Set Volume to " + volume)
+	logger.Info("Executing: Set volume to " + volume)
+        return "Set volume to " + volume
 } // end of setVolume
 
 func addToQueue(data Data) string {
