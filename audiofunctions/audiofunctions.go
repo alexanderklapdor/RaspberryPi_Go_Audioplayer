@@ -4,7 +4,6 @@ package audiofunctions
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -26,8 +25,6 @@ var stream *portaudio.Stream
 
 // PlayAudio Function
 func PlayAudio(fileName string) {
-	fmt.Println("Playing audiofile.  Press Ctrl-C to stop.")
-
 	needStop = false
 
 	defer CallNextSong()
@@ -164,7 +161,6 @@ func GetVolume() (string, string) {
 	if err != nil {
 		logger.Error("GetVolume failed with: " + err.Error() + "\n")
 	}
-	print(string(cmd_output))
 	reg_perc, _ := regexp.Compile("[[]([0-9]+%)[]]")
 	reg_numb, _ := regexp.Compile("[0-9]+")
 	for _, line := range strings.Split(string(cmd_output), "\n") {
