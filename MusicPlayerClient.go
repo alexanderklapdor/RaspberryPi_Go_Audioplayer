@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+	id3 "github.com/mikkyang/id3-go"	
 	// "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 )
 
@@ -183,4 +185,40 @@ func startServer() {
 	logger.Info("Detaching process")
 	err = process.Release()
 	util.Check(err)
+}
+
+func printMp3Infos(filePath string){
+	//Check if Path exists
+	if _, err := os.Stat(filePath); err == nil {
+		//open file for id3 tags
+		mp3File, err := id3.Open(filePath)
+       		util.Check(err)
+		//close file at the end
+		defer mp3File.Close()
+		//get Tag Infos
+		title := mp3File.Title()
+		artist := mp3File.Artist()
+		album := mp3File.Album()
+		//get Audio length
+		blength, lengtherr := exec.Command("mp3info","-p","%S",filePath).Output()
+		util.Check(lengtherr)
+		
+		//check if one information is empty
+		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
+			fmt.Println(filePath)
+		} else{
+			//print Infos
+			length, err := strconv.Atoi(string(blength[:]))
+                	util.Check(err)
+			fmt.Println("Title: " + title + "\t\t\t\tArtist: " + artist + "\t\t\t\tAlbum: " + album + "\t\t\t\tLength: " + secondsToMinutes(length))
+		}    
+	}
+}
+
+//Get Minute and Secons from Seconds
+func secondsToMinutes(inSeconds int) string {
+	minutes := inSeconds / 60
+        seconds := inSeconds % 60
+        str := fmt.Sprintf("%dmin %dsec", minutes, seconds)
+        return str
 }
