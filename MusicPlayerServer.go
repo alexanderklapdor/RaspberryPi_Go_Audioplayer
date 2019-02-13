@@ -85,6 +85,8 @@ func receiveCommand(c net.Conn) {
 		message = playMusic(data)
 	case "quieter", "setVolumeDown":
 		message = decreaseVolume()
+	case "repeat":
+		message = repeatSong()
 	case "remove", "delete", "removeAt", "deleteAt":
 		message = removeSong(data)
 	case "resume":
@@ -138,6 +140,15 @@ func playPreviousSong() string {
 	} // end of else
 	return "should never be shown"
 } // end of playLastSong
+
+func repeatSong() string {
+	if len(songQueue) > 0 {
+		playCurrentSong()
+		return "Playing now " + songQueue[currentSong]
+	} else {
+		return "There is no current song"
+	} // end of else
+} // end of repeatSong
 
 func removeSong(data Data) string { // todo: loop is missing
 	if len(data.Values) != 0 {
