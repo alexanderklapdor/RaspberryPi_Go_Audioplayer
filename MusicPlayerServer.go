@@ -77,6 +77,8 @@ func receiveCommand(c net.Conn) {
 		message = printInfo()
 	case "loop", "setLoop":
 		message = setLoop(data)
+	case "shuffle", "setShuffle":
+		message = shuffleQueue()
 	case "louder", "setVolumeUp":
 		message = increaseVolume()
 	case "next":
@@ -516,3 +518,14 @@ func printSupportedFormats(supportedFormats []string) {
 	} // end of for
 	logger.Info("Supported formats: " + formatString)
 } // end of printSupportedFormats
+
+// Shuffle Queue Function
+func shuffleQueue() string {
+	// Check if Queue is filled
+	if len(songQueue) > 0 {
+		songQueue = util.Shuffle(songQueue)
+		return "Queue has been shuffled"
+	} else {
+		return "Queue is not filled - shuffle failed"
+	}
+}
