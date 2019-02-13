@@ -176,6 +176,11 @@ func removeSong(data Data) string { // todo: loop is missing
 				song_name := songQueue[number]
 				songQueue = append(songQueue[:number], songQueue[number+1:]...)
 				return "Removed song" + song_name
+			} else if number >= len(songQueue)-currentSong && number < len(songQueue) && saveLoop {
+				number = currentSong - len(songQueue) + number
+				song_name := songQueue[number]
+				songQueue = append(songQueue[:number], songQueue[number+1:]...)
+				return "Removed song" + song_name
 			} else {
 				return "There is no song with the given number (" + strconv.Itoa(number) + ")"
 			} // end of else
@@ -337,16 +342,16 @@ func printInfo() string {
 	message := "\n"
 	if len(songQueue) != 0 {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
-		if (len(songQueue) - currentSong) != 0 { //todo: check if loop is on
+		if (len(songQueue) - 1 - currentSong) != 0 { //todo: check if loop is on
 			message = message + ("Song Queue: \n")
 			//songs from current to end
-			for index, song := range songQueue[currentSong:] {
+			for index, song := range songQueue[currentSong+1:] {
 				message = message + (strconv.Itoa(index+1) + ". " + song + "\n")
 			} // enf of for
 			// songs from beginning to current
 			if saveLoop {
 				for index, song := range songQueue[:currentSong] {
-					message = message + (strconv.Itoa(len(songQueue)+1+index-currentSong) + ". " + song + "\n")
+					message = message + (strconv.Itoa(len(songQueue)+index-currentSong) + ". " + song + "\n")
 				} //end of for
 
 			} // end of if
