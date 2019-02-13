@@ -1,6 +1,11 @@
 package util
 
-import "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+import (
+	"math/rand"
+	"time"
+
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+)
 
 // check if string is element of the array
 func StringInArray(str string, list []string) bool {
@@ -19,4 +24,17 @@ func Check(err error) {
 		logger.Error(err.Error())
 		panic(err)
 	}
+}
+
+// Shuffel String-Array
+func Shuffle(array []string) []string {
+	// Create new random variable based on the current time
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	// swap elemnts random for each string position
+	for n := len(array); n > 0; n-- {
+		randIndex := r.Intn(n)
+		array[n-1], array[randIndex] = array[randIndex], array[n-1]
+	}
+	//Return array
+	return array
 }
