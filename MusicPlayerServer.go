@@ -75,6 +75,8 @@ func receiveCommand(c net.Conn) {
 		closeConnection(c)
 	case "info", "default":
 		message = printInfo()
+	case "loop", "setLoop":
+		message = setLoop(data)
 	case "louder", "setVolumeUp":
 		message = increaseVolume()
 	case "next":
@@ -106,6 +108,20 @@ func receiveCommand(c net.Conn) {
 		log.Fatal("Write: ", err)
 	}
 } // end of receiveCommand
+
+func setLoop(data Data) string {
+	if len(data.Values) > 0 {
+		value_string := data.Values[0]
+		if strings.Contains(value_string, "on") || strings.Contains(value_string, "true") {
+			saveLoop = true
+		} else if strings.Contains(value_string, "off") || strings.Contains(value_string, "false") {
+			saveLoop = false
+		} // end of else
+	} else {
+		saveLoop = data.Loop
+	} // end of else
+	return "Set loop to " + strconv.FormatBool(saveLoop)
+} // end of setLoop
 
 func closeConnection(c net.Conn) {
 	socketPath := "/tmp/mp.sock" // todo: should be passed as an argument or be written out of a config file
@@ -323,11 +339,17 @@ func printInfo() string {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
 		if (len(songQueue) - currentSong) != 0 { //todo: check if loop is on
 			message = message + ("Song Queue: \n")
-			for index, song := range songQueue {
-				if index > currentSong {
-					message = message + (strconv.Itoa(index-currentSong) + ". " + song + "\n")
-				} // end of if
+			//songs from current to end
+			for index, song := range songQueue[currentSong:] {
+				message = message + (strconv.Itoa(index+1) + ". " + song + "\n")
 			} // enf of for
+			// songs from beginning to current
+			if saveLoop {
+				for index, song := range songQueue[:currentSong] {
+					message = message + (strconv.Itoa(len(songQueue)+1+index-currentSong) + ". " + song + "\n")
+				} //end of for
+
+			} // end of if
 			for _, line := range strings.Split(message, "\n") {
 				logger.Info(line)
 			} // end of for
