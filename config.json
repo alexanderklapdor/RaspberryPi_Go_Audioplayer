@@ -1,0 +1,6 @@
+{
+"Socket_Path" : "/tmp/mp.sock",
+"Log_Dir": "logs/",
+"Server_Log": "server.log",
+"Client_Log": "client.log"
+}

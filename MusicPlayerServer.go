@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -19,9 +20,19 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+	"github.com/tkanos/gonfig"
 )
 
 var wg = &sync.WaitGroup{}
+var configuration = Configuration{}
+
+// Configuration struct
+type Configuration struct {
+	Socket_Path string
+	Log_Dir     string
+	Server_Log  string
+	Client_Log  string
+}
 
 // Request struct
 type Request struct {
@@ -139,7 +150,7 @@ func setLoop(data Data) string {
 } // end of setLoop
 
 func closeConnection(c net.Conn) {
-	socketPath := "/tmp/mp.sock" // todo: should be passed as an argument or be written out of a config file
+	socketPath := configuration.Socket_Path
 	logger.Warning("Connection  will be closed")
 	defer c.Close()
 	err := syscall.Unlink(socketPath)
@@ -385,11 +396,12 @@ func printInfo() string {
 } // end of printInfo
 
 func main() {
+	// set up configuration
+	err := gonfig.GetConf("config.json", &configuration)
 	// set up logger
-	// todo: logger path in server config.file
-	logger.Setup("logs/server.log", false)
+	logger.Setup(path.Join(configuration.Log_Dir, configuration.Server_Log), false)
 	// create server socket mp.sock
-	unixSocket := "/tmp/mp.sock"
+	unixSocket := configuration.Socket_Path
 	logger.Notice("Creating unixSocket.")
 	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)

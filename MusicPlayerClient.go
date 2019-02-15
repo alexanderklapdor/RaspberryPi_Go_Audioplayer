@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -14,9 +15,18 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
-	id3 "github.com/mikkyang/id3-go"
+	"github.com/mikkyang/id3-go"
+	"github.com/tkanos/gonfig"
 	// "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 )
+
+// Configuration struct
+type Configuration struct {
+	Socket_Path string
+	Log_Dir     string
+	Server_Log  string
+	Client_Log  string
+}
 
 type Request struct {
 	Command string
@@ -35,11 +45,15 @@ type Data struct {
 	Volume  int
 }
 
+var configuration = Configuration{}
+
 func main() {
+	// set up configuration
+	_ = gonfig.GetConf("config.json", &configuration)
+	// todo: error check
 	// Set up Logger
-	//todo: logging path in configuration file
-	logger.Setup("logs/client.log", true)
-	socket_path := "/tmp/mp.sock" // todo: config file socket path
+	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
+	socket_path := configuration.Socket_Path
 
 	// Start Screen
 	screener.StartScreen()
@@ -180,7 +194,7 @@ func startServer() {
 			nil,
 		},
 	}
-	// todo: go path in config gile
+	// todo: go path in config gile better: env variable
 	process, err := os.StartProcess("/usr/local/go/bin/go", []string{"go", "run", "MusicPlayerServer.go"}, &attr)
 	util.Check(err)
 	logger.Info("Detaching process")
