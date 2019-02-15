@@ -180,6 +180,7 @@ func startServer() {
 			nil,
 		},
 	}
+	// todo: go path in config gile
 	process, err := os.StartProcess("/usr/local/go/bin/go", []string{"go", "run", "MusicPlayerServer.go"}, &attr)
 	util.Check(err)
 	logger.Info("Detaching process")
