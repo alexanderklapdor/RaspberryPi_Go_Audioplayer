@@ -14,6 +14,7 @@ import (
 	"sync"
 	"syscall"
 
+	//"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
@@ -77,8 +78,6 @@ func receiveCommand(c net.Conn) {
 		message = printInfo()
 	case "loop", "setLoop":
 		message = setLoop(data)
-	case "shuffle", "setShuffle":
-		message = shuffleQueue()
 	case "louder", "setVolumeUp":
 		message = increaseVolume()
 	case "next":
@@ -95,8 +94,12 @@ func receiveCommand(c net.Conn) {
 		message = removeSong(data)
 	case "resume":
 		message = resumeMusic()
+	case "setUp":
+		message = setUpMusicPlayer(data)
 	case "setVolume":
 		message = setVolume(data)
+	case "shuffle", "setShuffle":
+		message = shuffleQueue()
 	case "stop":
 		message = stopMusic()
 	default:
@@ -110,6 +113,16 @@ func receiveCommand(c net.Conn) {
 		log.Fatal("Write: ", err)
 	}
 } // end of receiveCommand
+
+func setUpMusicPlayer(data Data) string {
+	audiofunctions.SetVolume(strconv.Itoa(data.Volume))
+	addToQueue(data)
+	setLoop(data)
+	if data.Shuffle {
+		shuffleQueue()
+	} // end of if
+	return "Set up Music Player" + printInfo()
+}
 
 func setLoop(data Data) string {
 	if len(data.Values) > 0 {
