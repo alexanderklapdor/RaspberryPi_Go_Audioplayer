@@ -15,6 +15,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+	id3 "github.com/mikkyang/id3-go"
 	"github.com/tkanos/gonfig"
 )
 
