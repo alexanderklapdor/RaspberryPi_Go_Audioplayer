@@ -28,6 +28,14 @@ type ServerConfiguration struct {
 	Default_Volume  int
 }
 
+// Server Data struct
+type ServerData struct {
+	SupportedFormats []string
+	SongQueue        []string
+	CurrentSong      int
+	SaveLoop         bool
+}
+
 // Request struct
 type Request struct {
 	Command string

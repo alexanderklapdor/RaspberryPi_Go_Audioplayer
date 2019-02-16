@@ -24,10 +24,7 @@ import (
 // Global var definition
 var wg = &sync.WaitGroup{}
 var configuration = structs.ServerConfiguration{}
-var supportedFormats []string
-var songQueue []string
-var currentSong int = 0
-var saveLoop bool
+var serverData = structs.ServerData{}
 
 //receiveCommand function
 func receiveCommand(c net.Conn) {
@@ -122,14 +119,14 @@ func setLoop(data structs.Data) string {
 		value_string := data.Values[0]
 		// Check if loop is set to on or off
 		if strings.Contains(value_string, "on") || strings.Contains(value_string, "true") {
-			saveLoop = true
+			serverData.SaveLoop = true
 		} else if strings.Contains(value_string, "off") || strings.Contains(value_string, "false") {
-			saveLoop = false
+			serverData.SaveLoop = false
 		} // end of else
 	} else {
-		saveLoop = data.Loop
+		serverData.SaveLoop = data.Loop
 	} // end of else
-	return "Set loop to " + strconv.FormatBool(saveLoop)
+	return "Set loop to " + strconv.FormatBool(serverData.SaveLoop)
 } // end of setLoop
 
 // closeConnection function
@@ -151,18 +148,18 @@ func closeConnection(c net.Conn) {
 // playPreviousSong function
 func playPreviousSong() string {
 	//check if currentSong is > 0 in queue
-	if currentSong > 0 {
+	if serverData.CurrentSong > 0 {
 		// decrease currentSong and play
-		currentSong--
+		serverData.CurrentSong--
 		playCurrentSong()
-		return "Playing now " + songQueue[currentSong]
+		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
 	} else {
 		// check if loop is enabled
-		if saveLoop {
-			if len(songQueue) > 0 {
-				currentSong = len(songQueue) - 1
+		if serverData.SaveLoop {
+			if len(serverData.SongQueue) > 0 {
+				serverData.CurrentSong = len(serverData.SongQueue) - 1
 				playCurrentSong()
-				return "Playing now " + songQueue[currentSong]
+				return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
 			} else {
 				return "Error: The queue is empty. You could't go a song back"
 			} // end of else
@@ -176,9 +173,9 @@ func playPreviousSong() string {
 // repeatSong function
 func repeatSong() string {
 	// check sonqQueue length
-	if len(songQueue) > 0 {
+	if len(serverData.SongQueue) > 0 {
 		playCurrentSong()
-		return "Playing now " + songQueue[currentSong]
+		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
 	} else {
 		return "There is no current song"
 	} // end of else
@@ -191,16 +188,16 @@ func removeSong(data structs.Data) string {
 		// todo: remove multiple values (problem with changing position)
 		if err == nil {
 			//Check loop is off and song in queue
-			if number > 0 && number < (len(songQueue)-currentSong) {
-				number = number + currentSong
-				song_name := songQueue[number]
-				songQueue = append(songQueue[:number], songQueue[number+1:]...)
+			if number > 0 && number < (len(serverData.SongQueue)-serverData.CurrentSong) {
+				number = number + serverData.CurrentSong
+				song_name := serverData.SongQueue[number]
+				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
 				return "Removed song" + song_name
 				//check loop is on and song is queue
-			} else if number >= len(songQueue)-currentSong && number < len(songQueue) && saveLoop {
-				number = currentSong - len(songQueue) + number
-				song_name := songQueue[number]
-				songQueue = append(songQueue[:number], songQueue[number+1:]...)
+			} else if number >= len(serverData.SongQueue)-serverData.CurrentSong && number < len(serverData.SongQueue) && serverData.SaveLoop {
+				number = serverData.CurrentSong - len(serverData.SongQueue) + number
+				song_name := serverData.SongQueue[number]
+				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
 				return "Removed song" + song_name
 			} else {
 				return "There is no song with the given number (" + strconv.Itoa(number) + ")"
@@ -242,26 +239,26 @@ func playMusic(data structs.Data) string {
 	var songs []string
 	//get Songs
 	if len(data.Values) == 0 {
-		songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
+		songs = parseSongs([]string{data.Path}, data.Depth)
 	} else {
-		songs = parseSongs(data.Values, supportedFormats, data.Depth)
+		songs = parseSongs(data.Values, data.Depth)
 	} // end of else
 	if len(songs) != 0 {
-		songQueue = songQueue[:0]
-		currentSong = 0
+		serverData.SongQueue = serverData.SongQueue[:0]
+		serverData.CurrentSong = 0
 		// Append songs to queue
 		for _, song := range songs {
-			songQueue = append(songQueue, song)
+			serverData.SongQueue = append(serverData.SongQueue, song)
 		} // end of for
 
 		//Check if a song is currently playing
 		playCurrentSong()
-		return "Playing " + songQueue[currentSong]
+		return "Playing " + serverData.SongQueue[serverData.CurrentSong]
 	} else {
-		if len(songQueue) != 0 {
+		if len(serverData.SongQueue) != 0 {
 			//Check if a song is currently playing
 			playCurrentSong()
-			return "Playing " + songQueue[currentSong]
+			return "Playing " + serverData.SongQueue[serverData.CurrentSong]
 		} else {
 			logger.Error("No input file and no Song in Queue")
 			return ("No input file and no Song in Queue")
@@ -277,8 +274,8 @@ func playCurrentSong() {
 		logger.Info("A song is currently playing")
 		_ = stopMusic()
 	} // end of if
-	logger.Info(songQueue[currentSong])
-	go portaudiofunctions.PlayAudio(songQueue[currentSong])
+	logger.Info(serverData.SongQueue[serverData.CurrentSong])
+	go portaudiofunctions.PlayAudio(serverData.SongQueue[serverData.CurrentSong])
 } // end of playCurrentSong
 
 // pauseMusic function
@@ -298,23 +295,23 @@ func resumeMusic() string {
 // nextMusic function
 func nextMusic(data structs.Data) string {
 	// check if loop was set by "playMusic" - if yes..than change data.loop to true
-	if saveLoop == true { //comment: why here
+	if serverData.SaveLoop == true { //comment: why here
 		data.Loop = true
 	}
 	//check if nextsong can be played
-	if currentSong < (len(songQueue) - 1) {
-		currentSong += 1
+	if serverData.CurrentSong < (len(serverData.SongQueue) - 1) {
+		serverData.CurrentSong += 1
 	} else {
-		currentSong = 0
+		serverData.CurrentSong = 0
 	}
 	// check if loop is enabled
-	if data.Loop == false && currentSong == 0 {
+	if data.Loop == false && serverData.CurrentSong == 0 {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
 		return "Loop is not active and queue has ended -> Music stopped"
 	} else {
-		logger.Info(songQueue[currentSong])
+		logger.Info(serverData.SongQueue[serverData.CurrentSong])
 		playCurrentSong()
-		return "Now playing" + songQueue[currentSong]
+		return "Now playing" + serverData.SongQueue[serverData.CurrentSong]
 	}
 	return "Should never be shown "
 } // end of nextMusic
@@ -325,14 +322,14 @@ func addToQueue(data structs.Data) string {
 	var songs []string
 	// get songs
 	if len(data.Values) == 0 {
-		songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
+		songs = parseSongs([]string{data.Path}, data.Depth)
 	} else {
-		songs = parseSongs(data.Values, supportedFormats, data.Depth)
+		songs = parseSongs(data.Values, data.Depth)
 	} // end of else
 	if len(songs) != 0 {
 		//append songs to queue
 		for _, song := range songs {
-			songQueue = append(songQueue, song)
+			serverData.SongQueue = append(serverData.SongQueue, song)
 		} // end of for
 	} // end of if
 	message := "Added " + string(len(songs)) + " songs to queue"
@@ -343,18 +340,18 @@ func addToQueue(data structs.Data) string {
 func printInfo() string {
 	logger.Info("Executing: Print info ")
 	message := "\n"
-	if len(songQueue) != 0 {
-		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
-		if (len(songQueue) - 1 - currentSong) != 0 {
+	if len(serverData.SongQueue) != 0 {
+		message = message + ("Current Song: " + serverData.SongQueue[serverData.CurrentSong] + "\n")
+		if (len(serverData.SongQueue) - 1 - serverData.CurrentSong) != 0 {
 			message = message + ("Song Queue: \n")
 			//songs from current to end
-			for index, song := range songQueue[currentSong+1:] {
+			for index, song := range serverData.SongQueue[serverData.CurrentSong+1:] {
 				message = message + (strconv.Itoa(index+1) + ". " + song + "\n")
 			} // enf of for
 			// songs from beginning to current
-			if saveLoop {
-				for index, song := range songQueue[:currentSong] {
-					message = message + (strconv.Itoa(len(songQueue)+index-currentSong) + ". " + song + "\n")
+			if serverData.SaveLoop {
+				for index, song := range serverData.SongQueue[:serverData.CurrentSong] {
+					message = message + (strconv.Itoa(len(serverData.SongQueue)+index-serverData.CurrentSong) + ". " + song + "\n")
 				} //end of for
 
 			} // end of if
@@ -387,9 +384,9 @@ func main() {
 	}
 	// check supported formats
 	logger.Notice("Parsing supported formats")
-	supportedFormats = getSupportedFormats()
+	serverData.SupportedFormats = getSupportedFormats()
 	// print supported formats
-	printSupportedFormats(supportedFormats)
+	printSupportedFormats()
 	// start pulseAudio
 	logger.Notice("Start Pulseaudio")
 	portaudiofunctions.StartPulseaudio()
@@ -403,7 +400,7 @@ func main() {
 } // end of main
 
 // parseSongs
-func parseSongs(paths []string, supportedFormats []string, depth int) []string {
+func parseSongs(paths []string, depth int) []string {
 	var songs []string
 	for _, path := range paths {
 		// check if given file/folder exists
@@ -420,7 +417,7 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 			// directory given
 			logger.Info("Directory found")
 			logger.Notice("Getting files inside of the folder")
-			fileList := util.GetFilesInFolder(path, supportedFormats, depth)
+			fileList := util.GetFilesInFolder(path, serverData.SupportedFormats, depth)
 			//Print Supported Filelist
 			screener.PrintFiles(fileList, false)
 			for _, song := range fileList {
@@ -431,7 +428,7 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 			logger.Notice("File found")
 			var extension = filepath.Ext(path)
 			logger.Info("Extension: " + extension)
-			if util.StringInArray(extension, supportedFormats) {
+			if util.StringInArray(extension, serverData.SupportedFormats) {
 				logger.Notice("Extension supported")
 				songs = append(songs, path)
 			} else {
@@ -465,9 +462,9 @@ func getSupportedFormats() []string {
 } // End of getSupportedFormats
 
 // printSupportedFormats function
-func printSupportedFormats(supportedFormats []string) {
+func printSupportedFormats() {
 	formatString := ""
-	for _, format := range supportedFormats {
+	for _, format := range serverData.SupportedFormats {
 		if formatString != "" {
 			formatString = formatString + ", "
 		} // end of if
@@ -479,8 +476,8 @@ func printSupportedFormats(supportedFormats []string) {
 // Shuffle Queue Function
 func shuffleQueue() string {
 	// Check if Queue is filled
-	if len(songQueue) > 0 {
-		songQueue = util.Shuffle(songQueue)
+	if len(serverData.SongQueue) > 0 {
+		serverData.SongQueue = util.Shuffle(serverData.SongQueue)
 		return "Queue has been shuffled"
 	} else {
 		return "Queue is not filled - shuffle failed"
