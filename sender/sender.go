@@ -10,6 +10,9 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 )
 
+//global var definition
+var socketPath string
+
 // reader function
 func reader(r io.Reader) {
 	// Read 1024 bit
@@ -25,7 +28,7 @@ func reader(r io.Reader) {
 }
 
 // Send JSON to Server
-func Send(requestJson []byte, socketPath string) {
+func Send(requestJson []byte) {
 	// Open socket connection
 	logger.Notice("Opening socket connection to " + socketPath)
 	con, err := net.Dial("unix", socketPath)
@@ -43,4 +46,8 @@ func Send(requestJson []byte, socketPath string) {
 		return
 	}
 	time.Sleep(1e9)
+}
+
+func setSocketPath(tempSocketPath string) {
+	socketPath = tempSocketPath
 }

@@ -192,7 +192,8 @@ func main() {
 	logger.Info("JSON String : " + string(requestJson))
 
 	// Send command
-	sender.Send(requestJson, configuration.Socket_Path)
+	sender.SetSocketPath(configuration.Socket_Path)
+	sender.Send(requestJson)
 
 }
 
