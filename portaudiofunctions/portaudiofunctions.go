@@ -1,4 +1,4 @@
-package audiofunctions
+package portaudiofunctions
 
 //Imports
 import (

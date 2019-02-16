@@ -12,8 +12,8 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/tkanos/gonfig"
@@ -127,7 +127,7 @@ func receiveCommand(c net.Conn) {
 } // end of receiveCommand
 
 func setUpMusicPlayer(data Data) string {
-	audiofunctions.SetVolume(strconv.Itoa(data.Volume))
+	portaudiofunctions.SetVolume(strconv.Itoa(data.Volume))
 	addToQueue(data)
 	setLoop(data)
 	if data.Shuffle {
@@ -222,7 +222,7 @@ func removeSong(data Data) string {
 
 func stopMusic() string {
 	logger.Info("Execution: Stop Music")
-	audiofunctions.StopAudio()
+	portaudiofunctions.StopAudio()
 
 	wg.Add(1)
 	go checkIfStatusStop()
@@ -233,7 +233,7 @@ func stopMusic() string {
 func checkIfStatusStop() {
 	defer wg.Done()
 	for {
-		if audiofunctions.GetStatus() == "stop" {
+		if portaudiofunctions.GetStatus() == "stop" {
 			return
 		}
 	}
@@ -272,23 +272,23 @@ func playMusic(data Data) string {
 } // end of playMusic
 
 func playCurrentSong() {
-	if audiofunctions.GetStatus() == "play" || audiofunctions.GetStatus() == "pause" {
+	if portaudiofunctions.GetStatus() == "play" || portaudiofunctions.GetStatus() == "pause" {
 		logger.Info("A song is currently playing")
 		_ = stopMusic()
 	} // end of if
 	logger.Info(songQueue[currentSong])
-	go audiofunctions.PlayAudio(songQueue[currentSong])
+	go portaudiofunctions.PlayAudio(songQueue[currentSong])
 } // end of playCurrentSong
 
 func pauseMusic(data Data) string {
 	logger.Info("Executing: Pause Music")
-	go audiofunctions.PauseAudio()
+	go portaudiofunctions.PauseAudio()
 	return "Music paused"
 } // end of pauseMusic
 
 func resumeMusic() string {
 	logger.Info("Execution: Resume Music")
-	go audiofunctions.ResumeAudio()
+	go portaudiofunctions.ResumeAudio()
 	return "Resuming music"
 }
 
@@ -320,7 +320,7 @@ func setVolume(data Data) string {
 	} else {
 		volume = strconv.Itoa(data.Volume)
 	} // end of else
-	audiofunctions.SetVolume(volume)
+	portaudiofunctions.SetVolume(volume)
 	logger.Info("Executing: Set volume to " + volume)
 	return "Set volume to " + volume
 } // end of setVolume
@@ -344,18 +344,18 @@ func addToQueue(data Data) string {
 
 func increaseVolume() string {
 	logger.Info("Executing: Increase volume")
-	audiofunctions.SetVolumeUp("10")
+	portaudiofunctions.SetVolumeUp("10")
 	return "Increased volume by 10 \n" + printVolume()
 } // end of increaseVolume
 
 func decreaseVolume() string {
 	logger.Info("Executing: Decrease volume")
-	audiofunctions.SetVolumeDown("10")
+	portaudiofunctions.SetVolumeDown("10")
 	return "Decreased volume by 10 \n" + printVolume()
 } // end of decreaseVolume
 
 func getVolume() (string, string) {
-	left, right := audiofunctions.GetVolume()
+	left, right := portaudiofunctions.GetVolume()
 	return left, right
 } // end of getVolume()
 
@@ -418,7 +418,7 @@ func main() {
 
 	// start pulseAudio
 	logger.Notice("Start Pulseaudio")
-	audiofunctions.StartPulseaudio()
+	portaudiofunctions.StartPulseaudio()
 
 	for {
 		conn, err := ln.Accept()
