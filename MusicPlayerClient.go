@@ -22,10 +22,18 @@ import (
 
 // Configuration struct
 type Configuration struct {
-	Socket_Path string
-	Log_Dir     string
-	Server_Log  string
-	Client_Log  string
+	Socket_Path     string
+	Log_Dir         string
+	Server_Log      string
+	Client_Log      string
+	Default_Command string
+	Default_Depth   int
+	Default_FadeIn  int
+	Default_FadeOut int
+	Default_Input   string
+	Default_Loop    bool
+	Default_Shuffle bool
+	Default_Volume  int
 }
 
 type Request struct {
@@ -49,9 +57,11 @@ var configuration = Configuration{}
 
 func main() {
 	// set up configuration
-	_ = gonfig.GetConf("config.json", &configuration)
+	err := gonfig.GetConf("config.json", &configuration)
+	util.Check(err)
 	// todo: error check
 	// Set up Logger
+	fmt.Println(configuration.Log_Dir + configuration.Client_Log)
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
 	socket_path := configuration.Socket_Path
 
@@ -90,14 +100,22 @@ func main() {
 	}
 
 	// define flags
-	command := flag.String("c", "default", "command for the server")
-	input := flag.String("i", "", "input music file/folder")
-	volume := flag.Int("v", 50, "music volume in percent (default 50)")
-	depth := flag.Int("d", 2, "audio file searching depth (default/recommended 2)")
-	shuffle := flag.Bool("s", false, "shuffle (default false)")
-	loop := flag.Bool("l", false, "loop (default false)")
-	fadeIn := flag.Int("fi", 0, "fadein in milliseconds (default 0)")
-	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
+	command := flag.String("c", configuration.Default_Command, "command for the server (default "+
+		configuration.Default_Command+")")
+	input := flag.String("i", configuration.Default_Input, "input music file/folder (default "+
+		configuration.Default_Input+")")
+	volume := flag.Int("v", configuration.Default_Volume, "music volume in percent (default "+
+		strconv.Itoa(configuration.Default_Volume)+")")
+	depth := flag.Int("d", configuration.Default_Depth, "audio file searching depth (default/recommended "+
+		strconv.Itoa(configuration.Default_Depth)+")")
+	shuffle := flag.Bool("s", configuration.Default_Shuffle, "shuffle (default "+
+		strconv.FormatBool(configuration.Default_Shuffle)+")")
+	loop := flag.Bool("l", configuration.Default_Loop, "loop (default "+
+		strconv.FormatBool(configuration.Default_Loop)+")")
+	fadeIn := flag.Int("fi", configuration.Default_FadeIn, "fadein in milliseconds (default "+
+		strconv.Itoa(configuration.Default_FadeIn)+")")
+	fadeOut := flag.Int("fo", configuration.Default_FadeOut, "fadeout in milliseconds (default "+
+		strconv.Itoa(configuration.Default_FadeOut)+")")
 
 	// parsing flags
 	logger.Notice("Start Parsing cli parameters")
@@ -106,7 +124,9 @@ func main() {
 	var values []string
 	// if argument without flagname is given parse it as command
 	if flag.NArg() > 1 {
+		// command argument
 		*command = flag.Arg(0)
+		// value arguments
 		for id, arg := range flag.Args() {
 			if id != 0 {
 				values = append(values, arg)
@@ -166,7 +186,7 @@ func main() {
 }
 
 func checkServerStatus() bool {
-	socket_path := "/tmp/mp.sock"
+	socket_path := configuration.Socket_Path
 	if _, err := os.Stat(socket_path); err != nil {
 		return false //unix socket does not exists
 	} else {

@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -28,10 +27,13 @@ var configuration = Configuration{}
 
 // Configuration struct
 type Configuration struct {
-	Socket_Path string
-	Log_Dir     string
-	Server_Log  string
-	Client_Log  string
+	Socket_Path     string
+	Log_Dir         string
+	Server_Log      string
+	Client_Log      string
+	Default_Loop    bool
+	Default_Shuffle bool
+	Default_Volume  int
 }
 
 // Request struct
