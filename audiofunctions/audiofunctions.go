@@ -25,8 +25,10 @@ var stream *portaudio.Stream
 
 // PlayAudio Function
 func PlayAudio(fileName string) {
+	// set needStop to false (default)
 	needStop = false
 
+	// Run after func finished
 	defer CallNextSong()
 	defer setStatusStop()
 
@@ -37,6 +39,7 @@ func PlayAudio(fileName string) {
 	decoder, err := mpg123.NewDecoder("")
 	util.Check(err)
 
+	// Decode file
 	util.Check(decoder.Open(fileName))
 	defer decoder.Close()
 
@@ -47,33 +50,47 @@ func PlayAudio(fileName string) {
 	decoder.FormatNone()
 	decoder.Format(rate, channels, mpg123.ENC_SIGNED_16)
 
+	// Initialize Portaudio
 	portaudio.Initialize()
 	defer portaudio.Terminate()
+
+	// Set Stream
 	out := make([]int16, 8192)
 	stream, err = portaudio.OpenDefaultStream(0, channels, float64(rate), len(out), &out)
 	util.Check(err)
-	// todo: here call next song
 
+	// Start Stream & Set Status
 	defer stream.Close()
 	util.Check(stream.Start())
 	status = "play"
 	defer stream.Stop()
+
+	//Loop through the bytes
 	for {
+		// Check if pause flag is set
 		if needPause != false {
+			//stop stream
 			stream.Stop()
+			// set status to pause
 			status = "pause"
+			// wait while status is pause
 			for needPause == true {
 				if needStop != false {
+					//exit function
 					return
 				}
 			}
+			//start stream
 			stream.Start()
+			//set status to play
 			status = "play"
 		}
+		// check if stop flag is set
 		if needStop != false {
-
+			//exit function
 			return
 		}
+		// read byte
 		audio := make([]byte, 2*len(out))
 		_, err = decoder.Read(audio)
 		if err == mpg123.EOF {
@@ -81,6 +98,7 @@ func PlayAudio(fileName string) {
 		}
 		util.Check(err)
 
+		// write byte to stream
 		util.Check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out))
 		util.Check(stream.Write())
 		select {
@@ -91,10 +109,12 @@ func PlayAudio(fileName string) {
 	} // end of for
 } // end of PlayAudio
 
+// set status to Stop
 func setStatusStop() {
 	status = "stop"
-}
+} // end of setStatusStop
 
+// CallNextSong function
 func CallNextSong() {
 	if needStop != true {
 		sender.Send([]byte("{\"Command\":\"next\",\"Data\":{}}"))
@@ -153,39 +173,45 @@ func StartPulseaudio() {
 	}
 } // end of StartPulseaudio
 
+// GetVolume Function
 func GetVolume() (string, string) {
-	var left_array, right_array []string
+	// var declaration
+	var leftArray, rightArray []string
 	var left, right string
+	// run Command
 	cmd := exec.Command("amixer", "get", "Master")
-	cmd_output, err := cmd.Output()
+	cmdOutput, err := cmd.Output()
+	// check for errors
 	if err != nil {
 		logger.Error("GetVolume failed with: " + err.Error() + "\n")
 	}
-	reg_perc, _ := regexp.Compile("[[]([0-9]+%)[]]")
-	reg_numb, _ := regexp.Compile("[0-9]+")
-	for _, line := range strings.Split(string(cmd_output), "\n") {
+	// regex
+	regPerc, _ := regexp.Compile("[[]([0-9]+%)[]]")
+	regNumb, _ := regexp.Compile("[0-9]+")
+	for _, line := range strings.Split(string(cmdOutput), "\n") {
 		if strings.Contains(line, "Left") && strings.Contains(line, "[on]") {
-			left_array = reg_perc.FindAllString(string(cmd_output), 1)
+			leftArray = regPerc.FindAllString(string(cmdOutput), 1)
 		} // end of if
 		if strings.Contains(line, "Right") && strings.Contains(line, "[on]") {
-			right_array = reg_perc.FindAllString(string(cmd_output), 1)
+			rightArray = regPerc.FindAllString(string(cmdOutput), 1)
 		} // end of if
 	} // end of for
-	if len(left_array) != 0 {
-		left = left_array[0]
-		left = reg_numb.FindAllString(left, 1)[0]
+	if len(leftArray) != 0 {
+		left = leftArray[0]
+		left = regNumb.FindAllString(left, 1)[0]
 	} else {
 		left = "unknown"
 	} //end of else
-	if len(right_array) != 0 {
-		right = right_array[0]
-		right = reg_numb.FindAllString(right, 1)[0]
+	if len(rightArray) != 0 {
+		right = rightArray[0]
+		right = regNumb.FindAllString(right, 1)[0]
 	} else {
 		right = "unknown"
 	}
 	return left, right
 } // end of GetVolume
 
+// GetStatus function
 func GetStatus() string {
 	return status
 }

@@ -15,9 +15,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
-	"github.com/mikkyang/id3-go"
 	"github.com/tkanos/gonfig"
-	// "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 )
 
 // Configuration struct
@@ -37,6 +35,7 @@ type Configuration struct {
 	Default_Volume             int
 }
 
+// Request struct
 type Request struct {
 	Command string
 	Data    Data
@@ -54,13 +53,15 @@ type Data struct {
 	Volume  int
 }
 
+// Global var declaration
 var configuration = Configuration{}
 
+// Main function
 func main() {
-	// set up configuration
+	// Set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
 	util.Check(err)
-	// todo: error check
+
 	// Set up Logger
 	fmt.Println(configuration.Log_Dir + configuration.Client_Log)
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
@@ -74,7 +75,9 @@ func main() {
 		logger.Info("Server is running")
 	} else {
 		logger.Info("Server is not running")
+		// Start Server
 		startServer()
+		// Wait for server has been started
 		ind := 0
 		for {
 			if _, err := os.Stat(socket_path); err == nil ||
@@ -85,6 +88,8 @@ func main() {
 			time.Sleep(1 * time.Second)
 			ind++
 		} // end of for
+
+		//check Server Stat
 		if _, err2 := os.Stat(socket_path); err2 == nil {
 			logger.Info("Server started succesfully")
 		} else if os.IsNotExist(err2) {
@@ -147,6 +152,8 @@ func main() {
 		logger.Error("no negative values allowed")
 		return
 	}
+
+	// check volume
 	if *volume > 100 {
 		logger.Info("No volume above 100 allowed")
 		*volume = 100
@@ -168,7 +175,6 @@ func main() {
 
 	// parsing to json
 	logger.Notice("Parsing argument to json")
-
 	dataInfo := &Data{
 		Depth:   *depth,
 		FadeIn:  *fadeIn,
@@ -184,12 +190,16 @@ func main() {
 	requestJson, _ := json.Marshal(requestInfo)
 	logger.Info("JSON String : " + string(requestJson))
 
-	sender.Send(requestJson) //todo: socket should be given to the sender
+	// Send command
+	sender.Send(requestJson, configuration.Socket_Path)
 
 }
 
+// checkServerStatus function
 func checkServerStatus() bool {
+	// get socket_path
 	socket_path := configuration.Socket_Path
+	// check if socket exists
 	if _, err := os.Stat(socket_path); err != nil {
 		return false //unix socket does not exists
 	} else {
@@ -206,6 +216,7 @@ func checkServerStatus() bool {
 	} // end of else
 } // end of checkServerStatus
 
+// startServer function
 func startServer() {
 	logger.Info("Starting Server process")
 	var attr = os.ProcAttr{
@@ -225,6 +236,7 @@ func startServer() {
 	util.Check(err)
 }
 
+// printMp3Infos function
 func printMp3Infos(filePath string) {
 	//Check if Path exists
 	if _, err := os.Stat(filePath); err == nil {
@@ -240,7 +252,6 @@ func printMp3Infos(filePath string) {
 		//get Audio length
 		blength, lengtherr := exec.Command("mp3info", "-p", "%S", filePath).Output()
 		util.Check(lengtherr)
-
 		//check if one information is empty
 		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
 			fmt.Println(filePath)

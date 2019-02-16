@@ -196,7 +196,7 @@ func repeatSong() string {
 	} // end of else
 } // end of repeatSong
 
-func removeSong(data Data) string { // todo: loop is missing
+func removeSong(data Data) string {
 	if len(data.Values) != 0 {
 		number, err := strconv.Atoi(data.Values[0])
 		// todo: remove multiple values (problem with changing position)
@@ -372,7 +372,7 @@ func printInfo() string {
 	message := "\n"
 	if len(songQueue) != 0 {
 		message = message + ("Current Song: " + songQueue[currentSong] + "\n")
-		if (len(songQueue) - 1 - currentSong) != 0 { //todo: check if loop is on
+		if (len(songQueue) - 1 - currentSong) != 0 {
 			message = message + ("Song Queue: \n")
 			//songs from current to end
 			for index, song := range songQueue[currentSong+1:] {
