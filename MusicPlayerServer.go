@@ -15,6 +15,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/volumefunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/tkanos/gonfig"
@@ -63,7 +64,7 @@ func receiveCommand(c net.Conn) {
 	case "loop", "setLoop":
 		message = setLoop(data)
 	case "louder", "setVolumeUp":
-		message = increaseVolume()
+		message = volumefunctions.IncreaseVolume()
 	case "next":
 		message = nextMusic(data)
 	case "pause":
@@ -71,7 +72,7 @@ func receiveCommand(c net.Conn) {
 	case "play":
 		message = playMusic(data)
 	case "quieter", "setVolumeDown":
-		message = decreaseVolume()
+		message = volumefunctions.DecreaseVolume()
 	case "repeat":
 		message = repeatSong()
 	case "remove", "delete", "removeAt", "deleteAt":
@@ -81,7 +82,7 @@ func receiveCommand(c net.Conn) {
 	case "setUp":
 		message = setUpMusicPlayer(data)
 	case "setVolume":
-		message = setVolume(data)
+		message = volumefunctions.SetVolume(data)
 	case "shuffle", "setShuffle":
 		message = shuffleQueue()
 	case "stop":
@@ -285,18 +286,6 @@ func nextMusic(data structs.Data) string {
 	return "Should never be shown "
 } // end of nextMusic
 
-func setVolume(data structs.Data) string {
-	var volume string
-	if len(data.Values) != 0 {
-		volume = data.Values[0]
-	} else {
-		volume = strconv.Itoa(data.Volume)
-	} // end of else
-	portaudiofunctions.SetVolume(volume)
-	logger.Info("Executing: Set volume to " + volume)
-	return "Set volume to " + volume
-} // end of setVolume
-
 func addToQueue(data structs.Data) string {
 	logger.Info("Executing: Add to queue")
 	var songs []string
@@ -313,28 +302,6 @@ func addToQueue(data structs.Data) string {
 	message := "Added " + string(len(songs)) + " songs to queue"
 	return message
 } // end of addToQueue
-
-func increaseVolume() string {
-	logger.Info("Executing: Increase volume")
-	portaudiofunctions.SetVolumeUp("10")
-	return "Increased volume by 10 \n" + printVolume()
-} // end of increaseVolume
-
-func decreaseVolume() string {
-	logger.Info("Executing: Decrease volume")
-	portaudiofunctions.SetVolumeDown("10")
-	return "Decreased volume by 10 \n" + printVolume()
-} // end of decreaseVolume
-
-func getVolume() (string, string) {
-	left, right := portaudiofunctions.GetVolume()
-	return left, right
-} // end of getVolume()
-
-func printVolume() string {
-	left, right := getVolume()
-	return "Current Volume:  Left(" + left + ")  Right(" + right + ")"
-}
 
 func printInfo() string {
 	logger.Info("Executing: Print info ")
@@ -364,7 +331,7 @@ func printInfo() string {
 		message = message + ("Currently there is no song playing \n")
 		message = message + "The Song Queue is empty. \n"
 	} // end of else
-	message = message + printVolume()
+	message = message + volumefunctions.PrintVolume()
 	return message
 } // end of printInfo
 
