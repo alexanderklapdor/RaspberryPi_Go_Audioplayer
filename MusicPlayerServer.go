@@ -29,6 +29,7 @@ var songQueue []string
 var currentSong int = 0
 var saveLoop bool
 
+//receiveCommand function
 func receiveCommand(c net.Conn) {
 	// read message
 	buf := make([]byte, 512)
@@ -79,8 +80,8 @@ func receiveCommand(c net.Conn) {
 		message = removeSong(data)
 	case "resume":
 		message = resumeMusic()
-	case "setUp":
-		message = setUpMusicPlayer(data)
+	case "setup":
+		message = setupMusicPlayer(data)
 	case "setVolume":
 		message = volumefunctions.SetVolume(data)
 	case "shuffle", "setShuffle":
@@ -99,19 +100,27 @@ func receiveCommand(c net.Conn) {
 	}
 } // end of receiveCommand
 
-func setUpMusicPlayer(data structs.Data) string {
+// setupMusicPlayer function
+func setupMusicPlayer(data structs.Data) string {
+	// SetVolume
 	portaudiofunctions.SetVolume(strconv.Itoa(data.Volume))
+	// Add files to queue
 	addToQueue(data)
+	// Set Liio
 	setLoop(data)
+	// Shuffle Songs
 	if data.Shuffle {
 		shuffleQueue()
 	} // end of if
 	return "Set up Music Player" + printInfo()
 }
 
+// SetLoop function
 func setLoop(data structs.Data) string {
+	//check if data.Values length > 0
 	if len(data.Values) > 0 {
 		value_string := data.Values[0]
+		// Check if loop is set to on or off
 		if strings.Contains(value_string, "on") || strings.Contains(value_string, "true") {
 			saveLoop = true
 		} else if strings.Contains(value_string, "off") || strings.Contains(value_string, "false") {
@@ -123,10 +132,13 @@ func setLoop(data structs.Data) string {
 	return "Set loop to " + strconv.FormatBool(saveLoop)
 } // end of setLoop
 
+// closeConnection function
 func closeConnection(c net.Conn) {
+	// get socket path
 	socketPath := configuration.Socket_Path
 	logger.Warning("Connection  will be closed")
 	defer c.Close()
+	//unlink Socket
 	err := syscall.Unlink(socketPath)
 	if err != nil {
 		logger.Error("Error during unlink process of the socket: " + err.Error())
@@ -136,12 +148,16 @@ func closeConnection(c net.Conn) {
 	os.Exit(0)
 } // end of closeConnection
 
+// playPreviousSong function
 func playPreviousSong() string {
+	//check if currentSong is > 0 in queue
 	if currentSong > 0 {
+		// decrease currentSong and play
 		currentSong--
 		playCurrentSong()
 		return "Playing now " + songQueue[currentSong]
 	} else {
+		// check if loop is enabled
 		if saveLoop {
 			if len(songQueue) > 0 {
 				currentSong = len(songQueue) - 1
@@ -157,7 +173,9 @@ func playPreviousSong() string {
 	return "should never be shown"
 } // end of playLastSong
 
+// repeatSong function
 func repeatSong() string {
+	// check sonqQueue length
 	if len(songQueue) > 0 {
 		playCurrentSong()
 		return "Playing now " + songQueue[currentSong]
@@ -166,16 +184,19 @@ func repeatSong() string {
 	} // end of else
 } // end of repeatSong
 
+// removeSong function
 func removeSong(data structs.Data) string {
 	if len(data.Values) != 0 {
 		number, err := strconv.Atoi(data.Values[0])
 		// todo: remove multiple values (problem with changing position)
 		if err == nil {
+			//Check loop is off and song in queue
 			if number > 0 && number < (len(songQueue)-currentSong) {
 				number = number + currentSong
 				song_name := songQueue[number]
 				songQueue = append(songQueue[:number], songQueue[number+1:]...)
 				return "Removed song" + song_name
+				//check loop is on and song is queue
 			} else if number >= len(songQueue)-currentSong && number < len(songQueue) && saveLoop {
 				number = currentSong - len(songQueue) + number
 				song_name := songQueue[number]
@@ -193,6 +214,7 @@ func removeSong(data structs.Data) string {
 	return "should never be shown"
 } // end of removeSong
 
+// stopMusic function
 func stopMusic() string {
 	logger.Info("Execution: Stop Music")
 	portaudiofunctions.StopAudio()
@@ -203,6 +225,7 @@ func stopMusic() string {
 	return "Stopped music"
 }
 
+// checkIfStatusStop function
 func checkIfStatusStop() {
 	defer wg.Done()
 	for {
@@ -212,10 +235,12 @@ func checkIfStatusStop() {
 	}
 }
 
+// playMusic function
 func playMusic(data structs.Data) string {
 	logger.Info("Executing: Play Music")
 	logger.Info("Path given " + data.Path)
 	var songs []string
+	//get Songs
 	if len(data.Values) == 0 {
 		songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
 	} else {
@@ -224,6 +249,7 @@ func playMusic(data structs.Data) string {
 	if len(songs) != 0 {
 		songQueue = songQueue[:0]
 		currentSong = 0
+		// Append songs to queue
 		for _, song := range songs {
 			songQueue = append(songQueue, song)
 		} // end of for
@@ -244,7 +270,9 @@ func playMusic(data structs.Data) string {
 	return "should never be shown"
 } // end of playMusic
 
+// playCurrentSong function
 func playCurrentSong() {
+	// Check if status is play or pause
 	if portaudiofunctions.GetStatus() == "play" || portaudiofunctions.GetStatus() == "pause" {
 		logger.Info("A song is currently playing")
 		_ = stopMusic()
@@ -253,28 +281,33 @@ func playCurrentSong() {
 	go portaudiofunctions.PlayAudio(songQueue[currentSong])
 } // end of playCurrentSong
 
+// pauseMusic function
 func pauseMusic(data structs.Data) string {
 	logger.Info("Executing: Pause Music")
 	go portaudiofunctions.PauseAudio()
 	return "Music paused"
 } // end of pauseMusic
 
+// resumeMusic function
 func resumeMusic() string {
 	logger.Info("Execution: Resume Music")
 	go portaudiofunctions.ResumeAudio()
 	return "Resuming music"
 }
 
+// nextMusic function
 func nextMusic(data structs.Data) string {
 	// check if loop was set by "playMusic" - if yes..than change data.loop to true
 	if saveLoop == true { //comment: why here
 		data.Loop = true
 	}
+	//check if nextsong can be played
 	if currentSong < (len(songQueue) - 1) {
 		currentSong += 1
 	} else {
 		currentSong = 0
 	}
+	// check if loop is enabled
 	if data.Loop == false && currentSong == 0 {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
 		return "Loop is not active and queue has ended -> Music stopped"
@@ -286,15 +319,18 @@ func nextMusic(data structs.Data) string {
 	return "Should never be shown "
 } // end of nextMusic
 
+//addToQueue function
 func addToQueue(data structs.Data) string {
 	logger.Info("Executing: Add to queue")
 	var songs []string
+	// get songs
 	if len(data.Values) == 0 {
 		songs = parseSongs([]string{data.Path}, supportedFormats, data.Depth)
 	} else {
 		songs = parseSongs(data.Values, supportedFormats, data.Depth)
 	} // end of else
 	if len(songs) != 0 {
+		//append songs to queue
 		for _, song := range songs {
 			songQueue = append(songQueue, song)
 		} // end of for
@@ -303,6 +339,7 @@ func addToQueue(data structs.Data) string {
 	return message
 } // end of addToQueue
 
+// printInfo function
 func printInfo() string {
 	logger.Info("Executing: Print info ")
 	message := "\n"
@@ -348,17 +385,14 @@ func main() {
 	if err != nil {
 		log.Fatal("listen error", err)
 	}
-
 	// check supported formats
 	logger.Notice("Parsing supported formats")
 	supportedFormats = getSupportedFormats()
 	// print supported formats
 	printSupportedFormats(supportedFormats)
-
 	// start pulseAudio
 	logger.Notice("Start Pulseaudio")
 	portaudiofunctions.StartPulseaudio()
-
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -368,21 +402,19 @@ func main() {
 	}
 } // end of main
 
+// parseSongs
 func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 	var songs []string
 	for _, path := range paths {
 		// check if given file/folder exists
 		logger.Notice("Check if folder/file exists: " + path)
-
 		// check if path is empty
 		if len(path) == 0 {
 			logger.Error("Path is not a file or a folder")
 			continue
 		}
-
 		fi, err := os.Stat(path)
 		util.Check(err)
-
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
 			// directory given
@@ -412,6 +444,7 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 	return songs
 } // end of parseSongs
 
+// getSupportedFormats function
 func getSupportedFormats() []string {
 	// get supported audio formats of 'supportedFormats.cfg' file
 	supportedFormats := make([]string, 0)
@@ -420,20 +453,18 @@ func getSupportedFormats() []string {
 	file, err := os.Open("supportedFormats.cfg")
 	util.Check(err)
 	defer file.Close()
-
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		//fmt.Println(line)
 		if !strings.ContainsAny(line, "#") {
 			supportedFormats = append(supportedFormats, line)
-			//fmt.Println("format", line)
 		} //end of if
 	} // end of for
 	util.Check(scanner.Err())
 	return supportedFormats
 } // End of getSupportedFormats
 
+// printSupportedFormats function
 func printSupportedFormats(supportedFormats []string) {
 	formatString := ""
 	for _, format := range supportedFormats {
