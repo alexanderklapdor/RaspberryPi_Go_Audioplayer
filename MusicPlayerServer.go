@@ -15,46 +15,18 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	"github.com/tkanos/gonfig"
 )
 
 // Global var definition
 var wg = &sync.WaitGroup{}
-var configuration = Configuration{}
+var configuration = structs.ServerConfiguration{}
 var supportedFormats []string
 var songQueue []string
 var currentSong int = 0
 var saveLoop bool
-
-// Configuration struct
-type Configuration struct {
-	Socket_Path     string
-	Log_Dir         string
-	Server_Log      string
-	Client_Log      string
-	Default_Loop    bool
-	Default_Shuffle bool
-	Default_Volume  int
-}
-
-// Request struct
-type Request struct {
-	Command string
-	Data    Data
-}
-
-// Data struct
-type Data struct {
-	Depth   int
-	FadeIn  int
-	FadeOut int
-	Path    string
-	Shuffle bool
-	Loop    bool
-	Values  []string
-	Volume  int
-}
 
 func receiveCommand(c net.Conn) {
 	// read message
@@ -68,7 +40,7 @@ func receiveCommand(c net.Conn) {
 
 	// convert message back to a request-object
 	logger.Notice("Converting message back to a Request-Object")
-	received := Request{}
+	received := structs.Request{}
 	json.Unmarshal(receivedBytes, &received)
 	command := received.Command
 	data := received.Data
@@ -126,7 +98,7 @@ func receiveCommand(c net.Conn) {
 	}
 } // end of receiveCommand
 
-func setUpMusicPlayer(data Data) string {
+func setUpMusicPlayer(data structs.Data) string {
 	portaudiofunctions.SetVolume(strconv.Itoa(data.Volume))
 	addToQueue(data)
 	setLoop(data)
@@ -136,7 +108,7 @@ func setUpMusicPlayer(data Data) string {
 	return "Set up Music Player" + printInfo()
 }
 
-func setLoop(data Data) string {
+func setLoop(data structs.Data) string {
 	if len(data.Values) > 0 {
 		value_string := data.Values[0]
 		if strings.Contains(value_string, "on") || strings.Contains(value_string, "true") {
@@ -193,7 +165,7 @@ func repeatSong() string {
 	} // end of else
 } // end of repeatSong
 
-func removeSong(data Data) string {
+func removeSong(data structs.Data) string {
 	if len(data.Values) != 0 {
 		number, err := strconv.Atoi(data.Values[0])
 		// todo: remove multiple values (problem with changing position)
@@ -239,7 +211,7 @@ func checkIfStatusStop() {
 	}
 }
 
-func playMusic(data Data) string {
+func playMusic(data structs.Data) string {
 	logger.Info("Executing: Play Music")
 	logger.Info("Path given " + data.Path)
 	var songs []string
@@ -280,7 +252,7 @@ func playCurrentSong() {
 	go portaudiofunctions.PlayAudio(songQueue[currentSong])
 } // end of playCurrentSong
 
-func pauseMusic(data Data) string {
+func pauseMusic(data structs.Data) string {
 	logger.Info("Executing: Pause Music")
 	go portaudiofunctions.PauseAudio()
 	return "Music paused"
@@ -292,7 +264,7 @@ func resumeMusic() string {
 	return "Resuming music"
 }
 
-func nextMusic(data Data) string {
+func nextMusic(data structs.Data) string {
 	// check if loop was set by "playMusic" - if yes..than change data.loop to true
 	if saveLoop == true { //comment: why here
 		data.Loop = true
@@ -313,7 +285,7 @@ func nextMusic(data Data) string {
 	return "Should never be shown "
 } // end of nextMusic
 
-func setVolume(data Data) string {
+func setVolume(data structs.Data) string {
 	var volume string
 	if len(data.Values) != 0 {
 		volume = data.Values[0]
@@ -325,7 +297,7 @@ func setVolume(data Data) string {
 	return "Set volume to " + volume
 } // end of setVolume
 
-func addToQueue(data Data) string {
+func addToQueue(data structs.Data) string {
 	logger.Info("Executing: Add to queue")
 	var songs []string
 	if len(data.Values) == 0 {

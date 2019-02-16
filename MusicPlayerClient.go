@@ -14,48 +14,14 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 	id3 "github.com/mikkyang/id3-go"
 	"github.com/tkanos/gonfig"
 )
 
-// Configuration struct
-type Configuration struct {
-	Socket_Path                string
-	Log_Dir                    string
-	Server_Log                 string
-	Server_Connection_Attempts int
-	Client_Log                 string
-	Default_Command            string
-	Default_Depth              int
-	Default_FadeIn             int
-	Default_FadeOut            int
-	Default_Input              string
-	Default_Loop               bool
-	Default_Shuffle            bool
-	Default_Volume             int
-}
-
-// Request struct
-type Request struct {
-	Command string
-	Data    Data
-}
-
-// Data struct
-type Data struct {
-	Depth   int
-	FadeIn  int
-	FadeOut int
-	Path    string
-	Shuffle bool
-	Loop    bool
-	Values  []string
-	Volume  int
-}
-
 // Global var declaration
-var configuration = Configuration{}
+var configuration = structs.ClientConfiguration{}
 
 // Main function
 func main() {
@@ -176,7 +142,7 @@ func main() {
 
 	// parsing to json
 	logger.Notice("Parsing argument to json")
-	dataInfo := &Data{
+	dataInfo := &structs.Data{
 		Depth:   *depth,
 		FadeIn:  *fadeIn,
 		FadeOut: *fadeOut,
@@ -185,7 +151,7 @@ func main() {
 		Path:    *input,
 		Values:  values,
 		Volume:  *volume}
-	requestInfo := &Request{
+	requestInfo := &structs.Request{
 		Command: string(*command),
 		Data:    *dataInfo}
 	requestJson, _ := json.Marshal(requestInfo)
