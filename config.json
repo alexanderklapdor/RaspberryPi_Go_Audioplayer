@@ -2,6 +2,7 @@
 "Socket_Path" : "/tmp/mp.sock",
 "Log_Dir": "logs/",
 "Server_Log": "server.log",
+"Server_Connection_Attempts": 10,
 "Client_Log": "client.log",
 "Default_Command": "default",
 "Default_Depth": 2,

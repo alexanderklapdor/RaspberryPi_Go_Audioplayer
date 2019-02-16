@@ -77,6 +77,8 @@ func receiveCommand(c net.Conn) {
 	data := received.Data
 	logger.Notice("Command: " + command)
 	//logger.Notice("Data   : " + string(data))
+	// todo check if values are different from default and different from current values
+	// if yes -> change them on every command
 
 	message := "Default-message"
 	// switch case commands

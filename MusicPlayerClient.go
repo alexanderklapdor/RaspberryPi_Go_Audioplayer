@@ -22,18 +22,19 @@ import (
 
 // Configuration struct
 type Configuration struct {
-	Socket_Path     string
-	Log_Dir         string
-	Server_Log      string
-	Client_Log      string
-	Default_Command string
-	Default_Depth   int
-	Default_FadeIn  int
-	Default_FadeOut int
-	Default_Input   string
-	Default_Loop    bool
-	Default_Shuffle bool
-	Default_Volume  int
+	Socket_Path                string
+	Log_Dir                    string
+	Server_Log                 string
+	Server_Connection_Attempts int
+	Client_Log                 string
+	Default_Command            string
+	Default_Depth              int
+	Default_FadeIn             int
+	Default_FadeOut            int
+	Default_Input              string
+	Default_Loop               bool
+	Default_Shuffle            bool
+	Default_Volume             int
 }
 
 type Request struct {
@@ -76,11 +77,13 @@ func main() {
 		startServer()
 		ind := 0
 		for {
-			if _, err := os.Stat(socket_path); err == nil || ind > 10 {
+			if _, err := os.Stat(socket_path); err == nil ||
+				ind >= configuration.Server_Connection_Attempts {
 				break
 			} // end of if
 			logger.Info("Waiting for server")
 			time.Sleep(1 * time.Second)
+			ind++
 		} // end of for
 		if _, err2 := os.Stat(socket_path); err2 == nil {
 			logger.Info("Server started succesfully")
