@@ -1,7 +1,11 @@
 package util
 
 import (
+	"io/ioutil"
 	"math/rand"
+	"os"
+	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
@@ -38,3 +42,52 @@ func Shuffle(array []string) []string {
 	//Return array
 	return array
 }
+
+// JoinPath function
+func JoinPath(source, target string) string {
+	if path.IsAbs(target) {
+		return target
+	} // end of if
+	return path.Join(path.Dir(source), target)
+} // end of JoinPath
+
+// GetFilesInFolder function
+func GetFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
+	fileList := make([]string, 0)
+	// Check if depth is > 0
+	if depth > 0 {
+		// Read directory
+		files, err := ioutil.ReadDir(folder)
+		Check(err)
+		// For each file
+		for _, file := range files {
+			filename := JoinPath(folder, file.Name())
+			fi, err := os.Stat(filename)
+			Check(err)
+			// Check if dir or file
+			switch mode := fi.Mode(); {
+
+			// Directory
+			case mode.IsDir():
+				newFolder := filename + "/"
+				// Go into folder
+				newFiles := GetFilesInFolder(newFolder, supportedExtensions, depth-1)
+				// append files to fileList
+				for _, newFile := range newFiles {
+					fileList = append(fileList, newFile)
+				} // end of for
+
+			//File
+			case mode.IsRegular():
+				var extension = filepath.Ext(filename)
+				// append files to fileList
+				if StringInArray(extension, supportedExtensions) {
+					fileList = append(fileList, filename)
+				} // end of if
+			} // end of switch
+		} // end of for
+	} else {
+		logger.Info("Max depth reached")
+	}
+	return fileList
+} // end of getFilesInFolder

@@ -3,18 +3,15 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"syscall"
 
-	//"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
@@ -22,8 +19,13 @@ import (
 	"github.com/tkanos/gonfig"
 )
 
+// Global var definition
 var wg = &sync.WaitGroup{}
 var configuration = Configuration{}
+var supportedFormats []string
+var songQueue []string
+var currentSong int = 0
+var saveLoop bool
 
 // Configuration struct
 type Configuration struct {
@@ -53,11 +55,6 @@ type Data struct {
 	Values  []string
 	Volume  int
 }
-
-var supportedFormats []string
-var songQueue []string
-var currentSong int = 0
-var saveLoop bool
 
 func receiveCommand(c net.Conn) {
 	// read message
@@ -403,7 +400,7 @@ func main() {
 	// set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
 	// set up logger
-	logger.Setup(path.Join(configuration.Log_Dir, configuration.Server_Log), false)
+	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), false)
 	// create server socket mp.sock
 	unixSocket := configuration.Socket_Path
 	logger.Notice("Creating unixSocket.")
@@ -452,7 +449,7 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 			// directory given
 			logger.Info("Directory found")
 			logger.Notice("Getting files inside of the folder")
-			fileList := getFilesInFolder(path, supportedFormats, depth)
+			fileList := util.GetFilesInFolder(path, supportedFormats, depth)
 			//Print Supported Filelist
 			screener.PrintFiles(fileList, false)
 			for _, song := range fileList {
@@ -475,45 +472,6 @@ func parseSongs(paths []string, supportedFormats []string, depth int) []string {
 	} // end of for
 	return songs
 } // end of parseSongs
-
-func getFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
-	// fmt.Println("get files in ", folder)
-	fileList := make([]string, 0)
-	if depth > 0 {
-		files, err := ioutil.ReadDir(folder)
-		util.Check(err)
-		for _, file := range files {
-			filename := joinPath(folder, file.Name())
-
-			fi, err := os.Stat(filename)
-			util.Check(err)
-
-			switch mode := fi.Mode(); {
-			case mode.IsDir():
-				newFolder := filename + "/"
-				newFiles := getFilesInFolder(newFolder, supportedExtensions, depth-1)
-				for _, newFile := range newFiles {
-					fileList = append(fileList, newFile)
-				} // end of for
-			case mode.IsRegular():
-				var extension = filepath.Ext(filename)
-				if util.StringInArray(extension, supportedExtensions) {
-					fileList = append(fileList, filename)
-				} // end of if
-			} // end of switch
-		} // end of for
-	} else {
-		logger.Info("Max depth reached")
-	}
-	return fileList
-} // end of getFilesInFolder
-
-func joinPath(source, target string) string {
-	if path.IsAbs(target) {
-		return target
-	} // end of if
-	return path.Join(path.Dir(source), target)
-} // end of JoinPath
 
 func getSupportedFormats() []string {
 	// get supported audio formats of 'supportedFormats.cfg' file
