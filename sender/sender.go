@@ -48,6 +48,6 @@ func Send(requestJson []byte) {
 	time.Sleep(1e9)
 }
 
-func setSocketPath(tempSocketPath string) {
+func SetSocketPath(tempSocketPath string) {
 	socketPath = tempSocketPath
 }
