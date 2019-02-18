@@ -6,15 +6,13 @@ import (
 	"log"
 	"net"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
-	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/volumefunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
@@ -22,9 +20,39 @@ import (
 )
 
 // Global var definition
-var wg = &sync.WaitGroup{}
 var configuration = structs.ServerConfiguration{}
 var serverData = structs.ServerData{}
+
+// main
+func main() {
+	// set up configuration
+	err := gonfig.GetConf("config.json", &configuration)
+	// set up logger
+	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), false)
+	// create server socket mp.sock
+	unixSocket := configuration.Socket_Path
+	logger.Notice("Creating unixSocket.")
+	logger.Info("Listening on " + unixSocket)
+	ln, err := net.Listen("unix", unixSocket)
+	if err != nil {
+		log.Fatal("listen error", err)
+	}
+	// check supported formats
+	logger.Notice("Parsing supported formats")
+	serverData.SupportedFormats = getSupportedFormats()
+	// print supported formats
+	printSupportedFormats()
+	// start pulseAudio
+	logger.Notice("Start Pulseaudio")
+	portaudiofunctions.StartPulseaudio()
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			log.Fatal("accept error: ", err)
+		}
+		go receiveCommand(conn)
+	}
+} // end of main
 
 //receiveCommand function
 func receiveCommand(c net.Conn) {
@@ -52,9 +80,9 @@ func receiveCommand(c net.Conn) {
 	// switch case commands
 	switch command {
 	case "addToQueue", "add":
-		message = addToQueue(data)
+		message = audiofunctions.AddToQueue(data, &serverData)
 	case "back", "previous":
-		message = playPreviousSong()
+		message = audiofunctions.PlayPreviousSong(&serverData)
 	case "exit":
 		closeConnection(c)
 	case "info", "default":
@@ -64,19 +92,19 @@ func receiveCommand(c net.Conn) {
 	case "louder", "setVolumeUp":
 		message = volumefunctions.IncreaseVolume()
 	case "next":
-		message = nextMusic(data)
+		message = audiofunctions.NextMusic(data, &serverData)
 	case "pause":
-		message = pauseMusic(data)
+		message = audiofunctions.PauseMusic(data, &serverData)
 	case "play":
-		message = playMusic(data)
+		message = audiofunctions.PlayMusic(data, &serverData)
 	case "quieter", "setVolumeDown":
 		message = volumefunctions.DecreaseVolume()
 	case "repeat":
-		message = repeatSong()
+		message = audiofunctions.RepeatSong(&serverData)
 	case "remove", "delete", "removeAt", "deleteAt":
-		message = removeSong(data)
+		message = audiofunctions.RemoveSong(data, &serverData)
 	case "resume":
-		message = resumeMusic()
+		message = audiofunctions.ResumeMusic()
 	case "setup":
 		message = setupMusicPlayer(data)
 	case "setVolume":
@@ -84,7 +112,7 @@ func receiveCommand(c net.Conn) {
 	case "shuffle", "setShuffle":
 		message = shuffleQueue()
 	case "stop":
-		message = stopMusic()
+		message = audiofunctions.StopMusic()
 	default:
 		logger.Error("Unknown command received")
 	}
@@ -102,7 +130,7 @@ func setupMusicPlayer(data structs.Data) string {
 	// SetVolume
 	portaudiofunctions.SetVolume(strconv.Itoa(data.Volume))
 	// Add files to queue
-	addToQueue(data)
+	audiofunctions.AddToQueue(data, &serverData)
 	// Set Liio
 	setLoop(data)
 	// Shuffle Songs
@@ -145,197 +173,6 @@ func closeConnection(c net.Conn) {
 	os.Exit(0)
 } // end of closeConnection
 
-// playPreviousSong function
-func playPreviousSong() string {
-	//check if currentSong is > 0 in queue
-	if serverData.CurrentSong > 0 {
-		// decrease currentSong and play
-		serverData.CurrentSong--
-		playCurrentSong()
-		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
-	} else {
-		// check if loop is enabled
-		if serverData.SaveLoop {
-			if len(serverData.SongQueue) > 0 {
-				serverData.CurrentSong = len(serverData.SongQueue) - 1
-				playCurrentSong()
-				return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
-			} else {
-				return "Error: The queue is empty. You could't go a song back"
-			} // end of else
-		} else {
-			return "You are currently playing the first song"
-		} // end of else
-	} // end of else
-	return "should never be shown"
-} // end of playLastSong
-
-// repeatSong function
-func repeatSong() string {
-	// check sonqQueue length
-	if len(serverData.SongQueue) > 0 {
-		playCurrentSong()
-		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
-	} else {
-		return "There is no current song"
-	} // end of else
-} // end of repeatSong
-
-// removeSong function
-func removeSong(data structs.Data) string {
-	if len(data.Values) != 0 {
-		number, err := strconv.Atoi(data.Values[0])
-		// todo: remove multiple values (problem with changing position)
-		if err == nil {
-			//Check loop is off and song in queue
-			if number > 0 && number < (len(serverData.SongQueue)-serverData.CurrentSong) {
-				number = number + serverData.CurrentSong
-				song_name := serverData.SongQueue[number]
-				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
-				return "Removed song" + song_name
-				//check loop is on and song is queue
-			} else if number >= len(serverData.SongQueue)-serverData.CurrentSong && number < len(serverData.SongQueue) && serverData.SaveLoop {
-				number = serverData.CurrentSong - len(serverData.SongQueue) + number
-				song_name := serverData.SongQueue[number]
-				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
-				return "Removed song" + song_name
-			} else {
-				return "There is no song with the given number (" + strconv.Itoa(number) + ")"
-			} // end of else
-		} else {
-			return "Remove is only allowed with the number of the song in the queue. Pls use 'info' to see the queue"
-		} // else
-	} else {
-		return "No argument given"
-	}
-	return "should never be shown"
-} // end of removeSong
-
-// stopMusic function
-func stopMusic() string {
-	logger.Info("Execution: Stop Music")
-	portaudiofunctions.StopAudio()
-
-	wg.Add(1)
-	go checkIfStatusStop()
-	wg.Wait()
-	return "Stopped music"
-}
-
-// checkIfStatusStop function
-func checkIfStatusStop() {
-	defer wg.Done()
-	for {
-		if portaudiofunctions.GetStatus() == "stop" {
-			return
-		}
-	}
-}
-
-// playMusic function
-func playMusic(data structs.Data) string {
-	logger.Info("Executing: Play Music")
-	logger.Info("Path given " + data.Path)
-	var songs []string
-	//get Songs
-	if len(data.Values) == 0 {
-		songs = parseSongs([]string{data.Path}, data.Depth)
-	} else {
-		songs = parseSongs(data.Values, data.Depth)
-	} // end of else
-	if len(songs) != 0 {
-		serverData.SongQueue = serverData.SongQueue[:0]
-		serverData.CurrentSong = 0
-		// Append songs to queue
-		for _, song := range songs {
-			serverData.SongQueue = append(serverData.SongQueue, song)
-		} // end of for
-
-		//Check if a song is currently playing
-		playCurrentSong()
-		return "Playing " + serverData.SongQueue[serverData.CurrentSong]
-	} else {
-		if len(serverData.SongQueue) != 0 {
-			//Check if a song is currently playing
-			playCurrentSong()
-			return "Playing " + serverData.SongQueue[serverData.CurrentSong]
-		} else {
-			logger.Error("No input file and no Song in Queue")
-			return ("No input file and no Song in Queue")
-		} // end foe else
-	} // end of if
-	return "should never be shown"
-} // end of playMusic
-
-// playCurrentSong function
-func playCurrentSong() {
-	// Check if status is play or pause
-	if portaudiofunctions.GetStatus() == "play" || portaudiofunctions.GetStatus() == "pause" {
-		logger.Info("A song is currently playing")
-		_ = stopMusic()
-	} // end of if
-	logger.Info(serverData.SongQueue[serverData.CurrentSong])
-	go portaudiofunctions.PlayAudio(serverData.SongQueue[serverData.CurrentSong])
-} // end of playCurrentSong
-
-// pauseMusic function
-func pauseMusic(data structs.Data) string {
-	logger.Info("Executing: Pause Music")
-	go portaudiofunctions.PauseAudio()
-	return "Music paused"
-} // end of pauseMusic
-
-// resumeMusic function
-func resumeMusic() string {
-	logger.Info("Execution: Resume Music")
-	go portaudiofunctions.ResumeAudio()
-	return "Resuming music"
-}
-
-// nextMusic function
-func nextMusic(data structs.Data) string {
-	// check if loop was set by "playMusic" - if yes..than change data.loop to true
-	if serverData.SaveLoop == true { //comment: why here
-		data.Loop = true
-	}
-	//check if nextsong can be played
-	if serverData.CurrentSong < (len(serverData.SongQueue) - 1) {
-		serverData.CurrentSong += 1
-	} else {
-		serverData.CurrentSong = 0
-	}
-	// check if loop is enabled
-	if data.Loop == false && serverData.CurrentSong == 0 {
-		logger.Info("Loop is not active and queue has ended -> Music stopped")
-		return "Loop is not active and queue has ended -> Music stopped"
-	} else {
-		logger.Info(serverData.SongQueue[serverData.CurrentSong])
-		playCurrentSong()
-		return "Now playing" + serverData.SongQueue[serverData.CurrentSong]
-	}
-	return "Should never be shown "
-} // end of nextMusic
-
-//addToQueue function
-func addToQueue(data structs.Data) string {
-	logger.Info("Executing: Add to queue")
-	var songs []string
-	// get songs
-	if len(data.Values) == 0 {
-		songs = parseSongs([]string{data.Path}, data.Depth)
-	} else {
-		songs = parseSongs(data.Values, data.Depth)
-	} // end of else
-	if len(songs) != 0 {
-		//append songs to queue
-		for _, song := range songs {
-			serverData.SongQueue = append(serverData.SongQueue, song)
-		} // end of for
-	} // end of if
-	message := "Added " + string(len(songs)) + " songs to queue"
-	return message
-} // end of addToQueue
-
 // printInfo function
 func printInfo() string {
 	logger.Info("Executing: Print info ")
@@ -368,78 +205,6 @@ func printInfo() string {
 	message = message + volumefunctions.PrintVolume()
 	return message
 } // end of printInfo
-
-func main() {
-	// set up configuration
-	err := gonfig.GetConf("config.json", &configuration)
-	// set up logger
-	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), false)
-	// create server socket mp.sock
-	unixSocket := configuration.Socket_Path
-	logger.Notice("Creating unixSocket.")
-	logger.Info("Listening on " + unixSocket)
-	ln, err := net.Listen("unix", unixSocket)
-	if err != nil {
-		log.Fatal("listen error", err)
-	}
-	// check supported formats
-	logger.Notice("Parsing supported formats")
-	serverData.SupportedFormats = getSupportedFormats()
-	// print supported formats
-	printSupportedFormats()
-	// start pulseAudio
-	logger.Notice("Start Pulseaudio")
-	portaudiofunctions.StartPulseaudio()
-	for {
-		conn, err := ln.Accept()
-		if err != nil {
-			log.Fatal("accept error: ", err)
-		}
-		go receiveCommand(conn)
-	}
-} // end of main
-
-// parseSongs
-func parseSongs(paths []string, depth int) []string {
-	var songs []string
-	for _, path := range paths {
-		// check if given file/folder exists
-		logger.Notice("Check if folder/file exists: " + path)
-		// check if path is empty
-		if len(path) == 0 {
-			logger.Error("Path is not a file or a folder")
-			continue
-		}
-		fi, err := os.Stat(path)
-		util.Check(err)
-		switch mode := fi.Mode(); {
-		case mode.IsDir():
-			// directory given
-			logger.Info("Directory found")
-			logger.Notice("Getting files inside of the folder")
-			fileList := util.GetFilesInFolder(path, serverData.SupportedFormats, depth)
-			//Print Supported Filelist
-			screener.PrintFiles(fileList, false)
-			for _, song := range fileList {
-				songs = append(songs, song)
-			}
-		case mode.IsRegular():
-			// file given
-			logger.Notice("File found")
-			var extension = filepath.Ext(path)
-			logger.Info("Extension: " + extension)
-			if util.StringInArray(extension, serverData.SupportedFormats) {
-				logger.Notice("Extension supported")
-				songs = append(songs, path)
-			} else {
-				logger.Warning("Extension not supported")
-			}
-		default:
-			logger.Error("Path is not a file or a folder")
-		} // end of switch
-	} // end of for
-	return songs
-} // end of parseSongs
 
 // getSupportedFormats function
 func getSupportedFormats() []string {
