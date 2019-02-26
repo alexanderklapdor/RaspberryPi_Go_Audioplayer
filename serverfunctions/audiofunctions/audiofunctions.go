@@ -45,8 +45,8 @@ func PlayMusic(data structs.Data, serverData *structs.ServerData) string {
 			PlayCurrentSong(serverData)
 			return "Playing " + serverData.SongQueue[serverData.CurrentSong]
 		} else {
-			logger.Error("No input file and no Song in Queue")
-			return ("No input file and no Song in Queue")
+			logger.Error("No supported input file and no file in queue")
+			return ("No supported input file and no file in queue")
 		} // end foe else
 	} // end of if
 	return "should never be shown"

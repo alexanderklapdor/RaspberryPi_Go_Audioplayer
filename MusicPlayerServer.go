@@ -12,6 +12,7 @@ import (
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/audiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/volumefunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
@@ -37,6 +38,8 @@ func main() {
 	if err != nil {
 		log.Fatal("listen error", err)
 	}
+	// set socket to sender function
+	sender.SetSocketPath(unixSocket)
 	// check supported formats
 	logger.Notice("Parsing supported formats")
 	serverData.SupportedFormats = getSupportedFormats()
@@ -114,6 +117,7 @@ func receiveCommand(c net.Conn) {
 	case "stop":
 		message = audiofunctions.StopMusic()
 	default:
+		message = "Unknown command received"
 		logger.Error("Unknown command received")
 	}
 
