@@ -87,6 +87,8 @@ func receiveCommand(c net.Conn) {
 	case "back", "previous":
 		message = audiofunctions.PlayPreviousSong(&serverData)
 	case "exit":
+		audiofunctions.StopMusic()
+		portaudiofunctions.StopPulseaudio()
 		closeConnection(c)
 	case "info", "default":
 		message = printInfo()

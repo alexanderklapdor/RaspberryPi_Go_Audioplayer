@@ -173,6 +173,15 @@ func StartPulseaudio() {
 	}
 } // end of StartPulseaudio
 
+// StopPulseaudio Function
+func StopPulseaudio() {
+	cmd := exec.Command("pulseaudio", "--kill")
+	err := cmd.Run()
+	if err != nil {
+		logger.Error("StopPulseaudio failed with :" + err.Error() + "\n")
+	}
+} // end of StopPulseaudio
+
 // GetVolume Function
 func GetVolume() (string, string) {
 	// var declaration
