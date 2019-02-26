@@ -32,10 +32,12 @@ func main() {
 	// Set up Logger
 	fmt.Println(configuration.Log_Dir + configuration.Client_Log)
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
-	socket_path := configuration.Socket_Path
 
 	// Start Screen
 	screener.StartScreen()
+	logger.Notice("Starting MusicPlayerClient...")
+
+	socket_path := configuration.Socket_Path
 
 	// check if server is running
 	if checkServerStatus() {
@@ -138,8 +140,6 @@ func main() {
 	logger.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Info("Tail:     " + flag.Args())
 
-	// parsings songs
-
 	// parsing to json
 	logger.Notice("Parsing argument to json")
 	dataInfo := &structs.Data{
@@ -160,6 +160,9 @@ func main() {
 	// Send command
 	sender.SetSocketPath(configuration.Socket_Path)
 	sender.Send(requestJson)
+
+	// Closing Client
+	logger.Info("Closing MusicPlayerClient...\n")
 
 }
 

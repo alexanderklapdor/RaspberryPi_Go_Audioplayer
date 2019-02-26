@@ -30,6 +30,7 @@ func main() {
 	err := gonfig.GetConf("config.json", &configuration)
 	// set up logger
 	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), false)
+	logger.Notice("Starting MusicPlayerServer...")
 	// create server socket mp.sock
 	unixSocket := configuration.Socket_Path
 	logger.Notice("Creating unixSocket.")
@@ -176,6 +177,7 @@ func closeConnection(c net.Conn) {
 		logger.Info("Pls run manually unlink 'unlink" + socketPath + "'")
 		os.Exit(69)
 	}
+	logger.Info("Closing MusicPlayerServer...\n")
 	os.Exit(0)
 } // end of closeConnection
 
