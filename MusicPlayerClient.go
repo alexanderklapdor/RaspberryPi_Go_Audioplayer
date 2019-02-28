@@ -30,7 +30,6 @@ func main() {
 	util.Check(err)
 
 	// Set up Logger
-	fmt.Println(configuration.Log_Dir + configuration.Client_Log)
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
 
 	// Start Screen
@@ -199,8 +198,9 @@ func startServer() {
 			nil,
 		},
 	}
-	// todo: go path in config gile better: env variable
-	process, err := os.StartProcess("/usr/local/go/bin/go", []string{"go", "run", "MusicPlayerServer.go"}, &attr)
+
+	//Start process
+	process, err := os.StartProcess(util.GetGoExPath(), []string{"go", "run", "MusicPlayerServer.go"}, &attr)
 	util.Check(err)
 	logger.Info("Detaching process")
 	err = process.Release()
@@ -230,15 +230,7 @@ func printMp3Infos(filePath string) {
 			//print Infos
 			length, err := strconv.Atoi(string(blength[:]))
 			util.Check(err)
-			fmt.Println("Title: " + title + "\t\t\t\tArtist: " + artist + "\t\t\t\tAlbum: " + album + "\t\t\t\tLength: " + secondsToMinutes(length))
+			fmt.Println("Title: " + title + "\t\t\t\tArtist: " + artist + "\t\t\t\tAlbum: " + album + "\t\t\t\tLength: " + util.SecondsToMinutes(length))
 		}
 	}
-}
-
-//Get Minute and Secons from Seconds
-func secondsToMinutes(inSeconds int) string {
-	minutes := inSeconds / 60
-	seconds := inSeconds % 60
-	str := fmt.Sprintf("%dmin %dsec", minutes, seconds)
-	return str
 }

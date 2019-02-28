@@ -1,6 +1,8 @@
 package util
 
 import (
+	"fmt"
+	"go/build"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -91,3 +93,20 @@ func GetFilesInFolder(folder string, supportedExtensions []string, depth int) []
 	}
 	return fileList
 } // end of getFilesInFolder
+
+//Get Minute and Secons from Seconds
+func SecondsToMinutes(inSeconds int) string {
+	minutes := inSeconds / 60
+	seconds := inSeconds % 60
+	str := fmt.Sprintf("%dmin %dsec", minutes, seconds)
+	return str
+}
+
+// Get Go Path
+func GetGoExPath() string {
+	gopath := os.Getenv("GOROOT")
+	if gopath == "" {
+		gopath = build.Default.GOROOT
+	}
+	return (gopath + "/bin/go")
+}
