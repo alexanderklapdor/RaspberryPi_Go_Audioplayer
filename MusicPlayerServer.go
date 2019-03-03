@@ -186,17 +186,17 @@ func printInfo() string {
 	logger.Info("Executing: Print info ")
 	message := "\n"
 	if len(serverData.SongQueue) != 0 {
-		message = message + ("Current Song: " + serverData.SongQueue[serverData.CurrentSong] + "\n")
+		message = message + ("Current Song: " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong]) + "\n")
 		if (len(serverData.SongQueue) - 1 - serverData.CurrentSong) != 0 {
 			message = message + ("Song Queue: \n")
 			//songs from current to end
 			for index, song := range serverData.SongQueue[serverData.CurrentSong+1:] {
-				message = message + (strconv.Itoa(index+1) + ". " + song + "\n")
+				message = message + (strconv.Itoa(index+1) + ". " + util.PrintMp3Infos(song) + "\n")
 			} // enf of for
 			// songs from beginning to current
 			if serverData.SaveLoop {
 				for index, song := range serverData.SongQueue[:serverData.CurrentSong] {
-					message = message + (strconv.Itoa(len(serverData.SongQueue)+index-serverData.CurrentSong) + ". " + song + "\n")
+					message = message + (strconv.Itoa(len(serverData.SongQueue)+index-serverData.CurrentSong) + ". " + util.PrintMp3Infos(song) + "\n")
 				} //end of for
 
 			} // end of if

@@ -38,12 +38,12 @@ func PlayMusic(data structs.Data, serverData *structs.ServerData) string {
 
 		//Check if a song is currently playing
 		PlayCurrentSong(serverData)
-		return "Playing " + serverData.SongQueue[serverData.CurrentSong]
+		return "Now playing " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
 		if len(serverData.SongQueue) != 0 {
 			//Check if a song is currently playing
 			PlayCurrentSong(serverData)
-			return "Playing " + serverData.SongQueue[serverData.CurrentSong]
+			return "Now playing " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 		} else {
 			logger.Error("No supported input file and no file in queue")
 			return ("No supported input file and no file in queue")
@@ -81,14 +81,14 @@ func PlayPreviousSong(serverData *structs.ServerData) string {
 		// decrease currentSong and play
 		serverData.CurrentSong--
 		PlayCurrentSong(serverData)
-		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
+		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
 		// check if loop is enabled
 		if serverData.SaveLoop {
 			if len(serverData.SongQueue) > 0 {
 				serverData.CurrentSong = len(serverData.SongQueue) - 1
 				PlayCurrentSong(serverData)
-				return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
+				return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 			} else {
 				return "Error: The queue is empty. You could't go a song back"
 			} // end of else
@@ -118,7 +118,7 @@ func RepeatSong(serverData *structs.ServerData) string {
 	// check sonqQueue length
 	if len(serverData.SongQueue) > 0 {
 		PlayCurrentSong(serverData)
-		return "Playing now " + serverData.SongQueue[serverData.CurrentSong]
+		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
 		return "There is no current song"
 	} // end of else
@@ -141,9 +141,9 @@ func NextMusic(data structs.Data, serverData *structs.ServerData) string {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
 		return "Loop is not active and queue has ended -> Music stopped"
 	} else {
-		logger.Info("Now playing" + serverData.SongQueue[serverData.CurrentSong])
+		logger.Info("Playing now" + serverData.SongQueue[serverData.CurrentSong])
 		PlayCurrentSong(serverData)
-		return "Now playing" + serverData.SongQueue[serverData.CurrentSong]
+		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	}
 	return "Should never be shown "
 } // end of nextMusic
@@ -239,13 +239,13 @@ func RemoveSong(data structs.Data, serverData *structs.ServerData) string {
 				number = number + serverData.CurrentSong
 				song_name := serverData.SongQueue[number]
 				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
-				return "Removed song" + song_name
+				return "Removed song" + util.PrintMp3Infos(song_name)
 				//check loop is on and song is queue
 			} else if number >= len(serverData.SongQueue)-serverData.CurrentSong && number < len(serverData.SongQueue) && serverData.SaveLoop {
 				number = serverData.CurrentSong - len(serverData.SongQueue) + number
 				song_name := serverData.SongQueue[number]
 				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
-				return "Removed song" + song_name
+				return "Removed song" + util.PrintMp3Infos(song_name)
 			} else {
 				return "There is no song with the given number (" + strconv.Itoa(number) + ")"
 			} // end of else

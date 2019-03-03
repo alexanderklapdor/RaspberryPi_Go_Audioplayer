@@ -16,8 +16,8 @@ var socketPath string
 
 // reader function
 func reader(r io.Reader) {
-	// Read 1024 bit
-	buf := make([]byte, 1024)
+	// Read 2048 bit
+	buf := make([]byte, 2048)
 	for {
 		n, err := r.Read(buf[:])
 		if err != nil {

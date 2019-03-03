@@ -169,8 +169,8 @@ func main() {
 	sender.Send(requestJson)
 
 	// Closing Client
-	screener.EndScreen()
 	logger.Info("Closing MusicPlayerClient...\n")
+	screener.EndScreen()
 
 }
 
