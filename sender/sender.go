@@ -2,6 +2,7 @@ package sender
 
 //Imports
 import (
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -24,6 +25,8 @@ func reader(r io.Reader) {
 		}
 		logger.Notice("Received response from server")
 		logger.Info("Server: " + string(buf[0:n]))
+		fmt.Println("Received response from Server...")
+		fmt.Println("Server: " + string(buf[0:n]))
 	}
 }
 
@@ -39,7 +42,8 @@ func Send(requestJson []byte) {
 	defer con.Close()
 
 	go reader(con)
-	logger.Notice("Sending message to Server")
+	fmt.Println("Sending Command to Server...")
+	logger.Notice("Sending Command to Server...")
 	_, er := con.Write([]byte(requestJson))
 	if er != nil {
 		log.Fatal("Write error: ", er)

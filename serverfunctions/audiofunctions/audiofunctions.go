@@ -141,7 +141,7 @@ func NextMusic(data structs.Data, serverData *structs.ServerData) string {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
 		return "Loop is not active and queue has ended -> Music stopped"
 	} else {
-		logger.Info(serverData.SongQueue[serverData.CurrentSong])
+		logger.Info("Now playing" + serverData.SongQueue[serverData.CurrentSong])
 		PlayCurrentSong(serverData)
 		return "Now playing" + serverData.SongQueue[serverData.CurrentSong]
 	}

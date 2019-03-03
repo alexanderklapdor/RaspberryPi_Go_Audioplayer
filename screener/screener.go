@@ -10,10 +10,9 @@ import (
 
 // Start Screen
 func StartScreen() {
-	fmt.Println("############################################")
-	fmt.Println("#               Welcome to                 #")
-	fmt.Println("#              Music Player                #")
-	fmt.Println("############################################")
+	fmt.Println("#######################################")
+	fmt.Println("#      Start Music Player Client      #")
+	fmt.Println("#######################################")
 	fmt.Println("")
 
 }
@@ -21,9 +20,9 @@ func StartScreen() {
 // End Screen
 func EndScreen() {
 	fmt.Println("")
-	fmt.Println("********************************************")
-	fmt.Println("*               Shutdown                   *")
-	fmt.Println("********************************************")
+	fmt.Println("#######################################")
+	fmt.Println("#       End Music Player Client       #")
+	fmt.Println("#######################################")
 }
 
 // Print Files

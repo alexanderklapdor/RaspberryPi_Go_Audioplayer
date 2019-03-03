@@ -43,7 +43,10 @@ func main() {
 		logger.Info("Server is running")
 	} else {
 		logger.Info("Server is not running")
+		fmt.Println("Server is not running")
 		// Start Server
+		logger.Info("Starting server")
+		fmt.Println("Starting server...")
 		startServer()
 		// Wait for server has been started
 		ind := 0
@@ -124,6 +127,7 @@ func main() {
 	// check volume
 	if *volume > 100 {
 		logger.Info("No volume above 100 allowed")
+		logger.Info("Set volume to 100")
 		*volume = 100
 	}
 
@@ -156,11 +160,17 @@ func main() {
 	requestJson, _ := json.Marshal(requestInfo)
 	logger.Info("JSON String : " + string(requestJson))
 
+	//Check if Command is Shutdown Command
+	if requestInfo.Command == "exit" {
+		fmt.Println("The server will shut down...")
+	}
+
 	// Send command
 	sender.SetSocketPath(configuration.Socket_Path)
 	sender.Send(requestJson)
 
 	// Closing Client
+	screener.EndScreen()
 	logger.Info("Closing MusicPlayerClient...\n")
 
 }
