@@ -11,5 +11,6 @@
 "Default_Input": "",
 "Default_Loop": true,
 "Default_Shuffle": true,
-"Default_Volume": 50
+"Default_Volume": 50,
+"Debug_Infos": true
 }

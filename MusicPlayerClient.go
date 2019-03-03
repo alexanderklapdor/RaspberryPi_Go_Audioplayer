@@ -30,7 +30,7 @@ func main() {
 	util.Check(err)
 
 	// Set up Logger
-	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), true)
+	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), configuration.Debug_Infos)
 
 	// Start Screen
 	screener.StartScreen()

@@ -15,6 +15,7 @@ type ClientConfiguration struct {
 	Default_Loop               bool
 	Default_Shuffle            bool
 	Default_Volume             int
+	Debug_Infos                bool
 }
 
 // Server Configuration struct
@@ -26,6 +27,7 @@ type ServerConfiguration struct {
 	Default_Loop    bool
 	Default_Shuffle bool
 	Default_Volume  int
+	Debug_Infos     bool
 }
 
 // Server Data struct

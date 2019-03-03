@@ -29,7 +29,7 @@ func main() {
 	// set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
 	// set up logger
-	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), false)
+	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), configuration.Debug_Infos)
 	logger.Notice("Starting MusicPlayerServer...")
 	// create server socket mp.sock
 	unixSocket := configuration.Socket_Path
