@@ -6,11 +6,14 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	id3 "github.com/mikkyang/id3-go"
 )
 
 // check if string is element of the array
@@ -109,4 +112,33 @@ func GetGoExPath() string {
 		gopath = build.Default.GOROOT
 	}
 	return (gopath + "/bin/go")
+}
+
+// PrintMp3Infos function
+func PrintMp3Infos(filePath string) string {
+	//Check if Path exists
+	if _, err := os.Stat(filePath); err == nil {
+		//open file for id3 tags
+		mp3File, err := id3.Open(filePath)
+		Check(err)
+		//close file at the end
+		defer mp3File.Close()
+		//get Tag Infos
+		title := mp3File.Title()
+		artist := mp3File.Artist()
+		album := mp3File.Album()
+		//get Audio length
+		blength, lengtherr := exec.Command("mp3info", "-p", "%S", filePath).Output()
+		Check(lengtherr)
+		//check if one information is empty
+		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
+			return filePath
+		} else {
+			//print Infos
+			length, err := strconv.Atoi(string(blength[:]))
+			Check(err)
+			return ("Title: " + title + "\t\tArtist: " + artist + "\t\tAlbum: " + album + "\t\tLength: " + SecondsToMinutes(length))
+		}
+	}
+	return "Path not exists"
 }
