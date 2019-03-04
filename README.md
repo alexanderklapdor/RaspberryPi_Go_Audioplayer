@@ -175,3 +175,13 @@ pcm.phoneline cards.pcm.phoneline
 
 
 ## For use purposes
+
+* Download latest [Release](https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/releases)
+
+> wget [Link]
+
+* Extract Archive
+> tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
+
+* Start -> Finish
+> ./MusicPlayerClient
