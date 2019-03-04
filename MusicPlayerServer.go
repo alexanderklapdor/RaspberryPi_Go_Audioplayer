@@ -13,6 +13,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/audiofunctions"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/connectionfunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/volumefunctions"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
@@ -36,8 +37,9 @@ func main() {
 	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)
 	util.Check(err)
-	// set socket to sender function
+	// set socketPath
 	sender.SetSocketPath(unixSocket)
+	connectionfunctions.SetSocketPath(unixSocket)
 	// check supported formats
 	logger.Notice("Parsing supported formats")
 	serverData.SupportedFormats = getSupportedFormats()
@@ -47,17 +49,18 @@ func main() {
 	logger.Notice("Start Pulseaudio")
 	portaudiofunctions.StartPulseaudio()
 	for {
-		conn, err := ln.Accept()
+		connection, err := ln.Accept()
+		connectionfunctions.SetConnection(connection)
 		util.Check(err)
-		go receiveCommand(conn)
+		go receiveCommand()
 	}
 } // end of main
 
 //receiveCommand function
-func receiveCommand(c net.Conn) {
+func receiveCommand() {
 	// read message
 	buf := make([]byte, 512)
-	nr, err := c.Read(buf)
+	nr, err := connectionfunctions.Read(buf)
 	if err != nil {
 		return
 	}
@@ -85,7 +88,7 @@ func receiveCommand(c net.Conn) {
 	case "exit":
 		audiofunctions.StopMusic()
 		portaudiofunctions.StopPulseaudio()
-		closeConnection(c)
+		closeConnection()
 	case "info", "default":
 		message = printInfo()
 	case "loop", "setLoop":
@@ -121,7 +124,7 @@ func receiveCommand(c net.Conn) {
 
 	// write to client
 	logger.Notice("Send a message back to the client")
-	_, err = c.Write([]byte(message))
+	_, err = connectionfunctions.Write([]byte(message))
 	util.Check(err)
 } // end of receiveCommand
 
@@ -158,11 +161,11 @@ func setLoop(data structs.Data) string {
 } // end of setLoop
 
 // closeConnection function
-func closeConnection(c net.Conn) {
+func closeConnection() {
 	// get socket path
 	socketPath := configuration.Socket_Path
 	logger.Warning("Connection  will be closed")
-	defer c.Close()
+	defer connectionfunctions.Close()
 	//unlink Socket
 	err := syscall.Unlink(socketPath)
 	if err != nil {
