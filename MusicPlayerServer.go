@@ -27,6 +27,10 @@ var serverData = structs.ServerData{}
 func main() {
 	// set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
+	// Check if Log directory exists
+	if _, err := os.Stat(configuration.Log_Dir); os.IsNotExist(err) {
+		os.Mkdir(configuration.Log_Dir, 0777)
+	}
 	// set up logger
 	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), configuration.Debug_Infos)
 	logger.Notice("Starting MusicPlayerServer...")

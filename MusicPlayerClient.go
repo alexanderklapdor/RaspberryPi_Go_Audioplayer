@@ -28,6 +28,10 @@ func main() {
 	err := gonfig.GetConf("config.json", &configuration)
 	util.Check(err, "Client")
 
+	// Check if Log directory exists
+	if _, err := os.Stat(configuration.Log_Dir); os.IsNotExist(err) {
+		os.Mkdir(configuration.Log_Dir, 0777)
+	}
 	// Set up Logger
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), configuration.Debug_Infos)
 
