@@ -12,10 +12,15 @@ This project is a Raspberry API written in GO, which allows to play music from t
 | pause | Pauses the music |
 | resume | Resumes the music |
 | next | Skips current song and plays the next one |
-| add , addToQueue | Adds a song or a directory to the song queue |
+| back, previous | Skips current song and plays the previous one |
+| add, addToQueue | Adds a song or a directory to the song queue |
+| remove, delete, removeAt, deleteAt | Remove a song from song queue |
 | setVolume | Sets the volume (value between 0 and 100) |
-| quieter | Decreases the volume by 5 |
-| louder | Increases the volume by 5 |
+| quieter, setVolumeDown | Decreases the volume by 10 |
+| louder, setVolumeUp | Increases the volume by 10 |
+| shuffle, setShuffle | Shuffles the song queue |
+| loop, setLoop | Set loop to true or false |
+| repeat | Repeat the current song |
 | info | Prints information like the current song or the song queue|
 
 ### Console arguments
@@ -33,18 +38,18 @@ Usage of ./MusicPlayerClient:
   -i string
     	input music file/folder
   -l    loop (default false)
-  -s	shuffle (default false)
+  -s	shuffle (default false) -not working-
   -v int
    	music volume in percent (default 50) (default 50)
 ```
 
 ### Logger functions
 ```
-logger.Log.Info("info")
-logger.Log.Notice("notice")
-logger.Log.Warning("warning")
-logger.Log.Error("err")
-logger.Log.Critical("crit")
+logger.Info("info")
+logger.Notice("notice")
+logger.Warning("warning")
+logger.Error("err")
+logger.Critical("crit") -> throw panic
 ```
 
 ### Logger Level
@@ -58,65 +63,115 @@ logger.Log.Critical("crit")
 
 **Critical** - Any error that is forcing a shutdown of the service or application to prevent data loss (or further data loss). I reserve these only for the most heinous errors and situations where there is guaranteed to have been data corruption or loss.
 
-### Portaudio
+### Used GO-Packages
 
-[Portaudio Repository](https://github.com/gordonklaus/portaudio)
-Wird benötigt:
-https://github.com/gordonklaus/portaudio
-https://github.com/bobertlo/go-mpg123
+[Portaudio](https://github.com/gordonklaus/portaudio)
+[MP3 Decoder](https://github.com/bobertlo/go-mpg123)
+[ID3 Decoder](https://github.com/mikkyang/id3-go)
+[Config Parser](https://github.com/tkanos/gonfig)
 
-### Installed packages
+### Used packages on Raspberry PI
+portaudio19-dev
+libmpg123-dev
+mp3info
 
+
+
+
+
+# Installation
+This chapter contains detailed instructions for installing the Go Musicplayer for Raspberry PI
+
+### Update Raspberry PI
 ```
-sudo apt-get install libmpg123-dev
-sudo apt-get install libasound-dev
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get install rpi-update 
+sudo rpi-update 
+```
+
+### Install Dependencis
+```
 sudo apt-get install portaudio19-dev
-sudo apt-get install pkg-config
-sudo apt-get install xauth
-sudo apt-get install jackd2
-```
-
-### Start portaudio without X11
-
-```
- if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
-        eval `dbus-launch --sh-syntax`
-        echo "D-Bus per-session daemon address is:"
-        echo "$DBUS_SESSION_BUS_ADDRESS"
-    fi
-```
-[Link to solution post](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=690530)
-
-###Update Raspberry Pi
- -> [Link](https://www.datenreise.de/raspberry-pi-firmware-update/)
-```
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install rpi-update
-sudo rpi-update
+sudo apt-get install libmpg123-dev
+sudo apt-get install mp3info 
 ```
 
 
-### Play Music works perfect
-alsamixer
-portaudio
-pulseaudio
-Raspberry Pi Update!
 
-```
-(Raspberry auf Analog Output stellen)
-alsamixer (nur zum überprüfen)
-pulseaudio -D
-go run mp3.go *MP3 Datei*
-    -> go run ./main.go -i="/home/pi/Music/testmusic/JNSPTRS - Chasing.mp3" -v=100
+## For development purposes
 
-```
+### Installing GO
+* Download
+>Link: https://golang.org/dl/ 
+Kind: Archive 
+OS: Linux 
+Arch: ARMv6 
+Befehl: wget [LINK] 
+* Extract Archive
+>tar -C /usr/local -xzf [Filename]
+* Set export Path
+>export PATH=$PATH:/usr/local/go/bin
+* Check if go is correct installed
+>go version
+* Go-Ordnerstruktur erstellen: 
+>**bin** will contain all Go executable's you have installed using go install command. 
+**pkg** will contain all compiled packages that can be imported into your projects. 
+**src** will contain all your source files, either your own or sources downloaded from external repositories. 
 
-### Für Fade-IN und Fade-OUT und Volume generell
-```
-pactl set-sink-mute 0 toggle  # toggle mute
-pactl set-sink-volume 0 0     # mute (force)
-pactl set-sink-volume 0 100%  # max
-pactl set-sink-volume 0 +5%   # +5% (up)
-pactl set-sink-volume 0 -5%   # -5% (down)
-```
+
+>Aufbau: 
+>* /home 
+>    * /pi 
+>       * /go 
+>           * /src 
+>           * /pkg 
+>           * /bin 
+
+>Befehle: 
+mkdir go 
+cd go 
+mkdir src 
+mkdir pkg 
+mkdir bin 
+
+* Clone Repository
+>Starting from /home/pi/go/src/ 
+mkdir github.com 
+cd github.com 
+mkdir alexanderklapdor 
+cd alexanderklapdor 
+git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git 
+
+* Install Go Dependencis
+> Starting from ../RaspberryPi_Go_Audioplayer/
+go get ./...
+
+* Edit Alsa Lib files
+>Folgende Datei muss editiert werden damit die Fehlermeldungen der ALSA Lib nicht mehr mit ausgegeben werden. Diese weisen nur darauf hin, dass die Folgenden Anschlüsse an dem Raspberry Pi nicht vorhanden sind. 
+
+>Datei: sudo nano /usr/share/alsa/alsa.conf 
+
+>Muss aus der Datei gelöscht werden: 
+pcm.rear cards.pcm.rear 
+pcm.center_lfe cards.pcm.center_lfe 
+pcm.side cards.pcm.side 
+pcm.surround21 cards.pcm.surround21 
+pcm.surround40 cards.pcm.surround40 
+pcm.surround41 cards.pcm.surround41 
+pcm.surround50 cards.pcm.surround50 
+pcm.surround51 cards.pcm.surround51 
+pcm.surround71 cards.pcm.surround71 
+pcm.iec958 cards.pcm.iec958 
+pcm.spdif iec958 
+pcm.hdmi cards.pcm.hdmi 
+pcm.dmix cards.pcm.dmix 
+pcm.dsnoop cards.pcm.dsnoop 
+pcm.modem cards.pcm.modem 
+pcm.phoneline cards.pcm.phoneline 
+
+* You can now execute the MusicPlayer
+> go run MusicPlayerClient.go
+
+
+## For use purposes
