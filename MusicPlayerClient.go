@@ -26,7 +26,7 @@ var configuration = structs.ClientConfiguration{}
 func main() {
 	// Set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
-	util.Check(err)
+	util.Check(err, "Client")
 
 	// Set up Logger
 	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), configuration.Debug_Infos)
@@ -185,7 +185,7 @@ func checkServerStatus() bool {
 		// check if process exists
 		cmd := "ps -ef | grep MusicPlayerServer"
 		output, err := exec.Command("bash", "-c", cmd).Output()
-		util.Check(err)
+		util.Check(err, "Client")
 		for _, pi := range strings.Split(string(output), "\n") {
 			if strings.Contains(pi, "go run") {
 				return true
@@ -210,8 +210,8 @@ func startServer() {
 
 	//Start process
 	process, err := os.StartProcess(util.GetGoExPath(), []string{"go", "run", "MusicPlayerServer.go"}, &attr)
-	util.Check(err)
+	util.Check(err, "Client")
 	logger.Info("Detaching process")
 	err = process.Release()
-	util.Check(err)
+	util.Check(err, "Client")
 }

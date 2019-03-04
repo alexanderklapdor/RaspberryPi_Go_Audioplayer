@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"syscall"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/portaudiofunctions"
@@ -36,7 +35,7 @@ func main() {
 	logger.Notice("Creating unixSocket.")
 	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)
-	util.Check(err)
+	util.Check(err, "Server")
 	// set socketPath
 	sender.SetSocketPath(unixSocket)
 	connectionfunctions.SetSocketPath(unixSocket)
@@ -51,7 +50,7 @@ func main() {
 	for {
 		connection, err := ln.Accept()
 		connectionfunctions.SetConnection(connection)
-		util.Check(err)
+		util.Check(err, "Server")
 		go receiveCommand()
 	}
 } // end of main
@@ -88,7 +87,7 @@ func receiveCommand() {
 	case "exit":
 		audiofunctions.StopMusic()
 		portaudiofunctions.StopPulseaudio()
-		closeConnection()
+		connectionfunctions.Close()
 	case "info", "default":
 		message = printInfo()
 	case "loop", "setLoop":
@@ -125,7 +124,7 @@ func receiveCommand() {
 	// write to client
 	logger.Notice("Send a message back to the client")
 	_, err = connectionfunctions.Write([]byte(message))
-	util.Check(err)
+	util.Check(err, "Server")
 } // end of receiveCommand
 
 // setupMusicPlayer function
@@ -159,23 +158,6 @@ func setLoop(data structs.Data) string {
 	} // end of else
 	return "Set loop to " + strconv.FormatBool(serverData.SaveLoop)
 } // end of setLoop
-
-// closeConnection function
-func closeConnection() {
-	// get socket path
-	socketPath := configuration.Socket_Path
-	logger.Warning("Connection  will be closed")
-	defer connectionfunctions.Close()
-	//unlink Socket
-	err := syscall.Unlink(socketPath)
-	if err != nil {
-		logger.Error("Error during unlink process of the socket: " + err.Error())
-		logger.Info("Pls run manually unlink 'unlink" + socketPath + "'")
-		os.Exit(69)
-	}
-	logger.Info("Closing MusicPlayerServer...\n")
-	os.Exit(0)
-} // end of closeConnection
 
 // printInfo function
 func printInfo() string {
@@ -217,7 +199,7 @@ func getSupportedFormats() []string {
 
 	// Opening file
 	file, err := os.Open("supportedFormats.cfg")
-	util.Check(err)
+	util.Check(err, "Server")
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -226,7 +208,7 @@ func getSupportedFormats() []string {
 			supportedFormats = append(supportedFormats, line)
 		} //end of if
 	} // end of for
-	util.Check(scanner.Err())
+	util.Check(scanner.Err(), "Server")
 	return supportedFormats
 } // End of getSupportedFormats
 

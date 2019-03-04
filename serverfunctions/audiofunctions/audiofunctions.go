@@ -176,7 +176,7 @@ func ParseSongs(paths []string, depth int, serverData *structs.ServerData) []str
 			logger.Error("Path is not a file or a folder")
 			continue
 		}
-		util.Check(err)
+		util.Check(err, "Server")
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
 			// directory given

@@ -36,7 +36,7 @@ func Send(requestJson []byte) {
 	logger.Notice("Opening socket connection to " + socketPath)
 	con, err := net.Dial("unix", socketPath)
 	// Check if err exists
-	util.Check(err)
+	util.Check(err, "Client")
 	defer con.Close()
 
 	go reader(con)

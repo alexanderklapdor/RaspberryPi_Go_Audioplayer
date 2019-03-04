@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/serverfunctions/connectionfunctions"
 	id3 "github.com/mikkyang/id3-go"
 )
 
@@ -28,8 +29,11 @@ func StringInArray(str string, list []string) bool {
 }
 
 // error check
-func Check(err error) {
+func Check(err error, source string) {
 	if err != nil {
+		if source == "Server" {
+			connectionfunctions.Close()
+		}
 		logger.Error(err.Error())
 		panic(err)
 	}
@@ -63,12 +67,12 @@ func GetFilesInFolder(folder string, supportedExtensions []string, depth int) []
 	if depth > 0 {
 		// Read directory
 		files, err := ioutil.ReadDir(folder)
-		Check(err)
+		Check(err, "Server")
 		// For each file
 		for _, file := range files {
 			filename := JoinPath(folder, file.Name())
 			fi, err := os.Stat(filename)
-			Check(err)
+			Check(err, "Server")
 			// Check if dir or file
 			switch mode := fi.Mode(); {
 
@@ -120,7 +124,7 @@ func PrintMp3Infos(filePath string) string {
 	if _, err := os.Stat(filePath); err == nil {
 		//open file for id3 tags
 		mp3File, err := id3.Open(filePath)
-		Check(err)
+		Check(err, "Server")
 		//close file at the end
 		defer mp3File.Close()
 		//get Tag Infos
@@ -129,14 +133,14 @@ func PrintMp3Infos(filePath string) string {
 		album := mp3File.Album()
 		//get Audio length
 		blength, lengtherr := exec.Command("mp3info", "-p", "%S", filePath).Output()
-		Check(lengtherr)
+		Check(lengtherr, "Server")
 		//check if one information is empty
 		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
 			return filePath
 		} else {
 			//print Infos
 			length, err := strconv.Atoi(string(blength[:]))
-			Check(err)
+			Check(err, "Server")
 			return ("Title: " + title + "\t\tArtist: " + artist + "\t\tAlbum: " + album + "\t\tLength: " + SecondsToMinutes(length))
 		}
 	}

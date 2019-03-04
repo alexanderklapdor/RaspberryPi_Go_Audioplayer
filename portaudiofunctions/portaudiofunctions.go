@@ -37,10 +37,10 @@ func PlayAudio(fileName string) {
 
 	// create mpg123 decoder instance
 	decoder, err := mpg123.NewDecoder("")
-	util.Check(err)
+	util.Check(err, "Server")
 
 	// Decode file
-	util.Check(decoder.Open(fileName))
+	util.Check(decoder.Open(fileName), "Server")
 	defer decoder.Close()
 
 	// get audio format information
@@ -57,11 +57,11 @@ func PlayAudio(fileName string) {
 	// Set Stream
 	out := make([]int16, 8192)
 	stream, err = portaudio.OpenDefaultStream(0, channels, float64(rate), len(out), &out)
-	util.Check(err)
+	util.Check(err, "Server")
 
 	// Start Stream & Set Status
 	defer stream.Close()
-	util.Check(stream.Start())
+	util.Check(stream.Start(), "Server")
 	status = "play"
 	defer stream.Stop()
 
@@ -96,11 +96,11 @@ func PlayAudio(fileName string) {
 		if err == mpg123.EOF {
 			break
 		}
-		util.Check(err)
+		util.Check(err, "Server")
 
 		// write byte to stream
-		util.Check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out))
-		util.Check(stream.Write())
+		util.Check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out), "Server")
+		util.Check(stream.Write(), "Server")
 		select {
 		case <-sig:
 			return
