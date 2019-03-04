@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -13,51 +14,56 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/screener"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/sender"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/structs"
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
-	id3 "github.com/mikkyang/id3-go"	
-	// "github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
+	"github.com/tkanos/gonfig"
 )
 
-type Request struct {
-	Command string
-	Data    Data
-}
+// Global var declaration
+var configuration = structs.ClientConfiguration{}
 
-// Data struct
-type Data struct {
-	Depth   int
-	FadeIn  int
-	FadeOut int
-	Path    string
-	Shuffle bool
-	Loop    bool
-	Values  []string
-	Volume  int
-}
-
+// Main function
 func main() {
+	// Set up configuration
+	err := gonfig.GetConf("config.json", &configuration)
+	util.Check(err, "Client")
+
+	// Check if Log directory exists
+	if _, err := os.Stat(configuration.Log_Dir); os.IsNotExist(err) {
+		os.Mkdir(configuration.Log_Dir, 0777)
+	}
 	// Set up Logger
-	//todo: logging path in configuration file
-	logger.Setup("logs/client.log", true)
-	socket_path := "/tmp/mp.sock" // todo: config file socket path
+	logger.Setup(path.Join(configuration.Log_Dir, configuration.Client_Log), configuration.Debug_Infos)
 
 	// Start Screen
 	screener.StartScreen()
+	logger.Notice("Starting MusicPlayerClient...")
+
+	socket_path := configuration.Socket_Path
 
 	// check if server is running
 	if checkServerStatus() {
 		logger.Info("Server is running")
 	} else {
 		logger.Info("Server is not running")
+		fmt.Println("Server is not running")
+		// Start Server
+		logger.Info("Starting server")
+		fmt.Println("Starting server...")
 		startServer()
+		// Wait for server has been started
 		ind := 0
 		for {
-			if _, err := os.Stat(socket_path); err == nil || ind > 10 {
+			if _, err := os.Stat(socket_path); err == nil ||
+				ind >= configuration.Server_Connection_Attempts {
 				break
 			} // end of if
 			logger.Info("Waiting for server")
 			time.Sleep(1 * time.Second)
+			ind++
 		} // end of for
+
+		//check Server Stat
 		if _, err2 := os.Stat(socket_path); err2 == nil {
 			logger.Info("Server started succesfully")
 		} else if os.IsNotExist(err2) {
@@ -76,14 +82,22 @@ func main() {
 	}
 
 	// define flags
-	command := flag.String("c", "default", "command for the server")
-	input := flag.String("i", "", "input music file/folder")
-	volume := flag.Int("v", 50, "music volume in percent (default 50)")
-	depth := flag.Int("d", 2, "audio file searching depth (default/recommended 2)")
-	shuffle := flag.Bool("s", false, "shuffle (default false)")
-	loop := flag.Bool("l", false, "loop (default false)")
-	fadeIn := flag.Int("fi", 0, "fadein in milliseconds (default 0)")
-	fadeOut := flag.Int("fo", 0, "fadeout in milliseconds (default 0)")
+	command := flag.String("c", configuration.Default_Command, "command for the server (default "+
+		configuration.Default_Command+")")
+	input := flag.String("i", configuration.Default_Input, "input music file/folder (default "+
+		configuration.Default_Input+")")
+	volume := flag.Int("v", configuration.Default_Volume, "music volume in percent (default "+
+		strconv.Itoa(configuration.Default_Volume)+")")
+	depth := flag.Int("d", configuration.Default_Depth, "audio file searching depth (default/recommended "+
+		strconv.Itoa(configuration.Default_Depth)+")")
+	shuffle := flag.Bool("s", configuration.Default_Shuffle, "shuffle (default "+
+		strconv.FormatBool(configuration.Default_Shuffle)+")")
+	loop := flag.Bool("l", configuration.Default_Loop, "loop (default "+
+		strconv.FormatBool(configuration.Default_Loop)+")")
+	fadeIn := flag.Int("fi", configuration.Default_FadeIn, "fadein in milliseconds (default "+
+		strconv.Itoa(configuration.Default_FadeIn)+")")
+	fadeOut := flag.Int("fo", configuration.Default_FadeOut, "fadeout in milliseconds (default "+
+		strconv.Itoa(configuration.Default_FadeOut)+")")
 
 	// parsing flags
 	logger.Notice("Start Parsing cli parameters")
@@ -92,7 +106,9 @@ func main() {
 	var values []string
 	// if argument without flagname is given parse it as command
 	if flag.NArg() > 1 {
+		// command argument
 		*command = flag.Arg(0)
+		// value arguments
 		for id, arg := range flag.Args() {
 			if id != 0 {
 				values = append(values, arg)
@@ -110,8 +126,11 @@ func main() {
 		logger.Error("no negative values allowed")
 		return
 	}
+
+	// check volume
 	if *volume > 100 {
 		logger.Info("No volume above 100 allowed")
+		logger.Info("Set volume to 100")
 		*volume = 100
 	}
 
@@ -127,12 +146,9 @@ func main() {
 	logger.Info("Fade out: " + strconv.Itoa(*fadeOut))
 	//logger.Info("Tail:     " + flag.Args())
 
-	// parsings songs
-
 	// parsing to json
 	logger.Notice("Parsing argument to json")
-
-	dataInfo := &Data{
+	dataInfo := &structs.Data{
 		Depth:   *depth,
 		FadeIn:  *fadeIn,
 		FadeOut: *fadeOut,
@@ -141,25 +157,39 @@ func main() {
 		Path:    *input,
 		Values:  values,
 		Volume:  *volume}
-	requestInfo := &Request{
+	requestInfo := &structs.Request{
 		Command: string(*command),
 		Data:    *dataInfo}
 	requestJson, _ := json.Marshal(requestInfo)
 	logger.Info("JSON String : " + string(requestJson))
 
-	sender.Send(requestJson) //todo: socket should be given to the sender
+	//Check if Command is Shutdown Command
+	if requestInfo.Command == "exit" {
+		fmt.Println("The server will shut down...")
+	}
+
+	// Send command
+	sender.SetSocketPath(configuration.Socket_Path)
+	sender.Send(requestJson)
+
+	// Closing Client
+	logger.Info("Closing MusicPlayerClient...\n")
+	screener.EndScreen()
 
 }
 
+// checkServerStatus function
 func checkServerStatus() bool {
-	socket_path := "/tmp/mp.sock"
+	// get socket_path
+	socket_path := configuration.Socket_Path
+	// check if socket exists
 	if _, err := os.Stat(socket_path); err != nil {
 		return false //unix socket does not exists
 	} else {
 		// check if process exists
 		cmd := "ps -ef | grep MusicPlayerServer"
 		output, err := exec.Command("bash", "-c", cmd).Output()
-		util.Check(err)
+		util.Check(err, "Client")
 		for _, pi := range strings.Split(string(output), "\n") {
 			if strings.Contains(pi, "go run") {
 				return true
@@ -169,6 +199,7 @@ func checkServerStatus() bool {
 	} // end of else
 } // end of checkServerStatus
 
+// startServer function
 func startServer() {
 	logger.Info("Starting Server process")
 	var attr = os.ProcAttr{
@@ -180,45 +211,11 @@ func startServer() {
 			nil,
 		},
 	}
-	process, err := os.StartProcess("/usr/local/go/bin/go", []string{"go", "run", "MusicPlayerServer.go"}, &attr)
-	util.Check(err)
+
+	//Start process
+	process, err := os.StartProcess(util.GetGoExPath(), []string{"go", "run", "MusicPlayerServer.go"}, &attr)
+	util.Check(err, "Client")
 	logger.Info("Detaching process")
 	err = process.Release()
-	util.Check(err)
-}
-
-func printMp3Infos(filePath string){
-	//Check if Path exists
-	if _, err := os.Stat(filePath); err == nil {
-		//open file for id3 tags
-		mp3File, err := id3.Open(filePath)
-       		util.Check(err)
-		//close file at the end
-		defer mp3File.Close()
-		//get Tag Infos
-		title := mp3File.Title()
-		artist := mp3File.Artist()
-		album := mp3File.Album()
-		//get Audio length
-		blength, lengtherr := exec.Command("mp3info","-p","%S",filePath).Output()
-		util.Check(lengtherr)
-		
-		//check if one information is empty
-		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
-			fmt.Println(filePath)
-		} else{
-			//print Infos
-			length, err := strconv.Atoi(string(blength[:]))
-                	util.Check(err)
-			fmt.Println("Title: " + title + "\t\t\t\tArtist: " + artist + "\t\t\t\tAlbum: " + album + "\t\t\t\tLength: " + secondsToMinutes(length))
-		}    
-	}
-}
-
-//Get Minute and Secons from Seconds
-func secondsToMinutes(inSeconds int) string {
-	minutes := inSeconds / 60
-        seconds := inSeconds % 60
-        str := fmt.Sprintf("%dmin %dsec", minutes, seconds)
-        return str
+	util.Check(err, "Client")
 }

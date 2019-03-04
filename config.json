@@ -1,0 +1,16 @@
+{
+"Socket_Path" : "/tmp/mp.sock",
+"Log_Dir": "logs/",
+"Server_Log": "server.log",
+"Server_Connection_Attempts": 10,
+"Client_Log": "client.log",
+"Default_Command": "default",
+"Default_Depth": 2,
+"Default_FadeIn": 0,
+"Default_FadeOut": 0,
+"Default_Input": "",
+"Default_Loop": true,
+"Default_Shuffle": true,
+"Default_Volume": 50,
+"Debug_Infos": true
+}
