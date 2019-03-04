@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"log"
 	"net"
 	"os"
 	"strconv"
@@ -36,9 +35,7 @@ func main() {
 	logger.Notice("Creating unixSocket.")
 	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)
-	if err != nil {
-		log.Fatal("listen error", err)
-	}
+	util.Check(err)
 	// set socket to sender function
 	sender.SetSocketPath(unixSocket)
 	// check supported formats
@@ -51,9 +48,7 @@ func main() {
 	portaudiofunctions.StartPulseaudio()
 	for {
 		conn, err := ln.Accept()
-		if err != nil {
-			log.Fatal("accept error: ", err)
-		}
+		util.Check(err)
 		go receiveCommand(conn)
 	}
 } // end of main
@@ -127,9 +122,7 @@ func receiveCommand(c net.Conn) {
 	// write to client
 	logger.Notice("Send a message back to the client")
 	_, err = c.Write([]byte(message))
-	if err != nil {
-		log.Fatal("Write: ", err)
-	}
+	util.Check(err)
 } // end of receiveCommand
 
 // setupMusicPlayer function

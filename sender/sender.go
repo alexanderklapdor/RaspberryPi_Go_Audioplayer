@@ -4,11 +4,11 @@ package sender
 import (
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"time"
 
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/logger"
+	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 )
 
 //global var definition
@@ -36,9 +36,7 @@ func Send(requestJson []byte) {
 	logger.Notice("Opening socket connection to " + socketPath)
 	con, err := net.Dial("unix", socketPath)
 	// Check if err exists
-	if err != nil {
-		panic(err)
-	}
+	util.Check(err)
 	defer con.Close()
 
 	go reader(con)
@@ -46,7 +44,7 @@ func Send(requestJson []byte) {
 	logger.Notice("Sending Command to Server...")
 	_, er := con.Write([]byte(requestJson))
 	if er != nil {
-		log.Fatal("Write error: ", er)
+		logger.Critical("Write error: " + er.Error())
 		return
 	}
 	time.Sleep(1e9)
