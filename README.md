@@ -116,8 +116,8 @@ sudo apt-get install mp3info
 >go version
 * Go-Ordnerstruktur erstellen: 
 >**bin** will contain all Go executable's you have installed using go install command. 
-**pkg** will contain all compiled packages that can be imported into your projects. 
-**src** will contain all your source files, either your own or sources downloaded from external repositories. 
+>**pkg** will contain all compiled packages that can be imported into your projects. 
+>**src** will contain all your source files, either your own or sources downloaded from external repositories. 
 
 
 >Aufbau: 
