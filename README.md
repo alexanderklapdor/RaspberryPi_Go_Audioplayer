@@ -7,19 +7,19 @@ This project is a Raspberry API written in GO, which allows to play music from t
 | Command | Description |
 | ---: | :--- |
 | exit | Terminates the MusicPlayerServer|
-| play | Plays the music. |
+| play [File/Folder path] | Plays the music. |
 | stop | Stops the music. |
 | pause | Pauses the music |
 | resume | Resumes the music |
 | next | Skips current song and plays the next one |
 | back, previous | Skips current song and plays the previous one |
-| add, addToQueue | Adds a song or a directory to the song queue |
-| remove, delete, removeAt, deleteAt | Remove a song from song queue |
-| setVolume | Sets the volume (value between 0 and 100) |
+| add, addToQueue [File/Folder path] | Adds a song or a directory to the song queue |
+| remove, delete, removeAt, deleteAt [Queue number] | Remove a song from song queue |
+| setVolume [0-100]| Sets the volume (value between 0 and 100) |
 | quieter, setVolumeDown | Decreases the volume by 10 |
 | louder, setVolumeUp | Increases the volume by 10 |
 | shuffle, setShuffle | Shuffles the song queue |
-| loop, setLoop | Set loop to true or false |
+| loop, setLoop [on,true/off,false] | Set loop to true or false |
 | repeat | Repeat the current song |
 | info | Prints information like the current song or the song queue|
 
@@ -104,10 +104,10 @@ sudo apt-get install mp3info
 ### Installing GO
 * Download
 >Link: https://golang.org/dl/ 
-Kind: Archive 
-OS: Linux 
-Arch: ARMv6 
-Befehl: wget [LINK] 
+>Kind: Archive 
+>OS: Linux 
+>Arch: ARMv6 
+>Befehl: wget [LINK] 
 * Extract Archive
 >tar -C /usr/local -xzf [Filename]
 * Set export Path
@@ -129,23 +129,23 @@ Befehl: wget [LINK]
 >           * /bin 
 
 >Befehle: 
-mkdir go 
-cd go 
-mkdir src 
-mkdir pkg 
-mkdir bin 
+>mkdir go 
+>cd go 
+>mkdir src 
+>mkdir pkg 
+>mkdir bin 
 
 * Clone Repository
 >Starting from /home/pi/go/src/ 
-mkdir github.com 
-cd github.com 
-mkdir alexanderklapdor 
-cd alexanderklapdor 
-git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git 
+>mkdir github.com 
+>cd github.com 
+>mkdir alexanderklapdor 
+>cd alexanderklapdor 
+>git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git 
 
 * Install Go Dependencis
 > Starting from ../RaspberryPi_Go_Audioplayer/
-go get ./...
+>go get ./...
 
 * Edit Alsa Lib files
 >Folgende Datei muss editiert werden damit die Fehlermeldungen der ALSA Lib nicht mehr mit ausgegeben werden. Diese weisen nur darauf hin, dass die Folgenden Anschlüsse an dem Raspberry Pi nicht vorhanden sind. 
@@ -153,22 +153,22 @@ go get ./...
 >Datei: sudo nano /usr/share/alsa/alsa.conf 
 
 >Muss aus der Datei gelöscht werden: 
-pcm.rear cards.pcm.rear 
-pcm.center_lfe cards.pcm.center_lfe 
-pcm.side cards.pcm.side 
-pcm.surround21 cards.pcm.surround21 
-pcm.surround40 cards.pcm.surround40 
-pcm.surround41 cards.pcm.surround41 
-pcm.surround50 cards.pcm.surround50 
-pcm.surround51 cards.pcm.surround51 
-pcm.surround71 cards.pcm.surround71 
-pcm.iec958 cards.pcm.iec958 
-pcm.spdif iec958 
-pcm.hdmi cards.pcm.hdmi 
-pcm.dmix cards.pcm.dmix 
-pcm.dsnoop cards.pcm.dsnoop 
-pcm.modem cards.pcm.modem 
-pcm.phoneline cards.pcm.phoneline 
+>pcm.rear cards.pcm.rear 
+>pcm.center_lfe cards.pcm.center_lfe 
+>pcm.side cards.pcm.side 
+>pcm.surround21 cards.pcm.surround21 
+>pcm.surround40 cards.pcm.surround40 
+>pcm.surround41 cards.pcm.surround41 
+>pcm.surround50 cards.pcm.surround50 
+>pcm.surround51 cards.pcm.surround51 
+>pcm.surround71 cards.pcm.surround71 
+>pcm.iec958 cards.pcm.iec958 
+>pcm.spdif iec958 
+>pcm.hdmi cards.pcm.hdmi 
+>pcm.dmix cards.pcm.dmix 
+>pcm.dsnoop cards.pcm.dsnoop 
+>pcm.modem cards.pcm.modem 
+>pcm.phoneline cards.pcm.phoneline 
 
 * You can now execute the MusicPlayer
 > go run MusicPlayerClient.go
