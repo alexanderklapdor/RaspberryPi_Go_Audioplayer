@@ -14,7 +14,7 @@ main
 # Swap files
 *.swp
 
-# documentation files*.synctex.gz
+# documentation files
 .project
 output/
 dokumentation.pdf
@@ -22,6 +22,19 @@ dokumentation.pdf
 *.backup
 *.bak
 *.orig
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.glo
+*.ist
+*.lof
+*.log
+*.lol
+*.lot
+*.xml
+*.toc
+*.log
 
 # example files
 example-files/
