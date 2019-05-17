@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>11</zoom_level>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>253</x>
+      <y>220</y>
+      <w>66</w>
+      <h>121</h>
+    </coordinates>
+    <panel_attributes>Nutzer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1133</x>
+      <y>209</y>
+      <w>242</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>_Server-Programm_
+ - spielt Musik im Hintergrund ab
+ - nimmt Befehle entgegen
+ - Führt sämtliche Aktionen aus
+ - Hat Playlist, wechselt Lieder
+   alleine
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>594</x>
+      <y>209</y>
+      <w>253</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>_Client-Programm_
+ - wird bei jedem Befehl gestartet
+ - beendet sich nach der Ansicht
+   der Nachricht
+ - stellt Verbindung zum Server her
+ - kann Server beenden
+ - Startet Server falls nicht aktiv
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>220</y>
+      <w>308</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+sendet Befehle (CMD Parameter)</panel_attributes>
+    <additional_attributes>10.0;20.0;260.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>836</x>
+      <y>220</y>
+      <w>319</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+leitet Befehle weiter</panel_attributes>
+    <additional_attributes>10.0;20.0;270.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>836</x>
+      <y>253</y>
+      <w>319</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+schickt Nachricht zurück</panel_attributes>
+    <additional_attributes>270.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>253</y>
+      <w>308</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+zeigt Nachricht an</panel_attributes>
+    <additional_attributes>260.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1320</x>
+      <y>176</y>
+      <w>352</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Läuft durchgehend im Hintergrund</panel_attributes>
+    <additional_attributes>50.0;70.0;90.0;70.0;90.0;10.0;10.0;10.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>847</x>
+      <y>187</y>
+      <w>286</w>
+      <h>187</h>
+    </coordinates>
+    <panel_attributes>Socket Kommunikation
+--
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>825</x>
+      <y>440</y>
+      <w>374</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>_Note_
+
+Client ist also einfach nur das Programm was die
+Befehle entgegennimmt und an den Server weiterleitet
+Der Server Führt den gewünschten Befehl aus
+und sendet eine Message(Status) zurück, den der
+Client wieder dem Nutzer anzeigt. Danach beendet
+sich der Client wieder. So hat man eine Schnittstelle
+die einfach immer Aufgerufen werden kann.
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
