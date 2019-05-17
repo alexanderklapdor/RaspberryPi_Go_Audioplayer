@@ -30,6 +30,8 @@ dokumentation.pdf
 *.glo
 *.ist
 *.lof
+*.glg
+*.gls
 *.log
 *.lol
 *.lot
