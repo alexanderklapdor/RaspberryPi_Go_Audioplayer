@@ -2,18 +2,41 @@
 
 \chapter{Umsetzung}
 
-Ein bisschen BlaBla, dass jetzt auf die Umsetzung eingegangen wird.
+Im folgenden wird nun detailliert auf das entwickelte Konzept eingegangen und deren Funktionsweisen erläutert.
 
 %title wird unter dem Bsp. abgedruckt
 %caption wird im Verzeichnis abgedruckt
 %label wird zum referenzieren benutzt, muss einzigartig sein.
 
 \section{Voraussetzungen}
-Hier kommt der Scheiß ist zustand rein
+Für die Nutzung des Audioplayer auf dem Raspberry Pi bzw. für die weitere Entwicklung, müssen vorerst einige Anpassungen und Installationen getätigt werden. Diese Schritte sind notwendig damit der Audioplayer wie vorgesehen funktioniert und keine unvorhergesehen Zustände entstehen.
 
-Hier genau erklären was gemacht werden muss, damit man unser Programm nutzen kann(mit Code und Linux Befehlen und so)
+\subsection{Pakete installieren und Raspberry Pi updaten}
+Standardmäßig besitzt der Raspberry Pi das Betriebssystem \textit{Raspbian}. Dieses gilt es zuerst auf die neuste Version zu aktualisieren. Zusätzlich werden alle installierten Pakete des System auf die neuste Version zu aktualisieren. Dieses Vorhaben wird mit den folgenden Befehlen durchgeführt:
+\begin{lstlisting}
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get install rpi-update 
+sudo rpi-update
+\end{lstlisting}
+Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet die gesamten Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}. Sudo wird hier überall gebraucht, da für alle Aktionen sudo Rechte benötigt werden.
+Mit dem Befehl \textit{sudo apt-get update} werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man was in welcher Version finden kann.
+Mit dem Befehl \textit{sudo apt-get upgrade} werden alle bereits installierten Paket auf die in den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten entfernt. \autocite{apt-get-wiki_2019}
+Mit dem Befehl \textit{apt-get install rpi-update} wird das Paket \textit{rpi-update} mit allen seinen Abhängigkeiten heruntergeladen und installiert. Das Paket ist ein automatisiertes Skript zum updaten des Raspberry Pi's Betriebssystem auf die neuste Version.
+Als letzten Schritt wird nun das Paket \textit{rpi-update} ausgeführt und der Raspberry Pi lädt automatisch das neuste passende Betriebssystem herunter und installiert es. Dabei gehen keine Daten verloren.
+\\
+Nachdem der Raspberry Pi sich erfolgreich aktualisiert hat, müssen nun noch die jedenfalls benötigten Pakete installiert werden. Dies wird mit den folgenden Befehlen gemacht.
+\begin{lstlisting}
+sudo apt-get install portaudio19-dev
+sudo apt-get install libmpg123-dev
+sudo apt-get install mp3info 
+\end{lstlisting}
 
-\href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer#installation}{Schritt für Schritt für die Voraussetzung}
+\subsection{Anpassungen für Entwicklungszwecke}
+hier bla bla
+
+\subsection{Nötige Schritte für die Nutzung}
+hier auch bla bla
 
 \section{Konzept}
 Hier kommt der Scheiß ist zustand rein
