@@ -7,10 +7,28 @@
 %label wird zum referenzieren benutzt, muss einzigartig sein.
 
 \section{Portaudio}
-Hier kommt der Scheiß ist zustand rein
+PortAudio is a free, cross-platform, open-source, audio I/O library.  It lets you write simple audio programs in 'C' or C++ that will compile and run on many platforms including Windows, Macintosh OS X, and Unix (OSS/ALSA). It is intended to promote the exchange of audio software between developers on different platforms. Many applications use PortAudio for Audio I/O.
+
+PortAudio provides a very simple API for recording and/or playing sound using a simple callback function or a blocking read/write interface. Example programs are included that play sine waves, process audio input (guitar fuzz), record and playback audio, list available audio devices, etc.
+
+\href{http://www.portaudio.com/}{Portaudio}
 
 \section{MP3 Decoder}
-Hier kommt der Scheiß ist zustand rein
+go-mpg123 is a library that provides bindings to libmpg123.
+Not all library functions are present, but there are enough bindings to decode an MP3 file using mpg123-open and mpg123-read. However, decoding from a file reader and feeding data directly to the decoder are not yet supported. Seeking and meta-data reading are also not yet supported.
+This library is still very much a work in progress.
+
+\href{https://github.com/bobertlo/go-mpg123}{MP3 Decoder}
 
 \section{MP3 Tag Info Reader}
 Hier kommt der Scheiß ist zustand rein
+
+ID3 (engl. identify an MP3 „identifiziere eine MP3“) ist ein Format für Zusatzinformationen (Metadaten), die in Audiodateien des MP3-Formats enthalten sein können. Die einzelnen Informationseinheiten werden ID3-Tag genannt (engl. tag „Etikett“).
+
+Bevor es ID3-Tags für Informationen wie den Namen des Albums, des Künstlers oder des Musik-Stils gab, musste der Datei- oder Verzeichnisname diese Angaben aufnehmen. Die Folge waren sehr lange Dateinamen und daher unübersichtliche Verzeichnisse. Ferner eignen sich Dateisysteme oft nicht für alle Sonderzeichen, die für manche Titel, Interpreten oder Albennamen nötig sind, sowie für die Länge der benötigten Dateinamen; auch unterscheiden sich oft die Zeichenkodierungen, zum Beispiel ISO 8859 und Unicode, Sonderzeichen wurden zwischen den verschiedenen code pages von ISO 8859 falsch interpretiert oder die Dateinamen werden bei der Übertragung über ein Netzwerk (genauer durch die Protokolle oder deren Implementierungen) verfälscht.
+
+Deshalb entschloss man sich, diese Metadaten in einem reservierten Teil der Audiodateien unterzubringen.
+
+In Anlehnung an ID3 entwickelte sich ein ähnliches Verfahren für Bilddateien im JPEG-Format, welche das Datum und ähnliche Informationen, die Exif-Information, enthalten.
+
+\href{https://github.com/mikkyang/id3-go}{ID3 Decoder}
