@@ -1,17 +1,44 @@
 %!TEX root = ../dokumentation.tex
 
 \chapter{Analyse}
+Bevor es an die tatsächliche Realisierung des Projektes geht, müssen zunächst
+bestehende Bibliotheken und Technologien auf ihre Nutzbarkeit im Bezug auf das
+Projekt analysiert werden. 
 
-%title wird unter dem Bsp. abgedruckt
-%caption wird im Verzeichnis abgedruckt
-%label wird zum referenzieren benutzt, muss einzigartig sein.
+\section{Abspielen der Musik}
+Um bei der Umsetzung nicht komplett von Null anfangen zu müssen, geht es
+zunächst an die Analyse einer geeigneten Audio Bibliothek, um das Abspielen von
+Audiodateien zu ermöglichen. Dabei ist es wichtig, dass die Biblitohek frei zu
+verwenden, gut dokumentiert ist und eine Schnittstelle für Go besitzt.  Im
+ersten Schritt der Analyse geht es an die Entscheidung einer geeigneter Audio
+Bibliothek, um das Abspielen von Audiodateieen zu ermöglichen. Wichtig dabei
+ist, dass die Bibliothek keine Einschränkungen bei der Benutzung hat, gut
+dokumentiert ist und dass die Bibliothek bestenfalls eine bestehende
+Schnittstelle für Go besitzt.
+\subsection{Bibliotheken}
+\paragraph{PortAudio}
+PortAudio ist eine Open Source Bibliothek, welche das Abspielen und Aufnehmen
+von Audiodateien ermöglicht. Sie bietet eine plattformübergreifende Lösung,
+wodurch sie auf den gängisten Betriebssystemen problemlos läuft. Einer der
+Gründ dafür, dass sie plattformübergreifend funktioniert, ist der, dass
+PortAudio in der Programmiersprache C geschrieben wurde. \hfill \break
 
-\section{Portaudio}
-PortAudio is a free, cross-platform, open-source, audio I/O library.  It lets you write simple audio programs in 'C' or C++ that will compile and run on many platforms including Windows, Macintosh OS X, and Unix (OSS/ALSA). It is intended to promote the exchange of audio software between developers on different platforms. Many applications use PortAudio for Audio I/O.
-
-PortAudio provides a very simple API for recording and/or playing sound using a simple callback function or a blocking read/write interface. Example programs are included that play sine waves, process audio input (guitar fuzz), record and playback audio, list available audio devices, etc.
-
+Die Kommunikation mit PortAudio verläuft über eine \ac{API} Schnittstelle.
+Diese entnimmt den Datenstrom entgegen, welche abgespielt werden soll. Während
+des Abspiel- oder Aufnahmprozesses von Audiodateien benutzt PortAudio entweder
+eine Callback-Funktion oder einen blockierendes Read/Write Interface.
 \href{http://www.portaudio.com/}{Portaudio}
+
+\paragraph{JACK}
+JACK ist ein Audioserver mit geringer Latenzzeit. 
+
+\subsection{Entscheidung}
+Auf den meisten Linux-Systemen ist PuleAudio
+PortAudio erfüllt alle zuvor definierten Voraussetzungen. Es gibt sogar eine
+gleichnamige in Go implementierte Bibliothek, welche im Hintergrund auf die
+Schnittstellen von PortAudio zurückgreift. So muss bei der späteren Entwicklung
+lediglich auf die Funktionen dieser Bibliothek zurückgegriffen werden, und sich
+keine Gedanken über die Anbindung mit PortAudio gemacht werden. 
 
 \section{MP3 Decoder}
 go-mpg123 is a library that provides bindings to libmpg123.
