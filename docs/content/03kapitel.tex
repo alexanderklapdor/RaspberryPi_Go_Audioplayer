@@ -3,17 +3,21 @@
 \chapter{Aufgabenstellung}
 
 Im Rahmen der Studienarbeit soll ein Musikplayer für den Raspberry Pi entworfen
-werden. Die Realisierung soll mit der Sprache Go erfolgen. Als Grundlage können
-alle bereits bestehenden Musikplayer dienen. Auch gibt es keine
-Einschränkungen, was den Einsatz von Bibliotheken zur Musiksteuerung oder
-ähnliches angeht. \hfill \break
+und umgesetzt werden. Die Realisierung soll mit der Sprache Go erfolgen. Als
+Grundlage können alle bereits bestehenden Musikplayer für den Raspberry Pi
+dienen. Auch gibt es keine Einschränkungen, was den Einsatz von Bibliotheken
+oder ähnlichem zur Musiksteuerung angeht. \hfill \break
 
-Der entstehende Musikplayer soll später von einem bestehenden Tool aus benutzt
-werden. Deshalb ist es wichtig, dass der Player eine Schnittstelle bietet, um
-das Aufrufen von externen Programmen ohne weiteres zu ermöglichen. \hfill
-\break
+Wichtig ist, dass der entstehende Musikplayer zukünftig von einem externen Tool aus
+angesteuert werden soll. Deshalb muss der Player eine Schnittstelle bieten,
+welche diesen Austausch unterstützt. Auch ist gefordert, dass die Musik im
+Hintergrund abgespielt wird, um ein störungsfreies Arbeiten im Vordergrund
+weiter zu ermöglichen. \hfill \break
 
-Funktionstechnisch sollen folgende Feature auf jeden Fall implementiert werden:
+An Funktionen soll der Fokus vor allem auf dem Starten und Stoppen von
+Audiodateien. Erstrebenswert wäre dennoch die Umsetzung möglichst vieler der
+folgenden Funktionen: 
+
 \begin{itemize}
 \item Starten,Stoppen und Pausieren der Wiedergabe der Audiodatei
 \item Verändern der Ausgabelautstärke
