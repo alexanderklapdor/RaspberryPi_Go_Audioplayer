@@ -19,8 +19,9 @@ sudo apt-get upgrade
 sudo apt-get install rpi-update 
 sudo rpi-update
 \end{lstlisting}
-Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet die gesamten Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}. Sudo wird hier überall gebraucht, da für alle Aktionen sudo Rechte benötigt werden.
-Mit dem Befehl \textit{sudo apt-get update} werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man was in welcher Version finden kann.
+Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet die gesamten Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}.
+Zusätzlich wird für alle durchzuführende Befehle der \textit{sudo} Befehl benutzt. \ac{Sudo} wird meistens dafür benutzt bestimmte Befehle mit Root-Rechten also mit Administratorrechten auszuführen. Der Vorteil liegt darin, dass der Nutzer eben nicht ein Administrator sein muss, um kurzfristig einen Befehl als Administrator auszuführen \autocite{moeller_2013}.
+Mit dem Befehl \textit{sudo apt-get update} werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man jedes Paket mit der neusten zur Verfügung stehenden Version finden kann.
 Mit dem Befehl \textit{sudo apt-get upgrade} werden alle bereits installierten Paket auf die in den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten entfernt. \autocite{apt-get-wiki_2019}
 Mit dem Befehl \textit{apt-get install rpi-update} wird das Paket \textit{rpi-update} mit allen seinen Abhängigkeiten heruntergeladen und installiert. Das Paket ist ein automatisiertes Skript zum updaten des Raspberry Pi's Betriebssystem auf die neuste Version.
 Als letzten Schritt wird nun das Paket \textit{rpi-update} ausgeführt und der Raspberry Pi lädt automatisch das neuste passende Betriebssystem herunter und installiert es. Dabei gehen keine Daten verloren.
@@ -33,7 +34,54 @@ sudo apt-get install mp3info
 \end{lstlisting}
 
 \subsection{Anpassungen für Entwicklungszwecke}
-hier bla bla
+Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an dem erstellen Programm weiter zu entwickeln
+\subsubsection{Installieren von Go}
+\begin{description}
+\item[Download von Go] \hfill \\ 
+    Link: https://golang.org/dl/ Kind: Archive OS: Linux Arch: ARMv6 Befehl: wget [LINK]
+\item[Extract Archive] \hfill \\ 
+    tar -C /usr/local -xzf [Filename]
+\item[Set export Path] \hfill \\
+    export PATH=\$PATH:/usr/local/go/bin
+\item[Check if go is correct installed] \hfill \\
+    go version -> "go version go x.x.x"
+\item[Go-Ordnerstruktur erstellen] \hfill \\
+\textbf{bin} will contain all Go executable's you have installed using go install command. \\ 
+\textbf{pkg} will contain all compiled packages that can be imported into your projects. 
+\\
+\textbf{src} will contain all your source files, either your own or sources downloaded from external repositories.
+\dirtree{%
+.1 /home.
+.2 /pi.
+.3 /go.
+.4 /src.
+.4 /pkg.
+.4 /bin.
+}
+mkdir go \\
+cd go \\
+mkdir src \\
+mkdir pkg \\
+mkdir bin \\
+\end{description}
+
+\subsubsection{Klonen des Git Repository}
+Starting from /home/pi/go/src/ : \\
+mkdir github.com \\
+cd github.com \\
+mkdir alexanderklapdor \\
+cd alexanderklapdor \\
+git clone https://github.com/alexanderklapdor/RaspberryPi-Go-Audioplayer.git ---Link - durch unterstriche ersetzten
+
+\subsubsection{Installieren der Go Abhängigkeiten}
+Starting from ../RaspberryPi-Go-Audioplayer/  --- - durch unterstriche ersetzten: \\
+go get ./...  
+
+\subsubsection{Modifizieren der ALSA Bibliothek Dateien}
+Folgende Datei muss editiert werden damit die Fehlermeldungen der ALSA Lib nicht mehr mit ausgegeben werden. Diese weisen nur darauf hin, dass die Folgenden Anschlüsse an dem Raspberry Pi nicht vorhanden sind. \\
+Datei: sudo nano /usr/share/alsa/alsa.conf \\
+Muss aus der Datei gelöscht werden:
+----Hier muss noch die Tabelle rein ---
 
 \subsection{Nötige Schritte für die Nutzung}
 hier auch bla bla
