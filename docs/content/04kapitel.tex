@@ -5,6 +5,45 @@ Bevor es an die tatsächliche Realisierung des Projektes geht, müssen zunächst
 bestehende Bibliotheken und Technologien auf ihre Nutzbarkeit im Bezug auf das
 Projekt analysiert werden. 
 
+%comment: evtl nen Raspberry Editionen verleich hinzufügen
+
+\section{Einarbeitung}
+Bevor es an die Realisierung der Aufgabe geht, steht zunächst das
+Vertrautmachen mit den unterschiedlichen Technologien im Vordergrund. Für die
+Entwicklung wurde eine Raspberry Pi 3 Modell B bereitgestellt. Da das zu
+entwickelnde Programm später auf dem gleichen Modell laufen wird, wird auf
+einen Vergleich der veschiedenen Modelle verzichtet. Bevor der Raspberry
+benutzt werden kann, muss zunächst ein Betriebssystem installiert werden.
+\hfill \break
+
+Für den Raspberry Pi gibt es verschiedene Distributionen, die auf verschiedene
+Anwendungsszenarien ausgelegt sind. Nachfolgend sind ein paar der verfügbaren
+Betriebssystem aufgelistet: 
+\begin{description}
+\item[Raspbian] \hfill \\ 
+    Raspbian ist eines der ältesten und meistverbreitetsten Betriebssysteme für
+    den Raspberry Pi. 
+\item[Pi MusicBox] \hfill \\ 
+    Bei der Pi MusicBox handelt es sich um eine Distribution, welche auf das
+    Abspielen von Musik ausgelegt ist. Es unterstützt alle bewährten
+    Streaming-Dienste oder auch das Streamen von Musik aus dem Netzwerk.
+\item[RetroPie] \hfill \\
+    Der RetroPie ist eine Distribution, welche das Emulieren von klassischen
+    Spielekonsolen ermöglicht.
+\end{description}
+
+Im Rahmen dieser Arbeit steht zwar das Abspielen von Musik im Vordergrund,
+allerdings soll dabei nicht auf bestehende Tools zurückgegriffen werden,
+sondern eine eigenständige Lösung entwickelt werden. Da es für den Raspbian 
+Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Musik, allerdings
+soll dafür ein eigenständiges Tool entwickelt werden. Da Raspbian das
+offizielle Betriebssystem für den Raspberry Pi ist, es am verbreitetsten ist
+und es dafür die meisten Pakete gibt, wird sich im Bezug auf diese Arbeit für
+das Betriebssystem Raspbian entschieden.
+
+
+\
+
 \section{Abspielen der Musik}
 Um bei der Umsetzung nicht komplett von Null anfangen zu müssen, geht es
 zunächst an die Analyse einer geeigneten Audio Bibliothek, um das Abspielen von
