@@ -13,13 +13,13 @@ Für die Nutzung des Audioplayer auf dem Raspberry Pi bzw. für die weitere Entw
 
 \subsection{Pakete installieren und Raspberry Pi updaten}
 Standardmäßig besitzt der Raspberry Pi das Betriebssystem \textit{Raspbian}. Dieses gilt es zuerst auf die neuste Version zu aktualisieren. Zusätzlich werden alle installierten Pakete des System auf die neuste Version zu aktualisieren. Dieses Vorhaben wird mit den folgenden Befehlen durchgeführt:
-\begin{lstlisting}
+\begin{lstlisting}[caption={Aktualsierien des Raspberry Pi}]
 sudo apt-get update 
 sudo apt-get upgrade 
 sudo apt-get install rpi-update 
 sudo rpi-update
 \end{lstlisting}
-Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet die gesamten Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}.
+Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}.
 Zusätzlich wird für alle durchzuführende Befehle der \textit{sudo} Befehl benutzt. \ac{Sudo} wird meistens dafür benutzt bestimmte Befehle mit Root-Rechten also mit Administratorrechten auszuführen. Der Vorteil liegt darin, dass der Nutzer eben nicht ein Administrator sein muss, um kurzfristig einen Befehl als Administrator auszuführen \autocite{moeller_2013}.
 Mit dem Befehl \textit{sudo apt-get update} werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man jedes Paket mit der neusten zur Verfügung stehenden Version finden kann.
 Mit dem Befehl \textit{sudo apt-get upgrade} werden alle bereits installierten Paket auf die in den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten entfernt. \autocite{apt-get-wiki_2019}
@@ -27,29 +27,43 @@ Mit dem Befehl \textit{apt-get install rpi-update} wird das Paket \textit{rpi-up
 Als letzten Schritt wird nun das Paket \textit{rpi-update} ausgeführt und der Raspberry Pi lädt automatisch das neuste passende Betriebssystem herunter und installiert es. Dabei gehen keine Daten verloren.
 \\
 Nachdem der Raspberry Pi sich erfolgreich aktualisiert hat, müssen nun noch die jedenfalls benötigten Pakete installiert werden. Dies wird mit den folgenden Befehlen gemacht.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Installation benötigter Pakete}]
 sudo apt-get install portaudio19-dev
 sudo apt-get install libmpg123-dev
 sudo apt-get install mp3info 
 \end{lstlisting}
 
-\subsection{Anpassungen für Entwicklungszwecke}
-Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an dem erstellen Programm weiter zu entwickeln
+\subsection{Nötige Schritte für Entwicklungszwecke}
+Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an dem erstellten Programm weiter zu entwickeln. Dazu müssen die im Anschluss stehenden Befehle auf dem Raspberry Pi ausgeführt werden.
 \subsubsection{Installieren von Go}
+Nun wird auf die Installation von Go eingegangen.
 \begin{description}
 \item[Download von Go] \hfill \\ 
-    Link: https://golang.org/dl/ Kind: Archive OS: Linux Arch: ARMv6 Befehl: wget [LINK]
+Link: https://golang.org/dl/ \\
+Kind: Archive \\
+OS: Linux \\
+Arch: ARMv6
+\begin{lstlisting}
+Befehl: wget [LINK]
+\end{lstlisting}
 \item[Extract Archive] \hfill \\ 
-    tar -C /usr/local -xzf [Filename]
+\begin{lstlisting}
+tar -C /usr/local -xzf [Filename]
+\end{lstlisting}
 \item[Set export Path] \hfill \\
-    export PATH=\$PATH:/usr/local/go/bin
+\begin{lstlisting}
+export PATH=\$PATH:/usr/local/go/bin
+\end{lstlisting}
 \item[Check if go is correct installed] \hfill \\
-    go version -> "go version go x.x.x"
+\begin{lstlisting}
+go version -> "go version go x.x.x"
+\end{lstlisting}
 \item[Go-Ordnerstruktur erstellen] \hfill \\
 \textbf{bin} will contain all Go executable's you have installed using go install command. \\ 
 \textbf{pkg} will contain all compiled packages that can be imported into your projects. 
 \\
-\textbf{src} will contain all your source files, either your own or sources downloaded from external repositories.
+\textbf{src} will contain all your source files, either your own or sources downloaded from external repositories. \newline
+Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System natürlich unterscheiden kann. \newline
 \dirtree{%
 .1 /home.
 .2 /pi.
@@ -58,33 +72,73 @@ Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an 
 .4 /pkg.
 .4 /bin.
 }
-mkdir go \\
-cd go \\
-mkdir src \\
-mkdir pkg \\
-mkdir bin \\
+Befehle zur Erstellung der Ordnerstruktur - Start bei \$Home:
+\begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
+mkdir go
+cd go
+mkdir src
+mkdir pkg
+mkdir bin
+\end{lstlisting}
 \end{description}
 
 \subsubsection{Klonen des Git Repository}
-Starting from /home/pi/go/src/ : \\
-mkdir github.com \\
-cd github.com \\
-mkdir alexanderklapdor \\
-cd alexanderklapdor \\
-git clone https://github.com/alexanderklapdor/RaspberryPi-Go-Audioplayer.git ---Link - durch unterstriche ersetzten
+Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go schreibt dafür einen standard vor, wie die Ordnerstruktur dazu aufgebaut werden sollte. Im folgenden ist nun die Ordnerstruktur und den dafür nötigen Code dargestellt. 
+Diese Befehle Starten von /home/pi/go/src/ : \\
+\begin{lstlisting}[caption={Klonen des Git Repository}]
+mkdir github.com 
+cd github.com
+mkdir alexanderklapdor
+cd alexanderklapdor
+git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git
+\end{lstlisting}
 
 \subsubsection{Installieren der Go Abhängigkeiten}
-Starting from ../RaspberryPi-Go-Audioplayer/  --- - durch unterstriche ersetzten: \\
+Starting from ../RaspberryPi\_Go\_Audioplayer/ :
+\begin{lstlisting}
 go get ./...  
+\end{lstlisting}
 
 \subsubsection{Modifizieren der ALSA Bibliothek Dateien}
-Folgende Datei muss editiert werden damit die Fehlermeldungen der ALSA Lib nicht mehr mit ausgegeben werden. Diese weisen nur darauf hin, dass die Folgenden Anschlüsse an dem Raspberry Pi nicht vorhanden sind. \\
-Datei: sudo nano /usr/share/alsa/alsa.conf \\
-Muss aus der Datei gelöscht werden:
-----Hier muss noch die Tabelle rein ---
+Die Konfigurationdatei der ALSA Bibliothek muss editiert werden damit die Fehlermeldungen, welche durch die nicht vorhandenen Anschlüsse am Raspberry Pi hervorgerufen werden, nicht immer mit ausgegeben werden. \\
+Zugriff auf die Datei wird mit dem Befehl \textbf{sudo nano /usr/share/alsa/alsa.conf}  \\
+Folgende Einträge müssen aus dieser Datei entfernt werden:
+\begin{lstlisting}[caption={Liste der zu löschenden Einträge}]
+pcm.rear cards.pcm.rear 
+pcm.center_lfe cards.pcm.center_lfe 
+pcm.side cards.pcm.side 
+pcm.surround21 cards.pcm.surround21 
+pcm.surround40 cards.pcm.surround40 
+pcm.surround41 cards.pcm.surround41 
+pcm.surround50 cards.pcm.surround50 
+pcm.surround51 cards.pcm.surround51 
+pcm.surround71 cards.pcm.surround71 
+pcm.iec958 cards.pcm.iec958 
+pcm.spdif iec958 
+pcm.hdmi cards.pcm.hdmi 
+pcm.dmix cards.pcm.dmix 
+pcm.dsnoop cards.pcm.dsnoop 
+pcm.modem cards.pcm.modem 
+pcm.phoneline cards.pcm.phoneline
+\end{lstlisting}
 
 \subsection{Nötige Schritte für die Nutzung}
-hier auch bla bla
+Für die reine Nutzung des Audioplayer sind durchaus weniger Schritte notwendig, da eine bereits kompilierte Version heruntergeladen und genutzt werden kann.
+Dazu sind folgende Schritte notwendig:
+\begin{description}
+\item[Herunterladen der neusten \href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/releases}{Release} Datei] \hfill \\ 
+\begin{lstlisting}
+wget [LINK]
+\end{lstlisting}
+\item[Entpacken des Archiv] \hfill \\
+\begin{lstlisting}
+tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
+\end{lstlisting}
+\item[Starten des Audioplayers] \hfill \\
+\begin{lstlisting}
+./RaspberryPi_Go_Audioplayer_v***/MusicPlayerClient
+\end{lstlisting}
+\end{description}
 
 \section{Konzept}
 Hier kommt der Scheiß ist zustand rein
