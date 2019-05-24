@@ -37,8 +37,8 @@ sudo apt-get install mp3info
 Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an dem erstellten Programm weiter zu entwickeln. Dazu müssen die im Anschluss stehenden Befehle auf dem Raspberry Pi ausgeführt werden.
 \subsubsection{Installieren von Go}
 Nun wird auf die Installation von Go eingegangen.
-\begin{description}
-\item[Download von Go] \hfill \\ 
+\begin{enumerate}
+\item \textbf{Herunterladen von Go}  \\
 Link: https://golang.org/dl/ \\
 Kind: Archive \\
 OS: Linux \\
@@ -46,31 +46,37 @@ Arch: ARMv6
 \begin{lstlisting}
 Befehl: wget [LINK]
 \end{lstlisting}
-\item[Extract Archive] \hfill \\ 
+
+\item \textbf{Entpacken des Archivs}  \\
 \begin{lstlisting}
 tar -C /usr/local -xzf [Filename]
 \end{lstlisting}
-\item[Set export Path] \hfill \\
+
+\item \textbf{Setzen des Export-Pfad} \\
 \begin{lstlisting}
 export PATH=\$PATH:/usr/local/go/bin
 \end{lstlisting}
-\item[Check if go is correct installed] \hfill \\
+
+\item \textbf{Überprüfen der Go Installation auf Korrektheit} \\
 \begin{lstlisting}
 go version -> "go version go x.x.x"
 \end{lstlisting}
-\item[Go-Ordnerstruktur erstellen] \hfill \\
+
+\item \textbf{Go-Ordnerstruktur anlegen} \\
 \textbf{bin} will contain all Go executable's you have installed using go install command. \\ 
 \textbf{pkg} will contain all compiled packages that can be imported into your projects. 
 \\
 \textbf{src} will contain all your source files, either your own or sources downloaded from external repositories. \newline
-Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System natürlich unterscheiden kann. \newline
+Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System natürlich unterscheiden kann. \\
+\begin{minipage}[t]{\textwidth}
 \dirtree{%
-.1 /home.
-.2 /pi.
-.3 /go.
-.4 /src.
-.4 /pkg.
-.4 /bin.
+.1 /. 
+.2 home. 
+.3 pi. 
+.4 go. 
+.5 src. 
+.5 pkg. 
+.5 bin. 
 }
 Befehle zur Erstellung der Ordnerstruktur - Start bei \$Home:
 \begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
@@ -80,11 +86,14 @@ mkdir src
 mkdir pkg
 mkdir bin
 \end{lstlisting}
-\end{description}
+\end{minipage}
+
+
+\end{enumerate}
 
 \subsubsection{Klonen des Git Repository}
 Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go schreibt dafür einen standard vor, wie die Ordnerstruktur dazu aufgebaut werden sollte. Im folgenden ist nun die Ordnerstruktur und den dafür nötigen Code dargestellt. 
-Diese Befehle Starten von /home/pi/go/src/ : \\
+Diese Befehle Starten von /home/pi/go/src/ :
 \begin{lstlisting}[caption={Klonen des Git Repository}]
 mkdir github.com 
 cd github.com
@@ -125,23 +134,25 @@ pcm.phoneline cards.pcm.phoneline
 \subsection{Nötige Schritte für die Nutzung}
 Für die reine Nutzung des Audioplayer sind durchaus weniger Schritte notwendig, da eine bereits kompilierte Version heruntergeladen und genutzt werden kann.
 Dazu sind folgende Schritte notwendig:
-\begin{description}
-\item[Herunterladen der neusten \href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/releases}{Release} Datei] \hfill \\ 
+\begin{enumerate}
+\item \textbf{Herunterladen der neusten \href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/releases}{Release} Datei}  \\
 \begin{lstlisting}
 wget [LINK]
 \end{lstlisting}
-\item[Entpacken des Archiv] \hfill \\
+
+\item \textbf{Entpacken des Archiv} \\
 \begin{lstlisting}
 tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
 \end{lstlisting}
-\item[Starten des Audioplayers] \hfill \\
+
+\item \textbf{Starten des Audioplayers} \\
 \begin{lstlisting}
 ./RaspberryPi_Go_Audioplayer_v***/MusicPlayerClient
 \end{lstlisting}
-\end{description}
+\end{enumerate}
 
 \section{Konzept}
-Hier kommt der Scheiß ist zustand rein
+Hier wird das allgemeine/übergeordnete Konzept dargstellt. Das muss dann hier auch noch genau erläutert werden wie das funktioniert, mit dem Hinweis das auf die einzelnen Punkte wie Client, Server und Socket im nachhinein nochmals explizit eingegangen wird
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Audioplayer_Konzept.png}
