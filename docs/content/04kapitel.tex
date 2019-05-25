@@ -67,35 +67,21 @@ eine Callback-Funktion oder einen blockierendes Read/Write Interface.
 \href{http://www.portaudio.com/}{Portaudio}
 
 \paragraph{libsoundio}
-libsoundio ist eine Audio-Input und -Output Schnittstelle, welche sich zum Abspielen
-von Audiodateien eignet. 
-- Plattformübergreifend
-- gut dokumentiert
-- lightweight abstraction over varius sound drivers
-
-
-Es zeichnet sich durch seine leichtgewichtige
-Abstraktion über mehrere Soundtreiber aus
-Libsoundio ist eine leichtgewichtige Abstrakiton über verschiedene Soundtreiber. 
-
-\paragraph{JACK}
-JACK ist ein Audioserver mit geringer Latenzzeit. 
-JACK ist ein Audioserver, welcher 
-JACK ist ein Audioserver, welcher sich durch seine niedrige Latenzzeiten 
-JACK -> Audioserver
-- geringe Latenzzeiten
-- sound server daemon
-- Verbindung über API
-- Open Source Projekt
-- free software unter GNU GPLkk
+libsoundio ist genau wie PortAudio eine Open Source Bibliothek, die eine
+Schnittstelle zur Ein- und Ausgabe von Audiostreams ermöglicht. Sie zeichnet
+sich dadurch aus, dass sie plattformübergreifend und sehr gut dokumentiert ist.
+libsoundio stellt eine leichtgewichtige Abstraktion über verchiedenste
+Soundtreiber dar.
 
 \subsection{Entscheidung}
-Auf den meisten Linux-Systemen ist PuleAudio
-PortAudio erfüllt alle zuvor definierten Voraussetzungen. Es gibt sogar eine
-gleichnamige in Go implementierte Bibliothek, welche im Hintergrund auf die
-Schnittstellen von PortAudio zurückgreift. So muss bei der späteren Entwicklung
-lediglich auf die Funktionen dieser Bibliothek zurückgegriffen werden, und sich
-keine Gedanken über die Anbindung mit PortAudio gemacht werden. 
+Nach unseren Recherchen können wir keine großartigen Unterschiede zwischen den
+beiden Grundkonzepten der Audio-Bibliotheken feststellen. Ein Vorteil von
+libsoundio ist ganz klar, dass sie eine ausgesprochen umfangreiche
+Dokumentation besitzt, in der der Entwickler einen großen Fokus auf
+Vollständigkeit gelegt hat. PortAudio hingegen ist insgesamt weiter verbreitet.
+Da es in Go eine Bibliothek gibt, welche im Hintergrund auf die Schnittstelle
+von PortAudio zurückgreift, haben wir uns im Rahmen der Arbeit für die
+Verwendung von PortAudio entschieden.
 
 \section{MP3 Decoder}
 go-mpg123 is a library that provides bindings to libmpg123.
