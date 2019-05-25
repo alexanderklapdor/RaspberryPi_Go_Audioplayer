@@ -162,33 +162,25 @@ Hier wird das allgemeine/übergeordnete Konzept dargestellt. Das muss dann hier 
 \newline
 
 \subsection{Konzept des Clients}
-Hier kommt der Scheiß ist zustand rein
+Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
 
-\begin{figure}[ht]
-    \begin{struktogramm}(150,60)[Client Ablauf] 
-        \assign{Konfigurationsdatei auslesen} 
-        \assign{Aufsetzen des Loggers}
-                        \ifthenelse[12]{1}{2} {Überprüfen ob Server bereits läuft}{Ja}{Nein} 
-                        \assign{}
-                        \change
-                        \assign{Starten des Servers}
-                        \ifend
-                        \ifthenelse[12]{2}{1} {Überprüfen ob Übergabeparameter übergeben wurden}{Ja}{Nein} 
-                        \assign{Parsen der Informationen in ein JSON Format}
-                        \assign{Senden des JSONs and den Server}
-                        \change
-                        \assign{Beenden des Clients}
-                        \ifend
+\begin{figure}[H]
+    \begin{struktogramm}(160,55)[Main-Funktion] 
+        \assign{\hfill Konfigurationsdatei auslesen\hfill} 
+        \assign{\hfill Aufsetzen des Loggers\hfill}
+        \ifthenelse[12]{1}{2} {Überprüfen ob Server bereits läuft}{Ja}{Nein} 
+        	\change
+            \assign[5]{\hfill Starten des Servers\hfill}
+        \ifend
+        \ifthenelse[12]{2}{1} {Überprüfen ob Übergabeparameter übergeben wurden}{Ja}{Nein} 
+        	\assign{\hfill Parsen der Informationen in ein JSON Format\hfill}
+            \assign{\hfill Senden des JSONs and den Server\hfill}
+            \change
+        \ifend
+        \assign[5]{\hfill Beenden des Clients\hfill}
     \end{struktogramm} 
 \caption{Client Programm - Ablauf} 
 \label{lst:client_ablauf} 
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.3]{Client_Konzept.png}
-	\caption{Audioplayer - Konzept}
-	\label{img:grafik-RaspberryPi3}
 \end{figure}
 
 1. Holt sich die Config(da stehen alle Sachen drinnen wie Ort des Sockets und blabla)\\
@@ -199,6 +191,33 @@ Hier kommt der Scheiß ist zustand rein
 6. Beenden des Clients \\
 
 \subsection{Konzept des Servers}
+
+Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Server.
+
+\begin{figure}[H]
+    \begin{struktogramm}(160,75)[Main-Funktion] 
+        \assign{\hfill Konfigurationsdatei auslesen\hfill} 
+        \assign{\hfill Aufsetzen des Loggers\hfill}
+        \assign{\hfill Aufsetzen des Sockets\hfill}
+        \assign{\hfill Starten des Pulseaudio Servers\hfill}
+        \while[5]{Endlosschleife}
+        	\assign{\hfill Abhören des Sockets auf Nachrichten\hfill}
+        	\ifthenelse[12]{3}{1} {Nachricht erhalten}{Ja}{Nein}
+        	    \assign[5]{\hfill Entpacken der Nachricht\hfill}
+        	    \ifthenelse[12]{6}{4} {Befehl == \enquote{Beenden}}{Ja}{Nein}
+        	    	\assign[5]{\hfill Beenden des Pulseaudio Server\hfill}
+        	    	\assign[5]{\hfill Schließen des Sockets\hfill}
+        	    	\assign[5]{\hfill Beenden des Servers\hfill}
+        	    	\change
+        	    	\assign[15]{\hfill Ausführen des Befehls\hfill}
+        	    \ifend
+        		\change
+        	\ifend
+        \whileend
+    \end{struktogramm} 
+\caption{Server Programm - Ablauf} 
+\label{lst:server_ablauf} 
+\end{figure}
 
 1. Holt sich die Config(da stehen alle Sachen drinnen wie Ort des Sockets und blabla)\\
 2. Setzt den Logger auf \\

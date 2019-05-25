@@ -42,8 +42,6 @@ und es dafür die meisten Pakete gibt, wird sich im Bezug auf diese Arbeit für
 das Betriebssystem Raspbian entschieden.
 
 
-\
-
 \section{Abspielen der Musik}
 Um bei der Umsetzung nicht komplett von Null anfangen zu müssen, geht es
 zunächst an die Analyse einer geeigneten Audio Bibliothek, um das Abspielen von
@@ -68,8 +66,28 @@ des Abspiel- oder Aufnahmprozesses von Audiodateien benutzt PortAudio entweder
 eine Callback-Funktion oder einen blockierendes Read/Write Interface.
 \href{http://www.portaudio.com/}{Portaudio}
 
+\paragraph{libsoundio}
+libsoundio ist eine Audio-Input und -Output Schnittstelle, welche sich zum Abspielen
+von Audiodateien eignet. 
+- Plattformübergreifend
+- gut dokumentiert
+- lightweight abstraction over varius sound drivers
+
+
+Es zeichnet sich durch seine leichtgewichtige
+Abstraktion über mehrere Soundtreiber aus
+Libsoundio ist eine leichtgewichtige Abstrakiton über verschiedene Soundtreiber. 
+
 \paragraph{JACK}
 JACK ist ein Audioserver mit geringer Latenzzeit. 
+JACK ist ein Audioserver, welcher 
+JACK ist ein Audioserver, welcher sich durch seine niedrige Latenzzeiten 
+JACK -> Audioserver
+- geringe Latenzzeiten
+- sound server daemon
+- Verbindung über API
+- Open Source Projekt
+- free software unter GNU GPLkk
 
 \subsection{Entscheidung}
 Auf den meisten Linux-Systemen ist PuleAudio
