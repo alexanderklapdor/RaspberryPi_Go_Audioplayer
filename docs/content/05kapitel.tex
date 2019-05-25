@@ -152,7 +152,7 @@ tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
 \end{enumerate}
 
 \section{Konzept}
-Hier wird das allgemeine/übergeordnete Konzept dargstellt. Das muss dann hier auch noch genau erläutert werden wie das funktioniert, mit dem Hinweis das auf die einzelnen Punkte wie Client, Server und Socket im nachhinein nochmals explizit eingegangen wird
+Hier wird das allgemeine/übergeordnete Konzept dargestellt. Das muss dann hier auch noch genau erläutert werden wie das funktioniert, mit dem Hinweis, dass auf die einzelnen Punkte wie Client, Server und Socket im nach hinein nochmals explizit eingegangen wird
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Audioplayer_Konzept.png}
@@ -163,6 +163,33 @@ Hier wird das allgemeine/übergeordnete Konzept dargstellt. Das muss dann hier a
 
 \subsection{Konzept des Clients}
 Hier kommt der Scheiß ist zustand rein
+
+\begin{figure}[ht]
+    \begin{struktogramm}(150,60)[Client Ablauf] 
+        \assign{Konfigurationsdatei auslesen} 
+        \assign{Aufsetzen des Loggers}
+                        \ifthenelse[12]{1}{2} {Überprüfen ob Server bereits läuft}{Ja}{Nein} 
+                        \assign{}
+                        \change
+                        \assign{Starten des Servers}
+                        \ifend
+                        \ifthenelse[12]{2}{1} {Überprüfen ob Übergabeparameter übergeben wurden}{Ja}{Nein} 
+                        \assign{Parsen der Informationen in ein JSON Format}
+                        \assign{Senden des JSONs and den Server}
+                        \change
+                        \assign{Beenden des Clients}
+                        \ifend
+    \end{struktogramm} 
+\caption{Client Programm - Ablauf} 
+\label{lst:client_ablauf} 
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.3]{Client_Konzept.png}
+	\caption{Audioplayer - Konzept}
+	\label{img:grafik-RaspberryPi3}
+\end{figure}
 
 1. Holt sich die Config(da stehen alle Sachen drinnen wie Ort des Sockets und blabla)\\
 2. Setzt den Logger auf \\
