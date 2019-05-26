@@ -39,34 +39,36 @@ Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an 
 Nun wird auf die Installation von Go eingegangen.
 \begin{enumerate}
 \item \textbf{Herunterladen von Go}  \\
-Link: https://golang.org/dl/ \\
-Kind: Archive \\
-OS: Linux \\
-Arch: ARMv6
+Als ersten Schritt gilt es die Programmiersprache Go auf den Raspberry Pi herunterzuladen. Dazu stellt der Hersteller offizielle Pakete für die unterschiedlichen Betriebssysteme und Architekturen zum Download bereit. Diese können über die \href{https://golang.org/dl/}{Download-Webseite} heruntergeladen werden. In diesem Fall wird für den Raspberry Pi das Paket für das Betriebssystem \textit{Linux} mit der Architektur \textit{ARMv6} benötigt. Nachdem das passende Paket auf der Webseite gefunden wurde, muss der Direkt-Link zu dem Download in den Zwischenspeicher kopiert werden und anschließend der folgende Befehl auf dem Raspberry Pi ausgeführt werden.
 \begin{lstlisting}
 Befehl: wget [LINK]
 \end{lstlisting}
 
 \item \textbf{Entpacken des Archivs}  \\
+Nachdem das offizielle Archiv für die Programmiersprache Go heruntergeladen wurde, muss dieses nun nach den Pfad \enquote{/user/local} entpackt werden. Für das entpacken des Archivs wird das standardmäßige Archivierungsprogramm für Linux \enquote{\ac{Tar}} verwendet. Der große Vorteil eines tar-Archivs ist, dass die Benutzerrechte einer Datei mit gesichert werden und diese beim Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das entpacken des Archivs wird durch den folgenden Befehl realisiert. Der Dateiname entspricht hier der zuvor heruntergeladenen Datei.
 \begin{lstlisting}
 tar -C /usr/local -xzf [Filename]
 \end{lstlisting}
 
 \item \textbf{Setzen des Export-Pfad} \\
+Damit das Betriebssystem Go auch System weit kennt, muss der Pfad zu der ausführbaren Datei von Go in die \textit{PATH} Variable eingetragen werden. Die \textit{PATH-Variable} ist eine Umgebungsvariable, die aus einer Komma-separierten Liste von Ordnern besteht, die die Shell beim der Eingabe eines Kommandos durchsucht \autocite{quigley_2000}. Dies bewirkt, dass von jedem Standpunkt im System auf Go bzw. den Go Compiler zugegriffen werden kann.
 \begin{lstlisting}
 export PATH=\$PATH:/usr/local/go/bin
 \end{lstlisting}
 
 \item \textbf{Überprüfen der Go Installation auf Korrektheit} \\
+Um nun zu Überprüfen, ob Go richtig installiert wurde und die Path-Variable korrekt gesetzt wurde, wird nun durch den einfachen Befehl \enquote{go version} eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Wird dabei eine gewisse Version angezeigt, ist Go richtig installiert und im System integriert.
 \begin{lstlisting}
 go version -> "go version go x.x.x"
 \end{lstlisting}
 
 \item \textbf{Go-Ordnerstruktur anlegen} \\
-\textbf{bin} will contain all Go executable's you have installed using go install command. \\ 
-\textbf{pkg} will contain all compiled packages that can be imported into your projects. 
+Go empfiehlt es eine Gewisse Ordnerstruktur für die Go Projekte anzulegen. Diese mit den folgenden Befehlen angelegt und besteht aus:
+\textbf{bin} enthält alle Go-Executable's, die mit dem Befehl go install installiert wurden. \\ 
+\textbf{pkg} enthält alle kompilierten Pakete, die in Projekte importiert werden können. 
 \\
-\textbf{src} will contain all your source files, either your own or sources downloaded from external repositories. \newline
+\textbf{src} enthält alle Quelldateien, entweder die eigenen oder aus externen Repositories heruntergeladene Quellen. \newline
+In der folgenden Übersicht wird die Ordnerstruktur nochmals visuell dargestellt.
 Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System natürlich unterscheiden kann. \\
 \begin{minipage}[t]{\textwidth}
 \dirtree{%
@@ -78,7 +80,8 @@ Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System
 .5 pkg. 
 .5 bin. 
 }
-Befehle zur Erstellung der Ordnerstruktur - Start bei \$Home:
+Die Befehle zur Erstellung der Ordnerstruktur sehen wie folgt aus. \\
+Ausgehend von \$Home:
 \begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
 mkdir go
 cd go
@@ -92,7 +95,7 @@ mkdir bin
 \end{enumerate}
 
 \subsubsection{Klonen des Git Repository}
-Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go schreibt dafür einen standard vor, wie die Ordnerstruktur dazu aufgebaut werden sollte. Im folgenden ist nun die Ordnerstruktur und den dafür nötigen Code dargestellt. 
+Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go schreibt dafür einen Standard vor, wie die Ordnerstruktur dazu bestenfalls aufgebaut werden sollte. Im folgenden werden nun die Befehle zur Erstellung Ordnerstruktur dargestellt. 
 Diese Befehle Starten von /home/pi/go/src/ :
 \begin{lstlisting}[caption={Klonen des Git Repository}]
 mkdir github.com 
@@ -103,6 +106,7 @@ git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git
 \end{lstlisting}
 
 \subsubsection{Installieren der Go Abhängigkeiten}
+Bei der Entwicklung des Audioplayers wurden weitere Go-Projekte verwendet, welche nun für die Entwicklung auf den lokalen Rechner heruntergeladen werden müssen. Um nicht alle Abhängigkeiten einzeln zu installieren, kann Go sich alle benötigten Projekte alleine herunterladen. Dies wird durch den folgenden Befehl gemacht.
 Starting from ../RaspberryPi\_Go\_Audioplayer/ :
 \begin{lstlisting}
 go get ./...  
