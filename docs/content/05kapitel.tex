@@ -233,38 +233,73 @@ Dies erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und Audio
 \section{Funktionen des Programms}
 Hier kommen die Scheiß Funktionen rein, alle Beschreiben und vll. kurz erläutern evtl. an einer Zeichnung wie diese Ablaufen.
 
-% Please add the following required packages to your document preamble:
-% \usepackage[table,xcdraw]{xcolor}
-% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \definecolor{Gray}{gray}{0.9}
-\begin{table}[H]
-\begin{tabular}{l|l}
+\begin{longtable}{l|l} 
 \rowcolor{Gray}
 Funktion & Beschreibung \\ \hline
-Audio abspielen &  \\ \hline
-Audio pausieren &  \\ \hline
-Audio fortfahren &  \\ \hline
-Audio stoppen &  \\ \hline
-Weiter &  \\ \hline
-Zurück &  \\ \hline
-Audio zur Playlist hinzufügen &  \\ \hline
-Audio von Playlist löschen &  \\ \hline
-Lautstärke festlegen &  \\ \hline
-Lautstärke erhöhen &  \\ \hline
-Lautstärke verringern &  \\ \hline
-Shuffel-Funktion aktivieren/deaktivieren &  \\ \hline
-Loop-Funktion aktivieren/deaktivieren &  \\ \hline
-aktuellen Song neustarten &  \\ \hline
-Informationen ausgeben & 
-\end{tabular}
-\caption{Funktionen des Audioplayers}
-\label{tab:funktions_tabelle}
-\end{table}
 
-\href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer#commands-of-the-client}{Kommandos}
-\\
-\href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer#console-arguments}{Console-Arguments}
+Audio abspielen & \begin{minipage}[t]{.558\textwidth} Zur Wiedergabe einer Audiodatei kann entweder ein einzelner Song oder eine gesamter Ordner als Pfad angegeben werden. Im Falle eines Ordners, wird eine Playlist mit den darin liegenden Audiodateien erstellt und wiedergegeben. \begin{lstlisting}
+./MusicPlayerClient play [File/Folder Path]
+\end{lstlisting} \end{minipage} \\\hline
 
+Audio pausieren & \begin{minipage}[t]{.558\textwidth} Der Audioplayer bietet die Möglichkeit einen aktuell laufenden Song zu pausieren. Technisch gesehen wir dabei der Stream(Das Decoden der Datei) pausiert sodass keine Ausgabe mehr erfolgt. \begin{lstlisting}
+./MusicPlayerClient pause
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio fortfahren & \begin{minipage}[t]{.558\textwidth} Nachdem der Befehl zum pausieren eines laufenden Song ausgeführt wurde, kann der Song auch ab der pausierten Stelle wieder fortgesetzt werden. Der Befehl funktioniert nur wenn ein Lied pausiert ist. \begin{lstlisting}
+./MusicPlayerClient resume
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio stoppen & \begin{minipage}[t]{.558\textwidth} Das stoppen einer Wiedergabe bewirkt, dass das aktuell laufende Lied angehalten wird aber sich nicht der Zeitpunkt gespeichert wird. Bei erneutem Starten beginnt der Song wieder von vorne. \begin{lstlisting}
+./MusicPlayerClient stop
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio-Weiter & \begin{minipage}[t]{.558\textwidth} Falls eine Ordner übergeben wurden ist oder manuell eine Playlist erstellt wurde, kann durch den folgenden Befehl das akutelle laufende Audio gestoppt werden und das nächste Lied in der Playlist wird automatisch gestartet. \begin{lstlisting}
+./MusicPlayerClient next
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio-Zurück & \begin{minipage}[t]{.558\textwidth} Äquivalent zur Funktion Audio-Weiter, wird bei dieser Funktion das aktuell lafende Audio gestoppt und das sich vorherige in der Playlist befindliche Audio wiedergegeben.  \begin{lstlisting}
+./MusicPlayerClient back/previous
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio zur Playlist hinzufügen &  \begin{minipage}[t]{.558\textwidth} Falls bereits eine Playlist besteht oder eine neue dadurch erstellt werden soll, kann über diesen Befehl ein Audio oder ein Ordner mit den darin liegenden Audios der Playlist angefügt werden. \begin{lstlisting}
+./MusicPlayerClient add/addToQueue [File/Folder path]
+\end{lstlisting} \end{minipage} \\ \hline
+
+Audio von Playlist löschen & \begin{minipage}[t]{.558\textwidth} Einzelne Audiodateien in einer Playlist können auch durch den folgenden Befehl wieder entfernt werden. Dazu muss die Nummer in der Playlist angegeben werden die bei der anzeige von Informationen mit ausgegeben wird. \begin{lstlisting}
+./MusicPlayerClient remove/delete/removeAt/deleteAt [Queue number]
+\end{lstlisting} \end{minipage} \\ \hline
+
+Lautstärke festlegen & \begin{minipage}[t]{.558\textwidth} Die Lautstärke der Ausgabe der Audiodateien kann zwischen 0 und 100 eigentständig selbst bestimmt werden. Dabei mir technisch gesehen die Lautstärke des Audioausgangs des Raspberry Pi verändert. \begin{lstlisting}
+./MusicPlayerClient setVolume [0-100]
+\end{lstlisting} \end{minipage} \\ \hline
+
+Lautstärke erhöhen & \begin{minipage}[t]{.558\textwidth} Um die Lautstärke nicht auf einen festen Wert zu setzen, kann auch einfach von dem akutellen Wert der Lautstärke um einen gewissen Grad erhöht werden. Bei jedem Aufruf dieser Funktion wird die Lautstärke um 10 Schritte erhöht. Maximal ist der Wert 100 möglich. \begin{lstlisting}
+./MusicPlayerClient louder/setVolumeUp
+\end{lstlisting} \end{minipage} \\ \hline
+
+Lautstärke verringern & \begin{minipage}[t]{.558\textwidth} Um die Lautstärke nicht auf einen festen Wert zu setzen, kann auch einfach von dem akutellen Wert der Lautstärke um einen gewissen Grad verringert werden. Bei jedem Aufruf dieser Funktion wird die Lautstärke um 10 Schritte verringert. Minimal ist der Wert 0 möglich. \begin{lstlisting}
+./MusicPlayerClient quieter/setVolumeDown
+\end{lstlisting} \end{minipage} \\ \hline
+
+Shuffle-Funktion & \begin{minipage}[t]{.558\textwidth} Die Shuffle-Funktion hat die Aufgabe die Audio in einer Playlist zufällig wiederzugeben. Dazu wird die Playlist per Zufall einmal neu durchgemischt, sodass eine Zufallswiedergabe stattfindet. Ein Aufruf bewirkt ein eimaliges durchmischen der Playlist. \begin{lstlisting}
+./MusicPlayerClient shuffle/setShuffle
+\end{lstlisting} \end{minipage} \\ \hline
+
+Loop-Funktion de/-aktivieren & \begin{minipage}[t]{.558\textwidth} Durch das aktivieren/deaktivieren der Loop-Funktion wird eine Playlist nach dem durchlauf wieder von vorne beginnen, also eine Endloswiedergabe. Dies ist auch Möglich wenn nur ein einzelner Song wiedergegeben wird. \begin{lstlisting}
+./MusicPlayerClient loop/setLoop [on,true/off,false]
+\end{lstlisting} \end{minipage} \\ \hline
+
+aktuellen Song neu starten & \begin{minipage}[t]{.558\textwidth} Durch diese Funktion wird die aktuell laufende Audio gestoppt und die gleiche Audio wieder von Anfang an wiedergegeben. \begin{lstlisting}
+./MusicPlayerClient repeat
+\end{lstlisting} \end{minipage} \\ \hline
+
+Informationen ausgeben & \begin{minipage}[t]{.558\textwidth} Hiermit werden dem Nutzer einige Informationen zum Audioplayer wie z.B. die aktuell laufende Audio sowie den Inhalt der Playlist in einer Tabellenform. Dabei werden die Informationen aus den ID3 Tags der Audiodateien geholt. Zusätzlich werden die aktuellen Lautstärke Einstellungen ausgegeben \begin{lstlisting}
+./MusicPlayerClient info
+\end{lstlisting} \end{minipage} \\
+\caption{Übersicht - Funktionen des Audioplayers} % needs to go inside longtable environment
+\label{tab:funktionendesaudioplayer_longtable}
+\end{longtable}
 
 \section{Bedienung des Programms}
 Beispiele für die Bedienung reinmachen ( Ordner abspielen, Loop, Playlist, blabla)
