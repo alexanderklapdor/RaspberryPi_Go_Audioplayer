@@ -32,14 +32,21 @@ Betriebssystem aufgelistet:
     Spielekonsolen ermöglicht.
 \end{description}
 
-Im Rahmen dieser Arbeit steht zwar das Abspielen von Musik im Vordergrund,
-allerdings soll dabei nicht auf bestehende Tools zurückgegriffen werden,
-sondern eine eigenständige Lösung entwickelt werden. Da es für den Raspbian 
 Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Musik, allerdings
 soll dafür ein eigenständiges Tool entwickelt werden. Da Raspbian das
 offizielle Betriebssystem für den Raspberry Pi ist, es am verbreitetsten ist
 und es dafür die meisten Pakete gibt, wird sich im Bezug auf diese Arbeit für
-das Betriebssystem Raspbian entschieden.
+das Betriebssystem Raspbian entschieden. \hfill \break
+
+Beim Installieren von Raspbian kann man auf einen :
+Um Raspbian auf dem Raspberry Pi zu installieren gibt es zwei Möglichkeiten:
+\ac{NOOBS} oder Raspbian verwenden. \ac{NOOBS} ist ein Operating System
+Installer, welche durch seine Einfachheit besonders anfängerfreundlich ist.
+Standardmäßig kommt er mit einer Installation von Raspbian und LibeELEC, kann
+aber zusätzlich noch weitere Betriebssysteme laden. Wenn man nur Raspbian
+verwenden will, kann man sich die Installation von \ac{NOOBS} sparen und direkt
+Raspbian nutzen. Da wir in unserem Projekt auch nur Raspbian verwenden werden,
+haben wir uns für die zweite Variante entschieden.
 
 
 \section{Abspielen der Musik}
@@ -84,6 +91,7 @@ von PortAudio zurückgreift, haben wir uns im Rahmen der Arbeit für die
 Verwendung von PortAudio entschieden.
 
 \section{MP3 Decoder}
+sich die Installation von \ac{NOOBS} sparen und direkt Raspbian nutzen. Da wir in unserem Projekt auch nur Raspbian verwenden werden, haben wir uns für die zweite Variante entschieden.wjk
 go-mpg123 is a library that provides bindings to libmpg123.
 Not all library functions are present, but there are enough bindings to decode an MP3 file using mpg123-open and mpg123-read. However, decoding from a file reader and feeding data directly to the decoder are not yet supported. Seeking and meta-data reading are also not yet supported.
 This library is still very much a work in progress.
