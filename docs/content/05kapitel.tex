@@ -20,11 +20,11 @@ sudo apt-get install rpi-update
 sudo rpi-update
 \end{lstlisting}
 Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme entwickelt wurde. Das Tool verwaltet Debian Pakete und somit auch die installierten Applikationen auf dem Raspberry Pi \autocite{apt-debian-wiki_2019}.
-Zusätzlich wird für alle durchzuführende Befehle der \textit{sudo} Befehl benutzt. \ac{Sudo} wird meistens dafür benutzt bestimmte Befehle mit Root-Rechten also mit Administratorrechten auszuführen. Der Vorteil liegt darin, dass der Nutzer eben nicht ein Administrator sein muss, um kurzfristig einen Befehl als Administrator auszuführen \autocite{moeller_2013}.
-Mit dem Befehl \textit{sudo apt-get update} werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man jedes Paket mit der neusten zur Verfügung stehenden Version finden kann.
-Mit dem Befehl \textit{sudo apt-get upgrade} werden alle bereits installierten Paket auf die in den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten entfernt. \autocite{apt-get-wiki_2019}
-Mit dem Befehl \textit{apt-get install rpi-update} wird das Paket \textit{rpi-update} mit allen seinen Abhängigkeiten heruntergeladen und installiert. Das Paket ist ein automatisiertes Skript zum updaten des Raspberry Pi's Betriebssystem auf die neuste Version.
-Als letzten Schritt wird nun das Paket \textit{rpi-update} ausgeführt und der Raspberry Pi lädt automatisch das neuste passende Betriebssystem herunter und installiert es. Dabei gehen keine Daten verloren.
+Zusätzlich wird für alle durchzuführende Befehle der \verb|sudo| Befehl benutzt. \ac{Sudo} wird meistens dafür benutzt bestimmte Befehle mit Root-Rechten also mit Administratorrechten auszuführen. Der Vorteil liegt darin, dass der Nutzer eben nicht ein Administrator sein muss, um kurzfristig einen Befehl als Administrator auszuführen \autocite{moeller_2013}.
+Mit dem Befehl \verb|sudo apt-get update| werden alle Paketquellen neu eingelesen - also ein großes Lexikon wo man jedes Paket mit der neusten zur Verfügung stehenden Version finden kann.
+Mit dem Befehl \verb|sudo apt-get upgrade| werden alle bereits installierten Paket auf die in den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten entfernt. \autocite{apt-get-wiki_2019}
+Mit dem Befehl \verb|apt-get install rpi-update| wird das Paket \verb|rpi-update| mit allen seinen Abhängigkeiten heruntergeladen und installiert. Das Paket ist ein automatisiertes Skript zum updaten des Raspberry Pi's Betriebssystem auf die neuste Version.
+Als letzten Schritt wird nun das Paket \verb|rpi-update| ausgeführt und der Raspberry Pi lädt automatisch das neuste passende Betriebssystem herunter und installiert es. Dabei gehen keine Daten verloren.
 \\
 Nachdem der Raspberry Pi sich erfolgreich aktualisiert hat, müssen nun noch die jedenfalls benötigten Pakete installiert werden. Dies wird mit den folgenden Befehlen gemacht.
 \begin{lstlisting}[caption={Installation benötigter Pakete}]
@@ -45,29 +45,30 @@ Befehl: wget [LINK]
 \end{lstlisting}
 
 \item \textbf{Entpacken des Archivs}  \\
-Nachdem das offizielle Archiv für die Programmiersprache Go heruntergeladen wurde, muss dieses nun nach den Pfad \enquote{/user/local} entpackt werden. Für das entpacken des Archivs wird das standardmäßige Archivierungsprogramm für Linux \enquote{\ac{Tar}} verwendet. Der große Vorteil eines tar-Archivs ist, dass die Benutzerrechte einer Datei mit gesichert werden und diese beim Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das entpacken des Archivs wird durch den folgenden Befehl realisiert. Der Dateiname entspricht hier der zuvor heruntergeladenen Datei.
+Nachdem das offizielle Archiv für die Programmiersprache Go heruntergeladen wurde, muss dieses nun nach den Pfad \verb|/user/local| entpackt werden. Für das entpacken des Archivs wird das standardmäßige Archivierungsprogramm für Linux \textit{\ac{Tar}} verwendet. Der große Vorteil eines tar-Archivs ist, dass die Benutzerrechte einer Datei mit gesichert werden und diese beim Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das entpacken des Archivs wird durch den folgenden Befehl realisiert. Der Dateiname entspricht hier der zuvor heruntergeladenen Datei.
 \begin{lstlisting}
 tar -C /usr/local -xzf [Filename]
 \end{lstlisting}
 
 \item \textbf{Setzen des Export-Pfad} \\
-Damit das Betriebssystem Go auch System weit kennt, muss der Pfad zu der ausführbaren Datei von Go in die \textit{PATH} Variable eingetragen werden. Die \textit{PATH-Variable} ist eine Umgebungsvariable, die aus einer Komma-separierten Liste von Ordnern besteht, die die Shell beim der Eingabe eines Kommandos durchsucht \autocite{quigley_2000}. Dies bewirkt, dass von jedem Standpunkt im System auf Go bzw. den Go Compiler zugegriffen werden kann.
+Damit das Betriebssystem Go auch System weit kennt, muss der Pfad zu der ausführbaren Datei von Go in die PATH-Variable eingetragen werden. Die \textit{PATH-Variable} ist eine Umgebungsvariable, die aus einer Komma-separierten Liste von Ordnern besteht, die die Shell beim der Eingabe eines Kommandos durchsucht \autocite{quigley_2000}. Dies bewirkt, dass von jedem Standpunkt im System auf Go bzw. den Go Compiler zugegriffen werden kann.
 \begin{lstlisting}
 export PATH=\$PATH:/usr/local/go/bin
 \end{lstlisting}
 
 \item \textbf{Überprüfen der Go Installation auf Korrektheit} \\
-Um nun zu Überprüfen, ob Go richtig installiert wurde und die Path-Variable korrekt gesetzt wurde, wird nun durch den einfachen Befehl \enquote{go version} eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Wird dabei eine gewisse Version angezeigt, ist Go richtig installiert und im System integriert.
+Um nun zu Überprüfen, ob Go richtig installiert wurde und die Path-Variable korrekt gesetzt wurde, wird nun durch den einfachen Befehl \verb|go version| eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Wird dabei eine gewisse Version angezeigt, ist Go richtig installiert und im System integriert.
 \begin{lstlisting}
 go version -> "go version go x.x.x"
 \end{lstlisting}
 
 \item \textbf{Go-Ordnerstruktur anlegen} \\
 Go empfiehlt es eine Gewisse Ordnerstruktur für die Go Projekte anzulegen. Diese mit den folgenden Befehlen angelegt und besteht aus:
-\textbf{bin} enthält alle Go-Executable's, die mit dem Befehl go install installiert wurden. \\ 
-\textbf{pkg} enthält alle kompilierten Pakete, die in Projekte importiert werden können. 
-\\
-\textbf{src} enthält alle Quelldateien, entweder die eigenen oder aus externen Repositories heruntergeladene Quellen. \newline
+\begin{itemize}
+\item \textbf{bin} - enthält alle Go-Executable's, die mit dem Befehl \verb|go install| installiert wurden.
+\item \textbf{pkg} - enthält alle kompilierten Pakete, die in Projekte importiert werden können. 
+\item \textbf{src} - enthält alle Quelldateien, entweder die eigenen oder aus externen Repositories heruntergeladene Quellen.
+\end{itemize}
 In der folgenden Übersicht wird die Ordnerstruktur nochmals visuell dargestellt.
 Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System natürlich unterscheiden kann. \\
 \begin{minipage}[t]{\textwidth}
@@ -81,7 +82,7 @@ Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich bei jedem System
 .5 bin. 
 }
 Die Befehle zur Erstellung der Ordnerstruktur sehen wie folgt aus. \\
-Ausgehend von \$Home:
+Ausgehend von \verb|$Home|:
 \begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
 mkdir go
 cd go
@@ -96,7 +97,7 @@ mkdir bin
 
 \subsubsection{Klonen des Git Repository}
 Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go schreibt dafür einen Standard vor, wie die Ordnerstruktur dazu bestenfalls aufgebaut werden sollte. Im folgenden werden nun die Befehle zur Erstellung Ordnerstruktur dargestellt. 
-Diese Befehle Starten von /home/pi/go/src/ :
+Diese Befehle Starten von \verb|/home/pi/go/src/| :
 \begin{lstlisting}[caption={Klonen des Git Repository}]
 mkdir github.com 
 cd github.com
@@ -107,14 +108,14 @@ git clone https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer.git
 
 \subsubsection{Installieren der Go Abhängigkeiten}
 Bei der Entwicklung des Audioplayers wurden weitere Go-Projekte verwendet, welche nun für die Entwicklung auf den lokalen Rechner heruntergeladen werden müssen. Um nicht alle Abhängigkeiten einzeln zu installieren, kann Go sich alle benötigten Projekte alleine herunterladen. Dies wird durch den folgenden Befehl gemacht.
-Starting from ../RaspberryPi\_Go\_Audioplayer/ :
+Starting from \verb|../RaspberryPi_Go_Audioplayer/| :
 \begin{lstlisting}
 go get ./...  
 \end{lstlisting}
 
 \subsubsection{Modifizieren der ALSA Bibliothek Dateien}
 Die Konfigurationdatei der ALSA Bibliothek muss editiert werden damit die Fehlermeldungen, welche durch die nicht vorhandenen Anschlüsse am Raspberry Pi hervorgerufen werden, nicht immer mit ausgegeben werden. \\
-Zugriff auf die Datei wird mit dem Befehl \textbf{sudo nano /usr/share/alsa/alsa.conf}  \\
+Zugriff auf die Datei wird mit dem Befehl \verb|sudo nano /usr/share/alsa/alsa.conf|  \\
 Folgende Einträge müssen aus dieser Datei entfernt werden:
 \begin{lstlisting}[caption={Liste der zu löschenden Einträge}]
 pcm.rear cards.pcm.rear 
@@ -169,16 +170,20 @@ Hier wird das allgemeine/übergeordnete Konzept dargestellt. Das muss dann hier 
 Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
 
 \begin{figure}[H]
-    \begin{struktogramm}(160,55)[Main-Funktion] 
+    \begin{struktogramm}(160,75)[Main-Funktion] 
         \assign{\hfill Konfigurationsdatei auslesen\hfill} 
         \assign{\hfill Aufsetzen des Loggers\hfill}
-        \ifthenelse[12]{1}{2} {Überprüfen ob Server bereits läuft}{Ja}{Nein} 
+        \ifthenelse[12]{2}{1} {Überprüfen ob Server bereits läuft}{Ja}{Nein} 
         	\change
             \assign[5]{\hfill Starten des Servers\hfill}
         \ifend
         \ifthenelse[15]{2}{1} {Überprüfen ob Übergabeparameter übergeben wurden}{Ja}{Nein} 
         	\assign{\hfill Parsen der Informationen in ein JSON Format\hfill}
             \assign{\hfill Senden des JSONs and den Server\hfill}
+            \while[5]{Bis Nachricht vom Server kommt}
+            	\assign{\hfill Warten...\hfill}
+            \whileend
+            \assign{\hfill Anzeigen der Nachricht vom Server\hfill}
             \change
         \ifend
         \assign[5]{\hfill Beenden des Clients\hfill}
@@ -187,33 +192,28 @@ Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den A
 \label{lst:client_ablauf} 
 \end{figure}
 
-1. Holt sich die Config(da stehen alle Sachen drinnen wie Ort des Sockets und blabla)\\
-2. Setzt den Logger auf \\
-3. Überprüft ob der Server bereits läuft, wenn nicht dann startet er den Server und wartet solange bis er hochgefahren ist und die Verbindung zum socket besteht. \\
-4. Überprüft ob Übergabeparameter(Kommando) übergeben wurden. Wenn nicht dann Programm beenden, wenn doch dann Parsen den Übergabewerte \\
-5. Packen der geparsten Informationen in ein JSON Format und senden dies JSON über den Socket an den Server. \\
-6. Beenden des Clients \\
-
 \subsection{Konzept des Servers}
 
 Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Server.
 
 \begin{figure}[H]
-    \begin{struktogramm}(160,75)[Main-Funktion] 
+    \begin{struktogramm}(160,80)[Main-Funktion] 
         \assign{\hfill Konfigurationsdatei auslesen\hfill} 
         \assign{\hfill Aufsetzen des Loggers\hfill}
         \assign{\hfill Aufsetzen des Sockets\hfill}
         \assign{\hfill Starten des Pulseaudio Servers\hfill}
         \while[5]{Endlosschleife}
         	\assign{\hfill Abhören des Sockets auf Nachrichten\hfill}
-        	\ifthenelse[12]{3}{1} {Nachricht erhalten}{Ja}{Nein}
+        	\ifthenelse[12]{5}{1} {Nachricht erhalten}{Ja}{Nein}
         	    \assign[5]{\hfill Entpacken der Nachricht\hfill}
-        	    \ifthenelse[12]{6}{4} {Befehl == \enquote{Beenden}}{Ja}{Nein}
+        	    \ifthenelse[12]{6}{5} {Befehl == \enquote{Beenden}}{Ja}{Nein}
+        	    	\assign[5]{\hfill Nachricht an Client senden\hfill}
         	    	\assign[5]{\hfill Beenden des Pulseaudio Server\hfill}
         	    	\assign[5]{\hfill Schließen des Sockets\hfill}
         	    	\assign[5]{\hfill Beenden des Servers\hfill}
         	    	\change
-        	    	\assign[15]{\hfill Ausführen des Befehls\hfill}
+        	    	\assign[10]{\hfill Ausführen des Befehls\hfill}
+        	    	\assign[10]{\hfill Nachricht an Client senden\hfill}
         	    \ifend
         		\change
         	\ifend
@@ -222,20 +222,13 @@ Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den A
 \caption{Server Programm - Ablauf} 
 \label{lst:server_ablauf} 
 \end{figure}
-
-1. Holt sich die Config(da stehen alle Sachen drinnen wie Ort des Sockets und blabla)\\
-2. Setzt den Logger auf \\
-3. Setzt den Socket auf \\
-4. Starten Pulseaudio \\
-5. Hört den Socket ab \\
-	5.1 Falls nichts kommt...warten \\
-	5.2 Falls was reinkommt - JSON Parsen und das gewünschte Kommando ausführen.\\
 	
 
 \section{Kommunikation über Sockets}
-Sockets erklären und kurz erläutern warum wir die verwendet haben.\\
-\\
-Ein Socket (von engl. Sockel, Steckverbindung oder Steckdose) ist ein vom Betriebssystem bereitgestelltes Objekt, das als Kommunikationsendpunkt dient. Ein Programm verwendet Sockets, um Daten mit anderen Programmen auszutauschen. Das andere Programm kann sich dabei auf demselben Computer (Interprozesskommunikation) oder einem anderen, via Netzwerk erreichbaren Computer befinden. Die Kommunikation über Sockets erfolgt in der Regel bidirektional, das heißt, über das Socket können Daten sowohl empfangen als auch gesendet werden.
+Eines der größten Schwierigkeiten in diesem Projekt war es ein Programm zu entwickeln, was einerseits eine Audiodatei abspielt und gleichzeitig noch Befehle entgegennehmen kann jedoch dazu aber nicht das System blockiert, sodass nichts anderes mehr getätigt werden kann. Um dies zu ermöglichen wurde sich für das bereits beschriebene Konzept aus Server und Client entschieden, die über einen Socket kommunizieren. \\
+Ein \textit{Socket} ist ein Kommunikationsendpunkt der vom Betriebssystem als Objekt bereitgestellt wird. Programme verwenden meistens Sockets um mit anderen Programmen Daten auszutauschen und miteinander zu kommunizieren. Dies ist unabhängig davon, ob beide Programme sich auf dem selbem Computer oder einem anderen, über das Netzwerk erreichbaren Computer befinden. Sockets kommunizieren in der Regel bidirektional, was bedeutet, dass über den Socket sowohl Daten gesendet wie auch empfangen werden können. Technisch ist der Socket ein Speicherbereich in dem Konfigurationsparameter einer Verbindung wie auch ankommende und abgehende Daten zwischengespeichert werden. Aufgrund dessen, dass ein Socket vom Betriebssystem bereit gestellt wird, hat man keinen direkt zugriff auf den Socket sondern kann nur über Funktionen der Programmiersprache auf den Socket zugreifen.
+Ein Socket wird immer von einem Programm bei Bedarf erstellt und ist somit diesem Prozess fest zugeordnet \autocite{pollakowski_2012}. \\
+Dies erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und Audio Dateien abspielen kann und dabei nicht das System "blockiert". Der Client der über den Socket mit dem Server kommuniziert wird immer nur für die Übertragung eines Befehl übertragen und hat damit nur die Aufgabe den Server mit neuen Befehlen zu füllen.
 
 \section{Funktionen des Programms}
 Hier kommen die Scheiß Funktionen rein, alle Beschreiben und vll. kurz erläutern evtl. an einer Zeichnung wie diese Ablaufen.
