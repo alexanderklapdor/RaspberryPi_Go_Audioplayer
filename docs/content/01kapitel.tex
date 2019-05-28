@@ -3,7 +3,7 @@
 \chapter{Einleitung}
 Aktuell kann der Trend beobachtet werden, dass etablierte Applikationen oder
 Programme dazu übergehen, zusätzliche Funktionalitäten zu ihren Grundfeatures
-hinzuzufügen. So umfasst \textbf{beispielsweise} die beliebteste Handyapplikation in China namens
+hinzuzufügen. So umfasst beispielsweise die beliebteste Handyapplikation in China namens
 \textit{WeChat} weitaus mehr Funktionen als nur zum einfachen
 Nachrichtenaustausch, wofür sie anfänglich entwickelt wurde. Mittlerweile
 bietet die Applikation sogar Möglichkeiten zur Navigation, zum
@@ -12,48 +12,44 @@ Zahlungen \autocite{was_ist_wechat?_2019}. Auch \textit{WhatsApp} hat begonnen i
 Fokus auf zusätzliche Funktionen zu erweitern. So stellt WhatsApp mittlerweile
 Möglichkeiten für Internetanrufe und Videochat zur Verfügung, und arbeitet
 aktuell an der Einführung eines Bezahl-Features \autocite{shead_2019}. \hfill
-\break
 
 
-Diese \glqq Allround-Lösungen\grqq \space ermöglichen es zwar die Anzahl der
+Diese \enquote{Allround-Lösungen} \space ermöglichen es zwar die Anzahl der
 benötigten Applikationen zu reduzieren, schränken aber die Individualität der
 Nutzer ein, da die einzelnen Features oft fest implementiert sind und nicht
 einfach aus der App oder dem Programm entfernt werden können. Dies führt
 oftmals zu einer unnötigen Speicherverschwendung. Des Weiteren können diese
 Softwarepakete meist den Einsatz von Spezialprogrammen nicht ersetzen, da diese
-nur die Grundfunktionalitäten enthalten. \hfill \break
+nur die Grundfunktionalitäten enthalten. \hfill
 
 
-Auch durch die zuvor genannten Punkte, hat sich in den letzen Jahren der Trend
+Durch die zuvor genannten Punkte, hat sich auch in den letzten Jahren der Trend
 von \acp{API} weiter fortgesetzt. Immer mehr Entwickler setzen darauf
 Schnittstelle anzubieten, die den einfachen Austausch von Informationen mit den
 Programmen ermöglichen. Dies vereinfacht das Verknüpfen von verschiedenen
 Programmen ungemein, und bietet den großen Vorteil, dass man als Entwickler auf
 etablierte Speziallösungen zurückgreifen kann, und nicht alles von Grund auf
-neuentwickeln muss. So entstehen anstatt riesiger in sich geschlossener Programme
+neu entwickeln muss. So entstehen anstatt riesiger in sich geschlossener Programme
 dynamische Softwarepakete, welche von unterschiedlichsten Entwicklern weiter
-entwickelt werden \autocite{babati_2018} \autocite{sandoval_2018}. \hfill
-\break
-
+entwickelt werden \autocite{babati_2018} \autocite{sandoval_2018}. \hfill \break
 
 Im Rahmen dieser Arbeit soll keinesfalls eine perfekt ausgearbeitete
 Komplettlösung erarbeitet werden, sondern ganz nach der ersten Regel der
-Unix-Philsophie:
+Unix-Philosophie:
 \begin{quote}
 \glqq Schreibe Computerprogramme so, dass sie nur eine Aufgabe erledigen und diese gut machen\grqq \autocite{gancarz_1997}
 \end{quote}
 lediglich ein Programm, welches die Grundfunktionalitäten eines Musikplayers erfüllt.
-\hfill \break
 
 
-Unix Philosophie
-\begin{itemize}
-\item Schreibe Computerprogramme so, dass sie nur eine Aufgabe erlediegen und
-diese gut machen.
-\item Schreibe Programme so, dass sie zusammenarbeiten
-\item Schreibe Programme so, dass sie Textströme verarbeiten, denn das ist eine
-universelle Schnittstelle.
-\end{itemize}
+%Unix Philosophie
+%\begin{itemize}
+%\item Schreibe Computerprogramme so, dass sie nur eine Aufgabe erlediegen und
+%5diese gut machen.
+%\item Schreibe Programme so, dass sie zusammenarbeiten
+%\item Schreibe Programme so, dass sie Textströme verarbeiten, denn das ist eine
+%universelle Schnittstelle.
+%\end{itemize}
 
 
 \section{Ist-Zustand}
@@ -61,19 +57,17 @@ Zur Technikverwaltung einer Theatergruppe wird aktuell bereits ein Raspberry
 Pi eingesetzt, um während des Spiels die Steuerung des Lichts übernehmen zu
 können. So können die Lichter von einer zentralen Stelle aus gesteuert werden,
 und automatisierte Lichtabläufe erstellt werden. Während Aufführungen oder
-Proben werden neben Lichteffekte auch noch Musik zur Untermalung des
+Proben wird neben Lichteffekte auch noch Musik zur Untermalung des
 Schauspiels eingesetzt. Die Steuerung der Musik wird aktuell noch manuell von
 einer Musikanlage aus vorgenommen. Diese Anlage befindet sich am Ende des
-Raumes, weshalb zur Steuerung dieser immmer ein Kabel quer durch den ganzen
+Raumes, weshalb zur Steuerung dieser immer ein Kabel quer durch den ganzen
 Raum gelegt werden muss.
 
 \section{Problemstellung}
-Das Problem an der bestehenden Lösung ist, dass das manuelle Kabel zum einen
-sehr unschön ist und zum anderen auch dazuführt, dass das Kabel durch 
 Das Problem an der bestehenden Lösung ist zunächst, dass das manuelle
-Kabellegen jedes Mal eienn ungewollten Aufwand darstellt, und auch zu einer
+Kabellegen jedes Mal einen ungewollten Aufwand darstellt, und auch zu einer
 weiteren Fehlerquelle wird, da es durch Personen beispielsweise beschädigt
-werden kann. Des Weitern gibt es aktuell noch keine Möglichkeit, automatisierte
+werden kann. Des Weiteren gibt es aktuell noch keine Möglichkeit, automatisierte
 Abläufe mit Licht und Musik zu erstellen. Dies führt dazu, dass wiederholende
 Abläufe manuell gesteuert werden muss, was immer ein erhöhtes Fehlerpotenzial
 darstellt. Dies sollte zukünftig vermieden werden.
@@ -84,7 +78,7 @@ Zur Vereinfachung der Steuerung einer Theatergruppe sollen zukünftig alle
 relevante Elemente von einem zentralen Ort aus gesteuert werden können. Dies
 soll die Arbeit der Personen hinter der Technik erleichtern, und das Auftauchen
 von Fehlern reduzieren. Auch der Aufbauaufwand wird verringert, da ein
-Kabellegen nicht mehr nötig ist.Des Weiteren soll es möglich sein,
+Kabellegen nicht mehr nötig ist. Des Weiteren soll es möglich sein,
 automatisierte Abläufe mit Musik und Licht zu erstellen, sodass die
 Technikleute nur noch eine passive Überwachungsrolle einnehmen müssen, und ein
 manuelles Eingreifen nur noch im

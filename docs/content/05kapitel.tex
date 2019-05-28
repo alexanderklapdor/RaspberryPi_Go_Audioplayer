@@ -228,10 +228,11 @@ Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den A
 Eines der größten Schwierigkeiten in diesem Projekt war es ein Programm zu entwickeln, was einerseits eine Audiodatei abspielt und gleichzeitig noch Befehle entgegennehmen kann jedoch dazu aber nicht das System blockiert, sodass nichts anderes mehr getätigt werden kann. Um dies zu ermöglichen wurde sich für das bereits beschriebene Konzept aus Server und Client entschieden, die über einen Socket kommunizieren. \\
 Ein \textit{Socket} ist ein Kommunikationsendpunkt der vom Betriebssystem als Objekt bereitgestellt wird. Programme verwenden meistens Sockets um mit anderen Programmen Daten auszutauschen und miteinander zu kommunizieren. Dies ist unabhängig davon, ob beide Programme sich auf dem selbem Computer oder einem anderen, über das Netzwerk erreichbaren Computer befinden. Sockets kommunizieren in der Regel bidirektional, was bedeutet, dass über den Socket sowohl Daten gesendet wie auch empfangen werden können. Technisch ist der Socket ein Speicherbereich in dem Konfigurationsparameter einer Verbindung wie auch ankommende und abgehende Daten zwischengespeichert werden. Aufgrund dessen, dass ein Socket vom Betriebssystem bereit gestellt wird, hat man keinen direkt zugriff auf den Socket sondern kann nur über Funktionen der Programmiersprache auf den Socket zugreifen.
 Ein Socket wird immer von einem Programm bei Bedarf erstellt und ist somit diesem Prozess fest zugeordnet \autocite{pollakowski_2012}. \\
-Dies erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und Audio Dateien abspielen kann und dabei nicht das System "blockiert". Der Client der über den Socket mit dem Server kommuniziert wird immer nur für die Übertragung eines Befehl übertragen und hat damit nur die Aufgabe den Server mit neuen Befehlen zu füllen.
+Dies erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und Audiodateien abspielen kann und dabei nicht das System "blockiert". Der Client der über den Socket mit dem Server kommuniziert wird immer nur für die Übertragung eines Befehl übertragen und hat damit nur die Aufgabe den Server mit neuen Befehlen zu füllen.
 
 \section{Funktionen des Programms}
-Hier kommen die Scheiß Funktionen rein, alle Beschreiben und vll. kurz erläutern evtl. an einer Zeichnung wie diese Ablaufen.
+Nachdem nun die Konzepte zur Umsetzung des Audioplayers beschrieben wurden, wird nun auf die jeweiligen Funktionen des Audioplayers eingegangen. Dabei wird zu jeder Funktion eine 
+kurze Beschreibung sowie die Syntax für den Aufruf erläutert.
 
 \definecolor{Gray}{gray}{0.9}
 \begin{longtable}{l|l} 
@@ -300,7 +301,4 @@ Informationen ausgeben & \begin{minipage}[t]{.558\textwidth} Hiermit werden dem 
 \caption{Übersicht - Funktionen des Audioplayers} % needs to go inside longtable environment
 \label{tab:funktionendesaudioplayer_longtable}
 \end{longtable}
-
-\section{Bedienung des Programms}
-Beispiele für die Bedienung reinmachen ( Ordner abspielen, Loop, Playlist, blabla)
 
