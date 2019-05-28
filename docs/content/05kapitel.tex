@@ -2,7 +2,7 @@
 
 \chapter{Umsetzung}
 
-Im folgenden wird nun detailliert auf das entwickelte Konzept eingegangen und deren Funktionsweisen erläutert.
+Nach der Analyse der von unterschiedlichen Technologien, wird im folgenden auf das damit entwickelte Konzept eingegangen und deren Funktionsweise erläutert. Zudem werden die möglichen Funktionen mit dem Audioplayer dargestellt und in Kombination mit einer kurzen Beschreibung auf die dafür nötigen Übergabeparameter eingegangen.
 
 %title wird unter dem Bsp. abgedruckt
 %caption wird im Verzeichnis abgedruckt
@@ -157,14 +157,26 @@ tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
 \end{enumerate}
 
 \section{Konzept}
-Hier wird das allgemeine/übergeordnete Konzept dargestellt. Das muss dann hier auch noch genau erläutert werden wie das funktioniert, mit dem Hinweis, dass auf die einzelnen Punkte wie Client, Server und Socket im nach hinein nochmals explizit eingegangen wird
+Um eine übergreifende Sicht über den Audioplayer zu bieten, werden in den folgenden Abschnitten die einzelnen Konzepte für die Umsetzung dargestellt. Dazu wird nun als erstes ein übergeordnetes Konzept dargestellt und erläutert um einen Überblick über die einzelnen Komponenten des entwickelten Audioplayers zu bekommen.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Audioplayer_Konzept.png}
 	\caption{Audioplayer - Konzept}
-	\label{img:grafik-RaspberryPi3}
+	\label{img:Konzept-Audioplayer}
 \end{figure}
-\newline
+
+Das in Abbildung \ref{img:Konzept-Audioplayer} dargestellten Konzept spiegelt eine übergreifende interaktive Sicht des Audioplayers wieder. Zudem sind in der Abbildung alle für den Audioplayer benötigten Komponenten zu erkennen, wie:
+\begin{itemize}
+\item Nutzenden Personen
+\item \ac{CMD}
+\item Audioplayer-Client
+\item Socket
+\item Audioplayer-Server
+\end{itemize}
+
+Der Aufbau dieses Konzeptes wurde bewusst so gewählt, damit keine Abhängigkeiten zwischen der  Eingabe von Befehlen durch die nutzenden Personen und den technischen Funktionen des Audioplayers zur Wiedergabe und Steuerung der Audiodateien besteht. Daher sind der Client und der Server eigenständige Programme die über einen Socket kommunizieren. Ein weiterer Vorteil dieses Aufbau ist, dass theoretisch mehrere Nutzer den selben Audioplayer nutzen und auch steuern können, was ganz neue Einsatzmöglichkeiten bietet. \\
+Die nutzenden Personen stellen hier den späteren Bediener des Audioplayers da, welche über eine Kommandozeilen-Programm (CMD bzw.Shell) Befehle an den Audioplayer-Client senden können. Die Befehle werden durch den Aufruf des Client mit den entsprechenden Parametern übergeben. Der Client empfängt die Befehle des Nutzers und und leitet diese als \ac{JSON} über einen vorher erstellten Socket an den Server weiter. Der Server interpretiert den Befehl und führt die gewünschte Aktion aus. Anschließend sendet der Server eine Statusmeldung(Nachricht) an den Client zurück, welcher diese dem Nutzer über das Kommandozeilen-Programm ausgibt. Danach danach beendet sich der Client wieder - der Server läuft durchgängig weiter, bis dieser explizit durch einen \enquote{Beenden} Befehl heruntergefahren wird. \\ Diese Beschreibung des Konzeptes stellt nur eine grobe Übersicht der Funktionsweise dar, weshalb in den nächsten Kapitalpunkten nochmals genauer auf den Client sowie den Server und dem Socket eingegangen wird.
 
 \subsection{Konzept des Clients}
 Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
