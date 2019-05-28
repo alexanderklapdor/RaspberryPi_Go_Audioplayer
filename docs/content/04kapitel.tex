@@ -91,22 +91,34 @@ von PortAudio zurückgreift, haben wir uns im Rahmen der Arbeit für die
 Verwendung von PortAudio entschieden.
 
 \section{MP3 Decoder}
-sich die Installation von \ac{NOOBS} sparen und direkt Raspbian nutzen. Da wir in unserem Projekt auch nur Raspbian verwenden werden, haben wir uns für die zweite Variante entschieden.wjk
-go-mpg123 is a library that provides bindings to libmpg123.
-Not all library functions are present, but there are enough bindings to decode an MP3 file using mpg123-open and mpg123-read. However, decoding from a file reader and feeding data directly to the decoder are not yet supported. Seeking and meta-data reading are also not yet supported.
-This library is still very much a work in progress.
+Bei MP3-Dateien handelt es sich um komprimierte Audio-Dateien. Im Vergleich zu
+anderen Audioformaten, setzt MP3 auf das Psychoakustik-Modell. Dieses besagt,
+dass Menschen nur in einer Frequenz von 20 Hz bis 20 kHz hören kann. MP3
+filtert deshalb alle anderen für den Menschen nicht hörbaren Bereich raus, und
+erreicht so eine Speicherersparnis um mehr als den Faktor 10 im Vergleich zum
+Rohformat. \hfill \break
 
+Da wir im Rahmen der Arbeit auch die Möglichkeit zum Abspielen von MP3-Dateien
+bieten wollen, muss bei der Implementierung auch auf einen MP3 Decoder zur
+Dekodierung der MP3-Dateien zurückgegriffen werden. Entschieden haben wir uns
+zu diesem Zweck für die Go-Bibliothek \textit{go-mpg123}. Diese greift im
+Hintergrund auf die Bibliothek libmpg123. Aktuell befindet sich die Bibliothek
+noch in der Entwicklung, allerdings bietet sie bereits die geforderte
+Funktionalität zur Dekodierung an.
 \href{https://github.com/bobertlo/go-mpg123}{MP3 Decoder}
 
 \section{MP3 Tag Info Reader}
-Hier kommt der Scheiß ist zustand rein
-
-ID3 (engl. identify an MP3 „identifiziere eine MP3“) ist ein Format für Zusatzinformationen (Metadaten), die in Audiodateien des MP3-Formats enthalten sein können. Die einzelnen Informationseinheiten werden ID3-Tag genannt (engl. tag „Etikett“).
-
-Bevor es ID3-Tags für Informationen wie den Namen des Albums, des Künstlers oder des Musik-Stils gab, musste der Datei- oder Verzeichnisname diese Angaben aufnehmen. Die Folge waren sehr lange Dateinamen und daher unübersichtliche Verzeichnisse. Ferner eignen sich Dateisysteme oft nicht für alle Sonderzeichen, die für manche Titel, Interpreten oder Albennamen nötig sind, sowie für die Länge der benötigten Dateinamen; auch unterscheiden sich oft die Zeichenkodierungen, zum Beispiel ISO 8859 und Unicode, Sonderzeichen wurden zwischen den verschiedenen code pages von ISO 8859 falsch interpretiert oder die Dateinamen werden bei der Übertragung über ein Netzwerk (genauer durch die Protokolle oder deren Implementierungen) verfälscht.
-
-Deshalb entschloss man sich, diese Metadaten in einem reservierten Teil der Audiodateien unterzubringen.
-
-In Anlehnung an ID3 entwickelte sich ein ähnliches Verfahren für Bilddateien im JPEG-Format, welche das Datum und ähnliche Informationen, die Exif-Information, enthalten.
-
+MP3 Dateien können neben den reinen Audiodaten auch noch zusätzliche
+Informationen speichern (Metadaten). Dafür verwendet MP3 ein Format namens
+\textit{ID3} (identity an MP3), welches einzelne Information in
+sogenannten \textit{ID3-Tags} speichert. In diesen Tags werden meist
+Informationen wie Interpreten, Titel oder auch Albumname gespeichert. Da diese
+Informationen in einem Musikplayer optimalerweise angezeigt werden sollten,
+muss nach einer Möglichkeit zum Auslesen dieser Tags gesucht werden. \hfill
+\break
+Aktuell unterstützt \textit{go-mp3} noch nicht das Auslesen der ID3 Tags.
+Deswegen muss nach einer anderen Bibliothek zur Auslesung dieser Daten gesucht
+werden. Die Entscheidung fiel dabei auf die Go-Bibliothek \textit{ID3 Decoder},
+da diese einfach zu verwenden ist und die meist-verbreitetste Go-Bibliothek
+dafür ist.
 \href{https://github.com/mikkyang/id3-go}{ID3 Decoder}
