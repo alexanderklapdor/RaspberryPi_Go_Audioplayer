@@ -2,46 +2,72 @@
 
 \addchap{\langanhang}
 
-(Beispielhafter Anhang)
- 
-
-{\Large
+{\large
 \begin{enumerate}[label=\Alph*.]
-	\item Assignment
-	\item List of CD Contents
-	\item CD 
+	\item Quellcode - MusicPlayerClient.go
+	\item Quellcode - MusicPlayerServer.go
+	\item Quellcode - logger/logger.go
+	\item Quellcode - portaudiofunctions/portaudiofunctions.go
+	\item Quellcode - screener/screener.go
+	\item Quellcode - sender/sender.go
+	\item Quellcode - serverfunctions/audiofunctions/audiofunctions.go
+	\item Quellcode - serverfunctions/connectionfunctions/connectionfunctions.go
+	\item Quellcode - serverfunctions/volumefunctions/volumefunctions.go
+	\item Quellcode - structs/structs.go
+	\item Quellcode - util/util.go
 \end{enumerate}
 }
 \pagebreak
-%\includepdf[pages=-,scale=.9,pagecommand={}]{Aufgabenstellung.pdf} % PDF um 10% verkleinert einbinden --> Kopf- und Fußzeile  werden so korrekt dargestellt. Die Option `pages' ermöglicht es, eine bestimmte Sequenz von Seiten (z.B. 2-10 oder `-' für alle Seiten) auszuwählen.
+
+\section*{A. Quellcode - MusicPlayerClient.go}
+\lstinputlisting[language=Golang]{../src/MusicPlayerClient.go}
+
 \pagebreak
-\section*{B. List of CD Contents}
-\begin{tabbing}
-	mm \= mm \= mmmmmmmmmmmmmmmm \= \kill
-	$\vdash$ \textbf{Literature/} \\ 
-	| \> $\vdash$ \textbf{Citavi-Project(incl pdfs)/} \> \> $\Rightarrow$ \textit{Citavi (bibliography software) project with}\\
-	| \> | \> \> \textit{almost all found sources relating to this report.} \\
-	| \> | \> \> \textit{The PDFs linked to bibliography items therein} \\
-	| \> | \> \> \textit{are in the sub-directory `CitaviFiles'}\\
-	| \> | \>  -- bibliography.bib  \> $\Rightarrow$ \textit{Exported Bibliography file with all sources}\\
-	| \> | \>  --	Studienarbeit.ctv4  \>  $\Rightarrow$ \textit{Citavi Project file}\\
-	| \> | \>  $\vdash$ \textbf{CitaviCovers/} \>  $\Rightarrow$ \textit{Images of bibliography cover pages}\\
-	| \> | \>  $\vdash$ \textbf{CitaviFiles/} \> $\Rightarrow$ \textit{Cited and most other found PDF resources}\\ %\llcorner
-	| \> $\vdash$ \textbf{eBooks/} \\
-	| \> $\vdash$ \textbf{JournalArticles/} \\
-	| \> $\vdash$ \textbf{Standards/}\\
-	| \> $\vdash$ \textbf{Websites/} \\ %\llcorner
-	|\\
-	$\vdash$ \textbf{Presentation/} \\
-	| \>  --presentation.pptx\\
-	| \>  --presentation.pdf\\
-	|\\
-	$\vdash$ \textbf{Report/} \\ %\llcorner
-	\>  -- Aufgabenstellung.pdf\\
-	\>  -- Studienarbeit2.pdf\\
-	\>  $\vdash$ \textbf{Latex-Files/}   $\Rightarrow$ \textit{editable \LaTeX~files and other included files for this report}\\ %\llcorner
-	\> \>  $\vdash$  \textbf{ads/}   	\> $\Rightarrow$ \textit{Front- and Backmatter}\\
-	\> \>  $\vdash$  \textbf{content/}  \> $\Rightarrow$ \textit{Main part}\\
-	\> \>  $\vdash$  \textbf{images/}   \> $\Rightarrow$ \textit{All used images}\\
-	\> \>  $\vdash$  \textbf{lang/}  \> $\Rightarrow$ \textit{Language files for \LaTeX~template}\\ %\llcorner
-\end{tabbing}
+
+\section*{B. Quellcode - MusicPlayerServer.go}
+\lstinputlisting[language=Golang]{../src/MusicPlayerServer.go}
+
+\pagebreak
+
+\section*{C. Quellcode - logger/logger.go}
+\lstinputlisting[language=Golang]{../src/logger/logger.go}
+
+\pagebreak
+
+\section*{D. Quellcode - portaudiofunctions/portaudiofunctions.go}
+\lstinputlisting[language=Golang]{../src/portaudiofunctions/portaudiofunctions.go}
+
+\pagebreak
+
+\section*{E. Quellcode - screener/screener.go}
+\lstinputlisting[language=Golang]{../src/screener/screener.go}
+
+\pagebreak
+
+\section*{F. Quellcode - sender/sender.go}
+\lstinputlisting[language=Golang]{../src/sender/sender.go}
+
+\pagebreak
+
+\section*{G. Quellcode - serverfunctions/audiofunctions/audiofunctions.go}
+\lstinputlisting[language=Golang]{../src/serverfunctions/audiofunctions/audiofunctions.go}
+
+\pagebreak
+
+\section*{H. Quellcode - serverfunctions/connectionfunctions/connectionfunctions.go}
+\lstinputlisting[language=Golang]{../src/serverfunctions/connectionfunctions/connectionfunctions.go}
+
+\pagebreak
+
+\section*{I. Quellcode - serverfunctions/volumefunctions/volumefunctions.g}
+\lstinputlisting[language=Golang]{../src/serverfunctions/volumefunctions/volumefunctions.go}
+
+\pagebreak
+
+\section*{J. Quellcode - structs/structs.go}
+\lstinputlisting[language=Golang]{../src/structs/structs.go}
+
+\pagebreak
+
+\section*{K. Quellcode - util/util.go}
+\lstinputlisting[language=Golang]{../src/util/util.go}
