@@ -176,7 +176,32 @@ Das in Abbildung \ref{img:Konzept-Audioplayer} dargestellten Konzept spiegelt ei
 \end{itemize}
 
 Der Aufbau dieses Konzeptes wurde bewusst so gewählt, damit keine Abhängigkeiten zwischen der  Eingabe von Befehlen durch die nutzenden Personen und den technischen Funktionen des Audioplayers zur Wiedergabe und Steuerung der Audiodateien besteht. Daher sind der Client und der Server eigenständige Programme die über einen Socket kommunizieren. Ein weiterer Vorteil dieses Aufbau ist, dass theoretisch mehrere Nutzer den selben Audioplayer nutzen und auch steuern können, was ganz neue Einsatzmöglichkeiten bietet. \\
-Die nutzenden Personen stellen hier den späteren Bediener des Audioplayers da, welche über eine Kommandozeilen-Programm (CMD bzw.Shell) Befehle an den Audioplayer-Client senden können. Die Befehle werden durch den Aufruf des Client mit den entsprechenden Parametern übergeben. Der Client empfängt die Befehle des Nutzers und und leitet diese als \ac{JSON} über einen vorher erstellten Socket an den Server weiter. Der Server interpretiert den Befehl und führt die gewünschte Aktion aus. Anschließend sendet der Server eine Statusmeldung(Nachricht) an den Client zurück, welcher diese dem Nutzer über das Kommandozeilen-Programm ausgibt. Danach danach beendet sich der Client wieder - der Server läuft durchgängig weiter, bis dieser explizit durch einen \enquote{Beenden} Befehl heruntergefahren wird. \\ Diese Beschreibung des Konzeptes stellt nur eine grobe Übersicht der Funktionsweise dar, weshalb in den nächsten Kapitalpunkten nochmals genauer auf den Client sowie den Server und dem Socket eingegangen wird.
+Die nutzenden Personen stellen hier den späteren Bediener des Audioplayers da, welche über eine Kommandozeilen-Programm (\ac{CMD} bzw. Shell) Befehle an den Audioplayer-Client senden können. Die Befehle werden durch den Aufruf des Client mit den entsprechenden Parametern übergeben. Der Client empfängt die Befehle des Nutzers und und leitet diese als \ac{JSON} über einen vorher erstellten Socket an den Server weiter. Der Server interpretiert den Befehl und führt die gewünschte Aktion aus. Anschließend sendet der Server eine Statusmeldung (Nachricht) an den Client zurück, welcher diese dem Nutzer über das Kommandozeilen-Programm ausgibt. Danach danach beendet sich der Client wieder - der Server läuft durchgängig weiter, bis dieser explizit durch einen \enquote{Beenden} Befehl heruntergefahren wird. \\
+Diese Beschreibung des Konzeptes stellt nur eine grobe Übersicht der Funktionsweise dar, weshalb in den nächsten Kapitalpunkten nochmals genauer auf den Client sowie den Server und dem Socket eingegangen wird. Zusätzlich wird die Nutzung von Konfigurationsdateien wie auch der Aufbau bzw. die Ordnerstruktur des Audioplayers erläutert.
+
+\subsection{Nutzung einer Konfigurationsdatei}
+Unter einer Konfigurationsdatei versteht man in diesem Zusammenhang eine Textdatei welche sich auf einem Computer befindet, in der bestimmte Einstellungen für Computerprogramme gespeichert werden. Für die Speicherung einer Konfigurationsdatei werden viele unterschiedliche Formate wie z.B. \ac{INI}, \ac{YAML}, \ac{XML} oder \ac{JSON} verwendet \autocite{hard_coding_and_soft_coding_2019} \autocite{lott_2019}. \\ Für den erstellten Audioplayer wurde eine Konfigurationsdatei in dem Format \ac{JSON} verwendet um wichtige Einstellungen verändern zu können, ohne direkt in den Programmcode eingreifen zu müssen. Aus diesem Grund befinden sich die folgenden dargestellten Einstellungspunkte in unterhalb dargestellten \ac{JSON} Datei. 
+
+\begin{jsonlisting}
+{
+"Socket_Path" : "/tmp/mp.sock",
+"Log_Dir": "logs/",
+"Server_Log": "server.log",
+"Server_Connection_Attempts": 10,
+"Client_Log": "client.log",
+"Default_Command": "default",
+"Default_Depth": 2,
+"Default_Input": "",
+"Default_Loop": true,
+"Default_Shuffle": false,
+"Default_Volume": 50,
+"Debug_Infos": true
+}
+\end{jsonlisting}
+
+Wie in dem Ausschnitt klar zu erkennen ist, werden einige Standardwerte für den Audioplayer in der Konfigurationsdatei gespeichert, wie unter anderem z.B. den Loop und Shuffle Status oder die Standardlautstärke wie auch die Tiefe für das durchsuchen von übergebenen Ordnern. Zusätzlich werden dort auch noch die Dateien bzw. Ordner angegeben in denen beispielsweise der Socket erstellt werden soll oder die Log Dateien gespeichert werden sollen. Besonders zu erwähnen ist, dass man über das Feld \verb|Debug_Infos| steuern kann, ob bei der Ausführung des Audioplayers Debug-Informationen mit ausgegeben werden sollen oder nicht. Dies ist gerade bei der weiteren Entwicklung des Audioplayers von hoher Relevanz.
+
+\subsection{Aufbau des Audioplayers}
 
 \subsection{Konzept des Clients}
 Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
