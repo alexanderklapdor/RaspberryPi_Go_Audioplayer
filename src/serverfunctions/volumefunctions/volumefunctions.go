@@ -15,33 +15,33 @@ func SetVolume(data structs.Data) string {
 		volume = data.Values[0]
 	} else {
 		volume = strconv.Itoa(data.Volume)
-	} // end of else
+	} // End of else
 	portaudiofunctions.SetVolume(volume)
 	logger.Info("Executing: Set volume to " + volume)
 	return "Set volume to " + volume
-} // end of setVolume
+} // End of setVolume
 
 // IncreaseVolume Function
 func IncreaseVolume() string {
 	logger.Info("Executing: Increase volume")
 	portaudiofunctions.SetVolumeUp("10")
 	return "Increased volume by 10 \n" + PrintVolume()
-} // end of increaseVolume
+} // End of increaseVolume
 
 // DecreaseVolume function
 func DecreaseVolume() string {
 	logger.Info("Executing: Decrease volume")
 	portaudiofunctions.SetVolumeDown("10")
 	return "Decreased volume by 10 \n" + PrintVolume()
-} // end of decreaseVolume
+} // End of decreaseVolume
 
 // getVolume function
 func GetVolume() (string, string) {
 	left, right := portaudiofunctions.GetVolume()
 	return left, right
-} // end of getVolume()
+} // End of getVolume()
 
-// printVolume function
+// PrintVolume function
 func PrintVolume() string {
 	left, right := GetVolume()
 	return "Current Volume:  Left(" + left + ")  Right(" + right + ")"

@@ -1,6 +1,6 @@
 package portaudiofunctions
 
-//Imports
+// Imports
 import (
 	"bytes"
 	"encoding/binary"
@@ -17,7 +17,7 @@ import (
 	"github.com/gordonklaus/portaudio"
 )
 
-//global var definition
+// Global var definition
 var status string = "default"
 var needPause bool = false
 var needStop bool = false
@@ -25,7 +25,7 @@ var stream *portaudio.Stream
 
 // PlayAudio Function
 func PlayAudio(fileName string) {
-	// set needStop to false (default)
+	// Set needStop to false (default)
 	needStop = false
 
 	// Run after func finished
@@ -35,7 +35,7 @@ func PlayAudio(fileName string) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, os.Kill)
 
-	// create mpg123 decoder instance
+	// Create mpg123 decoder instance
 	decoder, err := mpg123.NewDecoder("")
 	util.Check(err, "Server")
 
@@ -43,10 +43,10 @@ func PlayAudio(fileName string) {
 	util.Check(decoder.Open(fileName), "Server")
 	defer decoder.Close()
 
-	// get audio format information
+	// Get audio format information
 	rate, channels, _ := decoder.GetFormat()
 
-	// make sure output format does not change
+	// Make sure output format does not change
 	decoder.FormatNone()
 	decoder.Format(rate, channels, mpg123.ENC_SIGNED_16)
 
@@ -69,28 +69,28 @@ func PlayAudio(fileName string) {
 	for {
 		// Check if pause flag is set
 		if needPause != false {
-			//stop stream
+			// Stop stream
 			stream.Stop()
-			// set status to pause
+			// Set status to pause
 			status = "pause"
-			// wait while status is pause
+			// Wait while status is pause
 			for needPause == true {
 				if needStop != false {
-					//exit function
+					// Exit function
 					return
 				}
 			}
-			//start stream
+			// Start stream
 			stream.Start()
-			//set status to play
+			// Set status to play
 			status = "play"
 		}
-		// check if stop flag is set
+		// Check if stop flag is set
 		if needStop != false {
-			//exit function
+			// Exit function
 			return
 		}
-		// read byte
+		// Read byte
 		audio := make([]byte, 2*len(out))
 		_, err = decoder.Read(audio)
 		if err == mpg123.EOF {
@@ -98,7 +98,7 @@ func PlayAudio(fileName string) {
 		}
 		util.Check(err, "Server")
 
-		// write byte to stream
+		// Write byte to stream
 		util.Check(binary.Read(bytes.NewBuffer(audio), binary.LittleEndian, out), "Server")
 		util.Check(stream.Write(), "Server")
 		select {
@@ -106,13 +106,13 @@ func PlayAudio(fileName string) {
 			return
 		default:
 		}
-	} // end of for
-} // end of PlayAudio
+	} // End of for
+} // End of PlayAudio
 
-// set status to Stop
+// Set status to Stop
 func setStatusStop() {
 	status = "stop"
-} // end of setStatusStop
+} // End of setStatusStop
 
 // CallNextSong function
 func CallNextSong() {
@@ -120,22 +120,22 @@ func CallNextSong() {
 		sender.Send([]byte("{\"Command\":\"next\",\"Data\":{}}"))
 	}
 
-} // end of CallNextSong
+} // End of CallNextSong
 
 // StopAudio Function
 func StopAudio() {
 	needStop = true
-} // end of StopAudio
+} // End of StopAudio
 
 //PauseAudio Function
 func PauseAudio() {
 	needPause = true
-} // end of PauseAudio
+} // End of PauseAudio
 
 // ResumeAudio Function
 func ResumeAudio() {
 	needPause = false
-} // end of ResumeAudio
+} // End of ResumeAudio
 
 // SetVolume Function
 func SetVolume(volumeValue string) {
@@ -144,7 +144,7 @@ func SetVolume(volumeValue string) {
 	if err != nil {
 		logger.Error("SetVolume failed with :" + err.Error())
 	}
-} // end of SetVolume
+} // End of SetVolume
 
 // SetVolumeUp Function
 func SetVolumeUp(value string) {
@@ -153,7 +153,7 @@ func SetVolumeUp(value string) {
 	if err != nil {
 		logger.Error("SetVolumeUp failed with :" + err.Error())
 	}
-} // end of SetVolumeUp
+} // End of SetVolumeUp
 
 // SetVolumeDown Function
 func SetVolumeDown(value string) {
@@ -162,7 +162,7 @@ func SetVolumeDown(value string) {
 	if err != nil {
 		logger.Error("SetVolumeDown failed with :" + err.Error())
 	}
-} //end of SetVolumeDown
+} //End of SetVolumeDown
 
 // StartPulseaudio Function
 func StartPulseaudio() {
@@ -171,7 +171,7 @@ func StartPulseaudio() {
 	if err != nil {
 		logger.Error("StartPulseaudio failed with :" + err.Error())
 	}
-} // end of StartPulseaudio
+} // End of StartPulseaudio
 
 // StopPulseaudio Function
 func StopPulseaudio() {
@@ -180,37 +180,37 @@ func StopPulseaudio() {
 	if err != nil {
 		logger.Error("StopPulseaudio failed with :" + err.Error())
 	}
-} // end of StopPulseaudio
+} // End of StopPulseaudio
 
 // GetVolume Function
 func GetVolume() (string, string) {
-	// var declaration
+	// Var declaration
 	var leftArray, rightArray []string
 	var left, right string
-	// run Command
+	// Run Command
 	cmd := exec.Command("amixer", "get", "Master")
 	cmdOutput, err := cmd.Output()
-	// check for errors
+	// Check for errors
 	if err != nil {
 		logger.Error("GetVolume failed with: " + err.Error())
 	}
-	// regex
+	// Regex Query - Get volume levels
 	regPerc, _ := regexp.Compile("[[]([0-9]+%)[]]")
 	regNumb, _ := regexp.Compile("[0-9]+")
 	for _, line := range strings.Split(string(cmdOutput), "\n") {
 		if strings.Contains(line, "Left") && strings.Contains(line, "[on]") {
 			leftArray = regPerc.FindAllString(string(cmdOutput), 1)
-		} // end of if
+		} // End of if
 		if strings.Contains(line, "Right") && strings.Contains(line, "[on]") {
 			rightArray = regPerc.FindAllString(string(cmdOutput), 1)
-		} // end of if
-	} // end of for
+		} // End of if
+	} // End of for
 	if len(leftArray) != 0 {
 		left = leftArray[0]
 		left = regNumb.FindAllString(left, 1)[0]
 	} else {
 		left = "unknown"
-	} //end of else
+	} //End of else
 	if len(rightArray) != 0 {
 		right = rightArray[0]
 		right = regNumb.FindAllString(right, 1)[0]
@@ -218,7 +218,7 @@ func GetVolume() (string, string) {
 		right = "unknown"
 	}
 	return left, right
-} // end of GetVolume
+} // End of GetVolume
 
 // GetStatus function
 func GetStatus() string {

@@ -1,5 +1,6 @@
 package main
 
+// Imports
 import (
 	"bufio"
 	"encoding/json"
@@ -23,32 +24,32 @@ import (
 var configuration = structs.ServerConfiguration{}
 var serverData = structs.ServerData{}
 
-// main
+// Main
 func main() {
-	// set up configuration
+	// Set up configuration
 	err := gonfig.GetConf("config.json", &configuration)
 	// Check if Log directory exists
 	if _, err := os.Stat(configuration.Log_Dir); os.IsNotExist(err) {
 		os.Mkdir(configuration.Log_Dir, 0777)
 	}
-	// set up logger
+	// Set up logger
 	logger.Setup(util.JoinPath(configuration.Log_Dir, configuration.Server_Log), configuration.Debug_Infos)
 	logger.Notice("Starting MusicPlayerServer...")
-	// create server socket mp.sock
+	// Create server socket mp.sock
 	unixSocket := configuration.Socket_Path
 	logger.Notice("Creating unixSocket.")
 	logger.Info("Listening on " + unixSocket)
 	ln, err := net.Listen("unix", unixSocket)
 	util.Check(err, "Server")
-	// set socketPath
+	// Set socketPath
 	sender.SetSocketPath(unixSocket)
 	connectionfunctions.SetSocketPath(unixSocket)
-	// check supported formats
+	// Check supported formats
 	logger.Notice("Parsing supported formats")
 	serverData.SupportedFormats = getSupportedFormats()
-	// print supported formats
+	// Print supported formats
 	printSupportedFormats()
-	// start pulseAudio
+	// Start pulseAudio
 	logger.Notice("Start Pulseaudio")
 	portaudiofunctions.StartPulseaudio()
 	for {
@@ -57,11 +58,11 @@ func main() {
 		util.Check(err, "Server")
 		go receiveCommand()
 	}
-} // end of main
+} // End of main
 
-//receiveCommand function
+// ReceiveCommand function
 func receiveCommand() {
-	// read message
+	// Read message
 	buf := make([]byte, 512)
 	nr, err := connectionfunctions.Read(buf)
 	if err != nil {
@@ -70,19 +71,16 @@ func receiveCommand() {
 	receivedBytes := buf[0:nr]
 	logger.Info("Server received message: " + string(receivedBytes))
 
-	// convert message back to a request-object
+	// Convert message back to a request-object
 	logger.Notice("Converting message back to a Request-Object")
 	received := structs.Request{}
 	json.Unmarshal(receivedBytes, &received)
 	command := received.Command
 	data := received.Data
 	logger.Notice("Command: " + command)
-	//logger.Notice("Data   : " + string(data))
-	// todo check if values are different from default and different from current values
-	// if yes -> change them on every command
 
 	message := "Default-message"
-	// switch case commands
+	// Switch case commands
 	switch command {
 	case "addToQueue", "add":
 		message = audiofunctions.AddToQueue(data, &serverData)
@@ -125,13 +123,13 @@ func receiveCommand() {
 		logger.Error("Unknown command received")
 	}
 
-	// write to client
+	// Write to client
 	logger.Notice("Send a message back to the client")
 	_, err = connectionfunctions.Write([]byte(message))
 	util.Check(err, "Server")
-} // end of receiveCommand
+} // End of receiveCommand
 
-// setupMusicPlayer function
+// SetupMusicPlayer function
 func setupMusicPlayer(data structs.Data) string {
 	// SetVolume
 	portaudiofunctions.SetVolume(strconv.Itoa(data.Volume))
@@ -142,13 +140,13 @@ func setupMusicPlayer(data structs.Data) string {
 	// Shuffle Songs
 	if data.Shuffle {
 		shuffleQueue()
-	} // end of if
+	} // End of if
 	return "Set up Music Player" + printInfo()
 }
 
 // SetLoop function
 func setLoop(data structs.Data) string {
-	//check if data.Values length > 0
+	// Check if data.Values length > 0
 	if len(data.Values) > 0 {
 		value_string := data.Values[0]
 		// Check if loop is set to on or off
@@ -156,14 +154,14 @@ func setLoop(data structs.Data) string {
 			serverData.SaveLoop = true
 		} else if strings.Contains(value_string, "off") || strings.Contains(value_string, "false") {
 			serverData.SaveLoop = false
-		} // end of else
+		} // End of else
 	} else {
 		serverData.SaveLoop = data.Loop
-	} // end of else
+	} // End of else
 	return "Set loop to " + strconv.FormatBool(serverData.SaveLoop)
-} // end of setLoop
+} // End of setLoop
 
-// printInfo function
+// PrintInfo function
 func printInfo() string {
 	logger.Info("Executing: Print info ")
 	message := "\n"
@@ -171,34 +169,34 @@ func printInfo() string {
 		message = message + ("Current Song: " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong]) + "\n")
 		if (len(serverData.SongQueue) - 1 - serverData.CurrentSong) != 0 {
 			message = message + ("Song Queue: \n")
-			//songs from current to end
+			// Songs from current to end
 			for index, song := range serverData.SongQueue[serverData.CurrentSong+1:] {
 				message = message + (strconv.Itoa(index+1) + ". " + util.PrintMp3Infos(song) + "\n")
-			} // enf of for
-			// songs from beginning to current
+			} // End of for
+			// Songs from beginning to current
 			if serverData.SaveLoop {
 				for index, song := range serverData.SongQueue[:serverData.CurrentSong] {
 					message = message + (strconv.Itoa(len(serverData.SongQueue)+index-serverData.CurrentSong) + ". " + util.PrintMp3Infos(song) + "\n")
-				} //end of for
+				} // End of for
 
-			} // end of if
+			} // End of if
 			for _, line := range strings.Split(message, "\n") {
 				logger.Info(line)
-			} // end of for
+			} // End of for
 		} else {
 			message = message + "The Song Queue is empty. \n"
-		} // end of else
+		} // End of else
 	} else {
 		message = message + ("Currently there is no song playing \n")
 		message = message + "The Song Queue is empty. \n"
-	} // end of else
+	} // End of else
 	message = message + volumefunctions.PrintVolume()
 	return message
-} // end of printInfo
+} // End of printInfo
 
-// getSupportedFormats function
+// GetSupportedFormats function
 func getSupportedFormats() []string {
-	// get supported audio formats of 'supportedFormats.cfg' file
+	// Get supported audio formats of 'supportedFormats.cfg' file
 	supportedFormats := make([]string, 0)
 
 	// Opening file
@@ -210,23 +208,23 @@ func getSupportedFormats() []string {
 		line := scanner.Text()
 		if !strings.ContainsAny(line, "#") {
 			supportedFormats = append(supportedFormats, line)
-		} //end of if
-	} // end of for
+		} // End of if
+	} // End of for
 	util.Check(scanner.Err(), "Server")
 	return supportedFormats
 } // End of getSupportedFormats
 
-// printSupportedFormats function
+// PrintSupportedFormats function
 func printSupportedFormats() {
 	formatString := ""
 	for _, format := range serverData.SupportedFormats {
 		if formatString != "" {
 			formatString = formatString + ", "
-		} // end of if
+		} // End of if
 		formatString = formatString + format
-	} // end of for
+	} // End of for
 	logger.Info("Supported formats: " + formatString)
-} // end of printSupportedFormats
+} // End of printSupportedFormats
 
 // Shuffle Queue Function
 func shuffleQueue() string {

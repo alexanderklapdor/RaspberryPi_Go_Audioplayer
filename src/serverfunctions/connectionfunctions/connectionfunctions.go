@@ -1,5 +1,6 @@
 package connectionfunctions
 
+// Imports
 import (
 	"net"
 	"os"
@@ -34,10 +35,10 @@ func Write(message []byte) (int, error) {
 
 // Close function
 func Close() {
-	// get socket path
+	// Get socket path
 	logger.Warning("Connection will be closed")
 	defer connection.Close()
-	//unlink Socket
+	// Unlink Socket
 	err := syscall.Unlink(socketPath)
 	if err != nil {
 		logger.Error("Error during unlink process of the socket: " + err.Error())

@@ -1,5 +1,6 @@
 package util
 
+// Imports
 import (
 	"fmt"
 	"go/build"
@@ -17,9 +18,9 @@ import (
 	id3 "github.com/mikkyang/id3-go"
 )
 
-// check if string is element of the array
+// Check if string is element of the array
 func StringInArray(str string, list []string) bool {
-	// check if string is in string-list
+	// Check if string is in string-list
 	for _, element := range list {
 		if element == str {
 			return true
@@ -28,7 +29,7 @@ func StringInArray(str string, list []string) bool {
 	return false
 }
 
-// error check
+// Error check
 func Check(err error, source string) {
 	if err != nil {
 		if source == "Server" {
@@ -43,12 +44,12 @@ func Check(err error, source string) {
 func Shuffle(array []string) []string {
 	// Create new random variable based on the current time
 	r := rand.New(rand.NewSource(time.Now().Unix()))
-	// swap elemnts random for each string position
+	// Swap elemnts random for each string position
 	for n := len(array); n > 0; n-- {
 		randIndex := r.Intn(n)
 		array[n-1], array[randIndex] = array[randIndex], array[n-1]
 	}
-	//Return array
+	// Return array
 	return array
 }
 
@@ -56,9 +57,9 @@ func Shuffle(array []string) []string {
 func JoinPath(source, target string) string {
 	if path.IsAbs(target) {
 		return target
-	} // end of if
+	} // End of if
 	return path.Join(path.Dir(source), target)
-} // end of JoinPath
+} // End of JoinPath
 
 // GetFilesInFolder function
 func GetFilesInFolder(folder string, supportedExtensions []string, depth int) []string {
@@ -81,27 +82,27 @@ func GetFilesInFolder(folder string, supportedExtensions []string, depth int) []
 				newFolder := filename + "/"
 				// Go into folder
 				newFiles := GetFilesInFolder(newFolder, supportedExtensions, depth-1)
-				// append files to fileList
+				// Append files to fileList
 				for _, newFile := range newFiles {
 					fileList = append(fileList, newFile)
-				} // end of for
+				} // End of for
 
-			//File
+			// File
 			case mode.IsRegular():
 				var extension = filepath.Ext(filename)
-				// append files to fileList
+				// Append files to fileList
 				if StringInArray(extension, supportedExtensions) {
 					fileList = append(fileList, filename)
-				} // end of if
-			} // end of switch
-		} // end of for
+				} // End of if
+			} // End of switch
+		} // End of for
 	} else {
 		logger.Info("Max depth reached")
 	}
 	return fileList
-} // end of getFilesInFolder
+} // End of getFilesInFolder
 
-//Get Minute and Secons from Seconds
+// Get Minute and Secons from Seconds
 func SecondsToMinutes(inSeconds int) string {
 	minutes := inSeconds / 60
 	seconds := inSeconds % 60
@@ -120,25 +121,25 @@ func GetGoExPath() string {
 
 // PrintMp3Infos function
 func PrintMp3Infos(filePath string) string {
-	//Check if Path exists
+	// Check if Path exists
 	if _, err := os.Stat(filePath); err == nil {
-		//open file for id3 tags
+		// Open file for id3 tags
 		mp3File, err := id3.Open(filePath)
 		Check(err, "Server")
-		//close file at the end
+		// Close file at the end
 		defer mp3File.Close()
-		//get Tag Infos
+		// Get Tag Infos
 		title := mp3File.Title()
 		artist := mp3File.Artist()
 		album := mp3File.Album()
-		//get Audio length
+		// Get Audio length
 		blength, lengtherr := exec.Command("mp3info", "-p", "%S", filePath).Output()
 		Check(lengtherr, "Server")
-		//check if one information is empty
+		// Check if one information is empty
 		if title == "" || artist == "" || album == "" || string(blength[:]) == "" {
 			return filePath
 		} else {
-			//print Infos
+			// Print Infos
 			length, err := strconv.Atoi(string(blength[:]))
 			Check(err, "Server")
 			return ("Title: " + title + "\t\tArtist: " + artist + "\t\tAlbum: " + album + "\t\tLength: " + SecondsToMinutes(length))

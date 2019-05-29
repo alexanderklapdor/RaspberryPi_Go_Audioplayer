@@ -1,5 +1,6 @@
 package main
 
+// Imports
 import (
 	"encoding/json"
 	"flag"
@@ -41,7 +42,7 @@ func main() {
 
 	socket_path := configuration.Socket_Path
 
-	// check if server is running
+	// Check if server is running
 	if checkServerStatus() {
 		logger.Info("Server is running")
 	} else {
@@ -57,13 +58,13 @@ func main() {
 			if _, err := os.Stat(socket_path); err == nil ||
 				ind >= configuration.Server_Connection_Attempts {
 				break
-			} // end of if
+			} // End of if
 			logger.Info("Waiting for server")
 			time.Sleep(1 * time.Second)
 			ind++
-		} // end of for
+		} // End of for
 
-		//check Server Stat
+		// Check Server Stat
 		if _, err2 := os.Stat(socket_path); err2 == nil {
 			logger.Info("Server started succesfully")
 		} else if os.IsNotExist(err2) {
@@ -73,15 +74,15 @@ func main() {
 			logger.Info("Something unexpected happened")
 			os.Exit(777)
 		}
-	} // end of else
+	} // End of else
 
-	// check if no argument is given
+	// Check if no argument is given
 	if len(os.Args) < 2 {
 		logger.Error("Missing required argument")
 		return
 	}
 
-	// define flags
+	// Define flags
 	command := flag.String("c", configuration.Default_Command, "command for the server (default "+
 		configuration.Default_Command+")")
 	input := flag.String("i", configuration.Default_Input, "input music file/folder (default "+
@@ -99,42 +100,42 @@ func main() {
 	fadeOut := flag.Int("fo", configuration.Default_FadeOut, "fadeout in milliseconds (default "+
 		strconv.Itoa(configuration.Default_FadeOut)+")")
 
-	// parsing flags
+	// Parsing flags
 	logger.Notice("Start Parsing cli parameters")
 	flag.Parse()
 
 	var values []string
-	// if argument without flagname is given parse it as command
+	// If argument without flagname is given parse it as command
 	if flag.NArg() > 1 {
-		// command argument
+		// Command argument
 		*command = flag.Arg(0)
-		// value arguments
+		// Value arguments
 		for id, arg := range flag.Args() {
 			if id != 0 {
 				values = append(values, arg)
-			} //end of if
-		} // end of for
+			} //End of if
+		} // End of for
 	} else {
 		if flag.NArg() == 1 && *command == "default" {
 			*command = flag.Arg(0)
-		} // end of if
-	} // end of else
+		} // End of if
+	} // End of else
 
-	// check received arguments
+	// Check received arguments
 	logger.Notice("Check received arguments")
 	if *volume < 0 || *depth < 0 || *fadeIn < 0 || *fadeOut < 0 {
 		logger.Error("no negative values allowed")
 		return
 	}
 
-	// check volume
+	// Check volume
 	if *volume > 100 {
 		logger.Info("No volume above 100 allowed")
 		logger.Info("Set volume to 100")
 		*volume = 100
 	}
 
-	// print received argument
+	// Print received argument
 	logger.Notice("Given arguments:")
 	logger.Info("Command   " + *command)
 	logger.Info("Input:    " + *input)
@@ -144,9 +145,8 @@ func main() {
 	logger.Info("Loop:     " + strconv.FormatBool(*loop))
 	logger.Info("Fade in:  " + strconv.Itoa(*fadeIn))
 	logger.Info("Fade out: " + strconv.Itoa(*fadeOut))
-	//logger.Info("Tail:     " + flag.Args())
 
-	// parsing to json
+	// Parsing to json
 	logger.Notice("Parsing argument to json")
 	dataInfo := &structs.Data{
 		Depth:   *depth,
@@ -163,7 +163,7 @@ func main() {
 	requestJson, _ := json.Marshal(requestInfo)
 	logger.Info("JSON String : " + string(requestJson))
 
-	//Check if Command is Shutdown Command
+	// Check if Command is Shutdown Command
 	if requestInfo.Command == "exit" {
 		fmt.Println("The server will shut down...")
 	}
@@ -178,15 +178,15 @@ func main() {
 
 }
 
-// checkServerStatus function
+// CheckServerStatus function
 func checkServerStatus() bool {
-	// get socket_path
+	// Get socket_path
 	socket_path := configuration.Socket_Path
-	// check if socket exists
+	// Check if socket exists
 	if _, err := os.Stat(socket_path); err != nil {
-		return false //unix socket does not exists
+		return false // Unix socket does not exists
 	} else {
-		// check if process exists
+		// Check if process exists
 		cmd := "ps -ef | grep MusicPlayerServer"
 		output, err := exec.Command("bash", "-c", cmd).Output()
 		util.Check(err, "Client")
@@ -199,7 +199,7 @@ func checkServerStatus() bool {
 	} // end of else
 } // end of checkServerStatus
 
-// startServer function
+// StartServer function
 func startServer() {
 	logger.Info("Starting Server process")
 	var attr = os.ProcAttr{
@@ -212,7 +212,7 @@ func startServer() {
 		},
 	}
 
-	//Start process
+	// Start process
 	process, err := os.StartProcess(util.GetGoExPath(), []string{"go", "run", "MusicPlayerServer.go"}, &attr)
 	util.Check(err, "Client")
 	logger.Info("Detaching process")

@@ -1,5 +1,6 @@
 package audiofunctions
 
+// Imports
 import (
 	"os"
 	"path/filepath"
@@ -17,53 +18,53 @@ var wg = &sync.WaitGroup{}
 
 //*******Music Functions********
 
-// playMusic function
+// PlayMusic function
 func PlayMusic(data structs.Data, serverData *structs.ServerData) string {
 	logger.Info("Executing: Play Music")
 	logger.Info("Path given " + data.Path)
 	var songs []string
-	//get Songs
+	// Get Songs
 	if len(data.Values) == 0 {
 		songs = ParseSongs([]string{data.Path}, data.Depth, serverData)
 	} else {
 		songs = ParseSongs(data.Values, data.Depth, serverData)
-	} // end of else
+	} // End of else
 	if len(songs) != 0 {
 		serverData.SongQueue = serverData.SongQueue[:0]
 		serverData.CurrentSong = 0
 		// Append songs to queue
 		for _, song := range songs {
 			serverData.SongQueue = append(serverData.SongQueue, song)
-		} // end of for
+		} // End of for
 
-		//Check if a song is currently playing
+		// Check if a song is currently playing
 		PlayCurrentSong(serverData)
 		return "Now playing " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
 		if len(serverData.SongQueue) != 0 {
-			//Check if a song is currently playing
+			// Check if a song is currently playing
 			PlayCurrentSong(serverData)
 			return "Now playing " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 		} else {
 			logger.Error("No supported input file and no file in queue")
 			return ("No supported input file and no file in queue")
-		} // end foe else
-	} // end of if
+		} // End foe else
+	} // End of if
 	return "should never be shown"
-} // end of playMusic
+} // End of playMusic
 
-// playCurrentSong function
+// PlayCurrentSong function
 func PlayCurrentSong(serverData *structs.ServerData) {
 	// Check if status is play or pause
 	if portaudiofunctions.GetStatus() == "play" || portaudiofunctions.GetStatus() == "pause" {
 		logger.Info("A song is currently playing")
 		_ = StopMusic()
-	} // end of if
+	} // End of if
 	logger.Info(serverData.SongQueue[serverData.CurrentSong])
 	go portaudiofunctions.PlayAudio(serverData.SongQueue[serverData.CurrentSong])
-} // end of playCurrentSong
+} // End of playCurrentSong
 
-// stopMusic function
+// StopMusic function
 func StopMusic() string {
 	logger.Info("Execution: Stop Music")
 	portaudiofunctions.StopAudio()
@@ -74,16 +75,16 @@ func StopMusic() string {
 	return "Stopped music"
 }
 
-// playPreviousSong function
+// PlayPreviousSong function
 func PlayPreviousSong(serverData *structs.ServerData) string {
-	//check if currentSong is > 0 in queue
+	// Check if currentSong is > 0 in queue
 	if serverData.CurrentSong > 0 {
-		// decrease currentSong and play
+		// Decrease currentSong and play
 		serverData.CurrentSong--
 		PlayCurrentSong(serverData)
 		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
-		// check if loop is enabled
+		// Check if loop is enabled
 		if serverData.SaveLoop {
 			if len(serverData.SongQueue) > 0 {
 				serverData.CurrentSong = len(serverData.SongQueue) - 1
@@ -91,52 +92,52 @@ func PlayPreviousSong(serverData *structs.ServerData) string {
 				return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 			} else {
 				return "Error: The queue is empty. You could't go a song back"
-			} // end of else
+			} // End of else
 		} else {
 			return "You are currently playing the first song"
-		} // end of else
-	} // end of else
+		} // End of else
+	} // End of else
 	return "should never be shown"
-} // end of playLastSong
+} // End of playLastSong
 
-// pauseMusic function
+// PauseMusic function
 func PauseMusic(data structs.Data, serverData *structs.ServerData) string {
 	logger.Info("Executing: Pause Music")
 	go portaudiofunctions.PauseAudio()
 	return "Music paused"
-} // end of pauseMusic
+} // End of pauseMusic
 
-// resumeMusic function
+// ResumeMusic function
 func ResumeMusic() string {
 	logger.Info("Execution: Resume Music")
 	go portaudiofunctions.ResumeAudio()
 	return "Resuming music"
 }
 
-// repeatSong function
+// RepeatSong function
 func RepeatSong(serverData *structs.ServerData) string {
-	// check sonqQueue length
+	// Check sonqQueue length
 	if len(serverData.SongQueue) > 0 {
 		PlayCurrentSong(serverData)
 		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	} else {
 		return "There is no current song"
-	} // end of else
-} // end of repeatSong
+	} // End of else
+} // End of repeatSong
 
-// nextMusic function
+// NextMusic function
 func NextMusic(data structs.Data, serverData *structs.ServerData) string {
-	// check if loop was set by "playMusic" - if yes..than change data.loop to true
+	// Check if loop was set by "playMusic" - if yes..than change data.loop to true
 	if serverData.SaveLoop == true { //comment: why here
 		data.Loop = true
 	}
-	//check if nextsong can be played
+	// Check if nextsong can be played
 	if serverData.CurrentSong < (len(serverData.SongQueue) - 1) {
 		serverData.CurrentSong += 1
 	} else {
 		serverData.CurrentSong = 0
 	}
-	// check if loop is enabled
+	// Check if loop is enabled
 	if data.Loop == false && serverData.CurrentSong == 0 {
 		logger.Info("Loop is not active and queue has ended -> Music stopped")
 		return "Loop is not active and queue has ended -> Music stopped"
@@ -146,11 +147,11 @@ func NextMusic(data structs.Data, serverData *structs.ServerData) string {
 		return "Playing now " + util.PrintMp3Infos(serverData.SongQueue[serverData.CurrentSong])
 	}
 	return "Should never be shown "
-} // end of nextMusic
+} // End of nextMusic
 
 //*******Help Functions********
 
-// checkIfStatusStop function
+// CheckIfStatusStop function
 func CheckIfStatusStop() {
 	defer wg.Done()
 	for {
@@ -160,13 +161,13 @@ func CheckIfStatusStop() {
 	}
 }
 
-// parseSongs
+// ParseSongs
 func ParseSongs(paths []string, depth int, serverData *structs.ServerData) []string {
 	var songs []string
 	for _, path := range paths {
-		// check if given file/folder exists
+		// Check if given file/folder exists
 		logger.Notice("Check if folder/file exists: " + path)
-		// check if path is empty
+		// Check if path is empty
 		if len(path) == 0 {
 			logger.Error("Path is not a file or a folder")
 			continue
@@ -179,17 +180,17 @@ func ParseSongs(paths []string, depth int, serverData *structs.ServerData) []str
 		util.Check(err, "Server")
 		switch mode := fi.Mode(); {
 		case mode.IsDir():
-			// directory given
+			// Directory given
 			logger.Info("Directory found")
 			logger.Notice("Getting files inside of the folder")
 			fileList := util.GetFilesInFolder(path, serverData.SupportedFormats, depth)
-			//Print Supported Filelist
+			// Print Supported Filelist
 			screener.PrintFiles(fileList, false)
 			for _, song := range fileList {
 				songs = append(songs, song)
 			}
 		case mode.IsRegular():
-			// file given
+			// File given
 			logger.Notice("File found")
 			var extension = filepath.Ext(path)
 			logger.Info("Extension: " + extension)
@@ -201,46 +202,45 @@ func ParseSongs(paths []string, depth int, serverData *structs.ServerData) []str
 			}
 		default:
 			logger.Error("Path is not a file or a folder")
-		} // end of switch
-	} // end of for
+		} // End of switch
+	} // End of for
 	return songs
-} // end of parseSongs
+} // End of parseSongs
 
 //*******Queue Functions********
 
-//addToQueue function
+// AddToQueue function
 func AddToQueue(data structs.Data, serverData *structs.ServerData) string {
 	logger.Info("Executing: Add to queue")
 	var songs []string
-	// get songs
+	// Get songs
 	if len(data.Values) == 0 {
 		songs = ParseSongs([]string{data.Path}, data.Depth, serverData)
 	} else {
 		songs = ParseSongs(data.Values, data.Depth, serverData)
-	} // end of else
+	} // End of else
 	if len(songs) != 0 {
-		//append songs to queue
+		// Append songs to queue
 		for _, song := range songs {
 			serverData.SongQueue = append(serverData.SongQueue, song)
-		} // end of for
-	} // end of if
+		} // End of for
+	} // End of if
 	message := "Added " + string(len(songs)) + " songs to queue"
 	return message
-} // end of addToQueue
+} // End of addToQueue
 
-// removeSong function
+// RemoveSong function
 func RemoveSong(data structs.Data, serverData *structs.ServerData) string {
 	if len(data.Values) != 0 {
 		number, err := strconv.Atoi(data.Values[0])
-		// todo: remove multiple values (problem with changing position)
 		if err == nil {
-			//Check loop is off and song in queue
+			// Check loop is off and song in queue
 			if number > 0 && number < (len(serverData.SongQueue)-serverData.CurrentSong) {
 				number = number + serverData.CurrentSong
 				song_name := serverData.SongQueue[number]
 				serverData.SongQueue = append(serverData.SongQueue[:number], serverData.SongQueue[number+1:]...)
 				return "Removed song" + util.PrintMp3Infos(song_name)
-				//check loop is on and song is queue
+				// Check loop is on and song is queue
 			} else if number >= len(serverData.SongQueue)-serverData.CurrentSong && number < len(serverData.SongQueue) && serverData.SaveLoop {
 				number = serverData.CurrentSong - len(serverData.SongQueue) + number
 				song_name := serverData.SongQueue[number]
@@ -248,12 +248,12 @@ func RemoveSong(data structs.Data, serverData *structs.ServerData) string {
 				return "Removed song" + util.PrintMp3Infos(song_name)
 			} else {
 				return "There is no song with the given number (" + strconv.Itoa(number) + ")"
-			} // end of else
+			} // End of else
 		} else {
 			return "Remove is only allowed with the number of the song in the queue. Pls use 'info' to see the queue"
-		} // else
+		} // Else
 	} else {
 		return "No argument given"
 	}
 	return "should never be shown"
-} // end of removeSong
+} // End of removeSong

@@ -1,6 +1,6 @@
 package sender
 
-//Imports
+// Imports
 import (
 	"fmt"
 	"io"
@@ -11,7 +11,7 @@ import (
 	"github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/util"
 )
 
-//global var definition
+// Global var definition
 var socketPath string
 
 // reader function

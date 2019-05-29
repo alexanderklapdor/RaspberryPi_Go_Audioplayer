@@ -19,9 +19,9 @@ func Setup(filepath string, debugMode bool) {
 
 // Debug Option
 func Debug(message string) {
-	//append to file
+	// Append to file
 	appendString("DEBU", message)
-	//print to stdoutput if debug is true
+	// Print to stdoutput if debug is true
 	if debug == true {
 		fmt.Println("DEBUG -> " + message)
 	}
@@ -29,9 +29,9 @@ func Debug(message string) {
 
 // Info Option
 func Info(message string) {
-	//append to file
+	// Append to file
 	appendString("INFO", message)
-	//print to stdoutput if debug is true
+	// Print to stdoutput if debug is true
 	if debug == true {
 		fmt.Println("INFO -> " + message)
 	}
@@ -39,9 +39,9 @@ func Info(message string) {
 
 // Notice Option
 func Notice(message string) {
-	//append to file
+	// Append to file
 	appendString("NOTI", message)
-	//print to stdoutput if debug is true
+	// Print to stdoutput if debug is true
 	if debug == true {
 		fmt.Println("NOTICE -> " + message)
 	}
@@ -49,9 +49,9 @@ func Notice(message string) {
 
 // Warning Option
 func Warning(message string) {
-	//append to file
+	// Append to file
 	appendString("WARN", message)
-	//print to stdoutput if debug is true
+	// Print to stdoutput if debug is true
 	if debug == true {
 		fmt.Println("WARNING -> " + message)
 	}
@@ -59,24 +59,25 @@ func Warning(message string) {
 
 // Error Option
 func Error(message string) {
-	//append to file
+	// Append to file
 	appendString("ERRO", message)
-	//log to stdoutput
+	// Log to stdoutput
 	fmt.Println("ERROR -> " + message)
 
 }
 
 // Critical Option
 func Critical(message string) {
-	//append to file
+	// Append to file
 	appendString("CRIT", message)
-	//log to stdoutput
+	// Log to stdoutput
 	fmt.Println("CRITICAL -> " + message)
 	panic(message)
 }
 
+// AppendString function
 func appendString(mType string, message string) {
-	//append to file
+	// Append to file
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	defer file.Close()
 	if err != nil {
