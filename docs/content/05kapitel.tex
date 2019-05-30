@@ -202,6 +202,22 @@ Unter einer Konfigurationsdatei versteht man in diesem Zusammenhang eine Textdat
 Wie in dem Ausschnitt klar zu erkennen ist, werden einige Standardwerte für den Audioplayer in der Konfigurationsdatei gespeichert, wie unter anderem z.B. den Loop und Shuffle Status oder die Standardlautstärke wie auch die Tiefe für das durchsuchen von übergebenen Ordnern. Zusätzlich werden dort auch noch die Dateien bzw. Ordner angegeben in denen beispielsweise der Socket erstellt werden soll oder die Log Dateien gespeichert werden sollen. Besonders zu erwähnen ist, dass man über das Feld \verb|Debug_Infos| steuern kann, ob bei der Ausführung des Audioplayers Debug-Informationen mit ausgegeben werden sollen oder nicht. Dies ist gerade bei der weiteren Entwicklung des Audioplayers von hoher Relevanz.
 
 \subsection{Aufbau des Audioplayers}
+Go besitzt einige Kodierrichtlinien, die dazu führen dass der geschriebene Programmcode möglichst kurz, einfach und strukturiert ist. Um genau das zu erreichen besitzt Go die Kodierrichtlinie zur Verwendung von sogenannten \textit{packages}, welche zusammengehörigen Programmcode in eine extra Datei bzw. ein \textit{Package} auslagert. In Go ist jeder Programmcode einem Package zugeordnet. So ist z.B. das Hauptprogramm, also das Programm welches beim starten eines Go-Programmes aufgerufen wird immer im \enquote{main}-Package ist. Sobald es einige zusammengehörige Funktionen, sei es Sinngemäß oder für einen gewissen Zweck, in ein Package ausgelagert werden können, soll man dies machen. Alle Dateien eines Packages befindet sich immer in einem einzelnen Ordner. Dabei kann ein Package aus mehreren Dateien bestehen die mehrere Funktionen exportieren oder aus nur einer Datei die nur eine Funktion exportiert. Zusätzlich sollte die Namenskonvention möglichst kurz aber gleichzeitig verständlich sein \autocite{crawshaw_2019}. \\
+Auf Basis dieser Kodierrichtlinien wurde der Audioplayer auch aufgebaut sodass sich die folgende Ordnerstruktur des Audioplayers entwickelt:
+
+\dirtree{%
+.1 /. 
+.2 home. 
+.3 pi. 
+.4 go. 
+.5 src. 
+.5 pkg. 
+.5 bin. 
+}
+
+
+
+
 
 \subsection{Konzept des Clients}
 Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
