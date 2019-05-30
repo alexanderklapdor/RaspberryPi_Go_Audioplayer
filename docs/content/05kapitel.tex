@@ -202,20 +202,68 @@ Unter einer Konfigurationsdatei versteht man in diesem Zusammenhang eine Textdat
 Wie in dem Ausschnitt klar zu erkennen ist, werden einige Standardwerte für den Audioplayer in der Konfigurationsdatei gespeichert, wie unter anderem z.B. den Loop und Shuffle Status oder die Standardlautstärke wie auch die Tiefe für das durchsuchen von übergebenen Ordnern. Zusätzlich werden dort auch noch die Dateien bzw. Ordner angegeben in denen beispielsweise der Socket erstellt werden soll oder die Log Dateien gespeichert werden sollen. Besonders zu erwähnen ist, dass man über das Feld \verb|Debug_Infos| steuern kann, ob bei der Ausführung des Audioplayers Debug-Informationen mit ausgegeben werden sollen oder nicht. Dies ist gerade bei der weiteren Entwicklung des Audioplayers von hoher Relevanz.
 
 \subsection{Aufbau des Audioplayers}
-Go besitzt einige Kodierrichtlinien, die dazu führen dass der geschriebene Programmcode möglichst kurz, einfach und strukturiert ist. Um genau das zu erreichen besitzt Go die Kodierrichtlinie zur Verwendung von sogenannten \textit{packages}, welche zusammengehörigen Programmcode in eine extra Datei bzw. ein \textit{Package} auslagert. In Go ist jeder Programmcode einem Package zugeordnet. So ist z.B. das Hauptprogramm, also das Programm welches beim starten eines Go-Programmes aufgerufen wird immer im \enquote{main}-Package ist. Sobald es einige zusammengehörige Funktionen, sei es Sinngemäß oder für einen gewissen Zweck, in ein Package ausgelagert werden können, soll man dies machen. Alle Dateien eines Packages befindet sich immer in einem einzelnen Ordner. Dabei kann ein Package aus mehreren Dateien bestehen die mehrere Funktionen exportieren oder aus nur einer Datei die nur eine Funktion exportiert. Zusätzlich sollte die Namenskonvention möglichst kurz aber gleichzeitig verständlich sein \autocite{crawshaw_2019}. \\
-Auf Basis dieser Kodierrichtlinien wurde der Audioplayer auch aufgebaut sodass sich die folgende Ordnerstruktur des Audioplayers entwickelt:
+Go besitzt einige Kodierrichtlinien, die dazu führen dass der geschriebene Programmcode möglichst kurz, einfach und strukturiert ist. Um genau das zu erreichen besitzt Go die Kodierrichtlinie zur Verwendung von sogenannten \textit{packages}, welche zusammengehörigen Programmcode in eine extra Datei bzw. ein \textit{Package} auslagert. In Go ist jeder Programmcode einem Package zugeordnet. So ist z.B. das Hauptprogramm, also das Programm welches beim starten eines Go-Programmes aufgerufen wird, immer im \enquote{main}-Package ist. Sobald es einige zusammengehörige Funktionen, sei es Sinngemäß oder für einen gewissen Zweck, in ein Package ausgelagert werden können, soll man dies machen. Für jedes erstellte Package wird ein eigener Ordner in dem Verzeichnis angelegt, wo dann alle zu dem Package zugehörige Dateien gespeichert werden. Dabei kann ein Package aus mehreren Dateien bestehen die mehrere Funktionen exportieren oder aus nur einer Datei die nur eine Funktion exportiert. Zusätzlich sollte die Namenskonvention für Packages möglichst kurz aber gleichzeitig noch verständlich sein \autocite{crawshaw_2019}. \\
+Der Aufbau des Audioplayers wurde auf Basis dieser Kodierrichtlinie erstellt, sodass sich die folgende Ordnerstruktur entwickelt:
 
 \dirtree{%
 .1 /. 
-.2 home. 
-.3 pi. 
-.4 go. 
-.5 src. 
-.5 pkg. 
-.5 bin. 
+.2 logger. 
+.3 logger.go. 
+.2 portaudiofunctions. 
+.3 portaudiofunctions.go.
+.2 screener. 
+.3 screener.go. 
+.2 sender. 
+.3 sender.go.
+.2 serverfunctions. 
+.3 audiofunctions.
+.4 audiofunctions.go.
+.3 connectionfunctions.
+.4 connectionfunctions.go.
+.3 volumefunctions.
+.4 volumefunctions.go.
+.2 structs.
+.3 structs.go.
+.2 util.
+.3 util.go.
+.2 config.json.
+.2 MusicPlayerClient.go.
+.2 MusicPlayerServer.go.
 }
 
+Die Hauptprogramme, also der Server und der Client, sowie die erstellte Konfigurationsdatei liegen dem \textit{Root-Verzeichnis} des Audioplayers. Wie zu erkennen, stellen die restlichen Ordner mit den beinhaltenden Dateien jeweils einzelne Packages dar, die von den Hauptprogrammen wie aber auch von anderen Packages genutzt werden können. \\
+Im folgenden wird kurz zu jedem Package eine kleine Beschreibung folgenden.
+\begin{enumerate}
+\item \textbf{logger-Package} \\
+Dieses Package wird von fast allen Funkionen des Audioplayers genutzt um die Logdateien zu erstellen. Zudem bietet es auch Funktionen zu initialisieren des Loggers.
 
+\item \textbf{portaudiofunctions-Package} \\
+In diesem Package sind alle Funktionen die für die Verwendung der Portaudio-Bibliothek notwendig sind vorhanden. 
+
+
+\item \textbf{screener-Package} \\
+Das screener-Package besitzt Funktionen welche den Nutzer einen Start- und Endbildschirm bei der Verwendung des Audioplayers anzeigt.
+
+
+\item \textbf{sender-Package} \\
+Das sender-Package beinhaltet die Funktionen zum Senden und Empfangen von JSON-Nachrichten für den Client über den Socket.
+
+
+\item \textbf{audiofunctions-Package} \\
+Innerhalb des audiofunctions-Package sind alle implementierten Funktionen von dem Audioplayer rund um das Abspielen von Audiodateien vorhanden.
+
+\item \textbf{connectionfunctions-Package} \\
+Hier sind die Funktionen für das Erstellen des Sockets sowie das Senden, Empfangen und Schließen des Sockets vorhanden. Dies wird für den Kommunikation zwischen Client und Server benötigt.
+
+\item \textbf{volumefunctions-Package} \\
+Durch dieses Package kann die Lautstärke für die Wiedergabe von Audiodateien mit verändert werden.
+
+\item \textbf{structs-Package} \\
+Um einheitliche Strukturen von Daten zu haben, die sowohl der Client wie auch der Server nutzen können, wurde das structs-Package erstellt welche Datenstrukturen als \textit{struct} beinhaltet.
+
+\item \textbf{util-Package} \\
+In dem Package befinden sich sämtliche Funktionen die einen hilfreichen und nützlichen Part haben und meist von mehreren Packages genutzt werden. Zum Beispiel eine Funktion die kontrolliert ob eine gewissen Zeichenfolge sich in einem String-Array befindet.
+\end{enumerate}
 
 
 
