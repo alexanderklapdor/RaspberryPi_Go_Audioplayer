@@ -5,12 +5,74 @@
 %title wird unter dem Bsp. abgedruckt
 %caption wird im Verzeichnis abgedruckt
 %label wird zum referenzieren benutzt, muss einzigartig sein.
+\section{Zusammenfassung}
+Zusammenfassend kann festgehalten werden, dass der im Rahmen dieser
+Studienarbeit entstanden Musikplayer für den Raspberry Pi, sich in einem
+Zustand befindet, in welchem er so gut wie alle zu Beginn definierten
+Anforderungen erfüllen kann. Er ist in der Lage Musik zu starten, stoppen oder
+zu pausieren, er kann die Audiolautstärke anpassen, Lieder überspringen, Lieder
+zu einer Warteschlange hinzufügen oder auch einzelne Lieder wieder löschen. Die
+einzige Funktionalität, welche bislang noch nicht implementiert wurde, ist das
+Fade-In und Fade-Out von Liedern. Die Problemantik hinter dieser Funktion ist
+es, dass wir bislang noch keine Möglichkeit gefunden haben, wie wir uns die
+aktuelle Position eines Liedes während des Abspielens auslesen können. 
 
 
 \section{Reflexion}
-Hier kommt der Scheiß ist zustand rein
+Im Rahmen der Studienarbeit konnte viel neumes Wissen transferiert werden. So
+hatten wir beispielsweise unser ersten Berührungspunkte mit der
+Programmiersprache Go, welche sich in den letzten Jahren immer größerer
+Beliebtheit erfreut. (%todo: add stack overflow reference%) 
+Insgesamt fiel uns das Lernen von Go sehr leicht, da die Sprache von der Syntax
+her sehr an C erinnert, aber dennoch von den Bibliotheken her sehr umfangreich
+ist. \newline
+
+Das Entwickeln mit dem Raspberry Pi ist uns auch leichter gefallen, als zu
+beginn vermutet. Es hat uns sehr fasziniert, was man mit so einem kleinen
+Minicomputer alles anstellen kann. Ansonsten verlief das Arbeiten mit dem
+Raspberry Pi reibungslos, was unter anderem daran gelegen haben könnte, dass
+Raspbian ein Debian-basiertes Betriebssystem ist, und so sich nicht all zu sehr
+von anderen Debian-basierten Distributionen unterscheidet.  \newline
+
+Die Entwicklung als Zweierteam lief zusammenfassend sehr gut ab.
+Zu beginn lief die Entwicklung als Zweierteam noch etwas chaotisch ab, aber
+nachdem wir uns auf ein finales Grundkonzept geeinigt hatten, funktionierte die
+Zusammenarbeit doch sehr gut. Wir haben bei der Umsetzungen die Entwicklung
+verschiedener Funktionalitäten unter uns aufgeteilt und uns ansonsten sehr oft
+zu Besprechungen zusammengesetzt. Anonsten haben wir sehr darauf geachtet, dass
+wir gegenseitig über unseren Code drüberschauen, um mögliche Fehler frühstens
+entdecken zu können. Als Kritikpunkt sollte noch genannt werden, dass wir uns
+zu beginn auf keine wirklichen Codierrichtlinien geeinigt haben, was bei der
+Entwicklung öfter mal zu abweichend Variablenbennenungen oder ähnliches
+geführt. Dies sollte in Zukunft vor der Umsetzung beachtet werden. \newline
+
+Ein weiterer Punkt, welcher beim nächsten Mal noch optimiert werden könnte ist
+die Phase der Testung. Wie es in den meisten Softwareprojekten der Fall ist, %todo: reference
+kam auch in unserem Projekt die Phase des Testens eher zu kurz. Dabei hätte man
+beispielsweise während des Entwicklungsprozesses ohne großen Aufwand statische
+Codeanalyse-Tools einsetzen können, um einfache Fehler wie der Einsatz von
+unbenutzen Variablen oder auch Race Conditions noch vor dem Ausführen des
+Programmes aufzudecken. Des Weiteren hätte man aufbauend auf der
+Versionsverwaltung noch Tools zum automatisierten Testen einsetzen können, um
+das manuelle Testen zu verringern und so die effizienz bei der Entwicklung zu
+erhöhen.
+
+\begin{comment}
+- Codierrichtlinien
+- Viel gelernt
+- Go als Programmiersprache
+- Kommunikation über Sockets zwischen zwei Programmen
+- Analyse zu kurz
+- Testung zu kurz
+  - Countinous Integration
+  - Static Code analysis
+  - automatic testing with unit test
+\end{comment}
+
+
 
 \section{Aussicht}
+
 Was noch gemacht werden kann bzw. was noch coole und Sinnvolle Erweiterungen wären.
 \begin{itemize}
 \item Zurückkommende Nachricht auch als JSON - dadurch können andere Sachen übergeben werden und nicht nur text
