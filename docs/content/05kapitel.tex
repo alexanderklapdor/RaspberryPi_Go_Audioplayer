@@ -297,21 +297,20 @@ In der Abbildung \ref{lst:client_ablauf} wird der Programmablauf des Clients in 
 
 \subsection{Konzept des Servers}
 
-Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Server.
+Der Server stellt das \enquote{Herz} des Audioplayers dar. Nach einmaligem starten des Servers, läuft dieser permanent als Prozess im Hintergrund und setzt die Funktionen des Audioplayers um.
 
 \begin{figure}[H]
     \begin{struktogramm}(160,80)[Main-Funktion] 
         \assign{\hfill Konfigurationsdatei auslesen\hfill} 
         \assign{\hfill Aufsetzen des Loggers\hfill}
         \assign{\hfill Aufsetzen des Sockets\hfill}
-        \assign{\hfill Starten des Pulseaudio Servers\hfill}
         \while[5]{Endlosschleife}
         	\assign{\hfill Abhören des Sockets auf Nachrichten\hfill}
         	\ifthenelse[12]{5}{1} {Nachricht erhalten}{Ja}{Nein}
         	    \assign[5]{\hfill Entpacken der Nachricht\hfill}
         	    \ifthenelse[12]{6}{5} {Befehl == \enquote{Beenden}}{Ja}{Nein}
         	    	\assign[5]{\hfill Nachricht an Client senden\hfill}
-        	    	\assign[5]{\hfill Beenden des Pulseaudio Server\hfill}
+        	    	\assign[5]{\hfill Beenden der Wiedergabe\hfill}
         	    	\assign[5]{\hfill Schließen des Sockets\hfill}
         	    	\assign[5]{\hfill Beenden des Servers\hfill}
         	    	\change
@@ -325,6 +324,9 @@ Im folgenden wird nun auf den Server explizit eingegangen...hier sieht man den A
 \caption{Server Programm - Ablauf} 
 \label{lst:server_ablauf} 
 \end{figure}
+
+In der Abbildung \ref{lst:server_ablauf} wird, wie bereits beim Client zuvor auch, der grobe Programmablauf des Server dargestellt und im folgenden noch kurz erläutert. Als ersten Schritt liest der Server, genau wie der Client, die Einstellungen aus der Konfigurationsdatei aus und setzt anschließend den Logger zum protokollieren der entstehenden Ereignisse auf. Darauf folgend setzt der Server den Socket für die Kommunikation mit dem Client auf, wozu er den in der Konfigurationsdatei festgelegten Pfad zur Erstellung des Kommunikationsendpunktes nutzt. Sobald der Socket aufgesetzt ist und läuft, beginnt der Server in eine Endlosschleife zu fallen, die folgende Funktionen beinhaltet:
+Der Server hört die ganzen Zeit den Socket ab und wartet darauf das Nachrichten eintreffen. Falls eine Nachricht eingetroffen ist, wird die eingetroffene Nachricht welche in einem \ac{JSON} Format von Client kommt geparst um die darin liegenden Informationen auslesen zu können. Im Falle dessen, dass als Befehl das beenden des Server gefordert ist, wird zuerst eine Bestätigungsnachricht an den Client zurückgesendet und anschließend die falls vorhandene aktuelle Wiedergabe einer Audiodatei gestoppt und der Socket sowie das Serverprogramm beendet. Andernfalls, wird der gewünschte Befehl vom Server ausgeführt und nach erfolgreicher Ausführung eine Statusmeldung an den Client zurück gesendet.
 	
 
 \section{Kommunikation über Sockets}
