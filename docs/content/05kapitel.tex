@@ -268,7 +268,7 @@ In dem Package befinden sich sämtliche Funktionen die einen hilfreichen und nü
 
 
 \subsection{Konzept des Clients}
-Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den Ablauf der Hauptfunktion Funktion des Clients.
+Wie bereits schon zuvor erklärt, hat der Client die Aufgabe die Befehle für den Audioplayer vom Nutzer entgegenzunehmen und diese an der Server über einen Socket weiterzuleiten.
 
 \begin{figure}[H]
     \begin{struktogramm}(160,75)[Main-Funktion] 
@@ -292,6 +292,8 @@ Im folgenden wird nun auf den Client explizit eingegangen...hier sieht man den A
 \caption{Client Programm - Ablauf} 
 \label{lst:client_ablauf} 
 \end{figure}
+
+In der Abbildung \ref{lst:client_ablauf} wird der Programmablauf des Clients in einem Struktogramm dargestellt und nun kurz erläutert. Als ersten Schritt ließt der Client die zuvor erläuterte Konfigurationsdatei ein und initialisiert anschließend den Logger, um alle folgenden ausgeführten Aktionen im Client in einer Logdatei zu protokollieren. Anschließend wird überprüft ob ein Prozess des Serverprogramms bereits existiert und läuft. Falls dies nicht der Fall ist, startet der Client das Serverprogramm und wartet, bis der Server hochgefahren ist und eine Verbindung über den Socket zum Server besteht. Sobald eine Verbindung besteht, wird überprüft ob Übergabeparameter bei dem Aufruf des Client mit übergeben wurden sind. Wurden keine Parameter übergeben, wird eine Statusmeldung angezeigt und das Clientprogramm beendet sich. Falls jedoch Parameter übergeben wurden sind, werden diese Informationen (Befehle) in ein \ac{JSON} Format geparst und anschließend über den Socket an den Server gesendet. Der Client wartet nun solang, bis er eine Antwort vom Server bekommt, dass der Befehl ausgeführt wurden ist welches durch eine entsprechende Statusmeldung an den Client realisiert wurde. Die Statusmeldung wird dem Nutzer angezeigt worauf sich kurze Zeit später der Client automatisch beendet.
 
 \subsection{Konzept des Servers}
 
