@@ -2,7 +2,7 @@
 
 \chapter{Analyse}
 Bei der Software-Entwicklung werden unterschiedliche Entwicklungsschritte
-durchlaufen. Dieser Enticklungsverlauf wird allgemein auch als \acs{SDLC} bezeichnet
+durchlaufen. Dieser Entwicklungsverlauf wird allgemein auch als \ac{SDLC} bezeichnet
 und unterscheidet die folgenden Phasen:
 \begin{enumerate}
 \item Planung
@@ -19,17 +19,17 @@ und erste Analysen zur Umsetzung vollzogen. Die Anforderungsanalyse wurde
 bereits im ersten Kapitel der Arbeit erörtert, als der Ist- und Soll-Zustand
 benannt und die damit vorliegende Problemstellung dargelegt wurden. \newline
 In diesem Kapitel soll nun auf die verschiedenen Möglichkeiten bei der
-Umsetzung eingegangen werden. Darunter fällt vorallem der Vergleich
+Umsetzung eingegangen werden. Darunter fällt vor allem der Vergleich
 verschiedener Technologien und Bibliotheken, welche später bei der Implementierung eingesetzt werden
 könnten.
 
 
 \section{Einarbeitung}
 Bevor es an die Realisierung der Aufgabe geht, steht zunächst das
-Vertrautmachen mit den unterschiedlichen Technologien im Vordergrund. Für die
+Vertraut machen mit den unterschiedlichen Technologien im Vordergrund. Für die
 Entwicklung wurde eine Raspberry Pi 3 Modell B bereitgestellt. Da das zu
 entwickelnde Programm später auf dem gleichen Modell laufen wird, wird auf
-einen Vergleich der veschiedenen Modelle verzichtet. Bevor der Raspberry
+einen Vergleich der verschiedenen Modelle verzichtet. Bevor der Raspberry
 benutzt werden kann, muss zunächst ein Betriebssystem installiert werden.
 \hfill \break
 
@@ -38,7 +38,7 @@ Anwendungsszenarien ausgelegt sind. Nachfolgend sind ein paar der verfügbaren
 Betriebssystem aufgelistet: 
 \begin{description}
 \item[Raspbian] \hfill \\ 
-    Raspbian ist eines der ältesten und meistverbreitetsten Betriebssysteme für
+    Raspbian ist eines der ältesten und meist verbreitetsten Betriebssysteme für
     den Raspberry Pi. 
 \item[Pi MusicBox] \hfill \\ 
     Bei der Pi MusicBox handelt es sich um eine Distribution, welche auf das
@@ -46,7 +46,7 @@ Betriebssystem aufgelistet:
     Streaming-Dienste oder auch das Streamen von Musik aus dem Netzwerk.
 \item[RetroPie] \hfill \\
     Der RetroPie ist eine Distribution, welche das Emulieren von klassischen
-    Spielekonsolen ermöglicht.
+    Spielkonsolen ermöglicht.
 \end{description}
 
 Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Musik, allerdings
@@ -69,7 +69,7 @@ haben wir uns für die zweite Variante entschieden.
 \section{Abspielen der Musik}
 Um bei der Umsetzung nicht komplett von Null anfangen zu müssen, geht es
 zunächst an die Analyse einer geeigneten Audio Bibliothek, um das Abspielen von
-Audiodateien zu ermöglichen. Dabei ist es wichtig, dass die Biblitohek frei zu
+Audiodateien zu ermöglichen. Dabei ist es wichtig, dass die Bibliothek frei zu
 verwenden, gut dokumentiert ist und eine Schnittstelle für Go besitzt.  Im
 ersten Schritt der Analyse geht es an die Entscheidung einer geeigneter Audio
 Bibliothek, um das Abspielen von Audiodateieen zu ermöglichen. Wichtig dabei
@@ -80,13 +80,13 @@ Schnittstelle für Go besitzt.
 \paragraph{PortAudio}
 PortAudio ist eine Open Source Bibliothek, welche das Abspielen und Aufnehmen
 von Audiodateien ermöglicht. Sie bietet eine plattformübergreifende Lösung,
-wodurch sie auf den gängisten Betriebssystemen problemlos läuft. Einer der
-Gründ dafür, dass sie plattformübergreifend funktioniert, ist der, dass
+wodurch sie auf den gängigsten Betriebssystemen problemlos läuft. Einer der
+Gründe dafür, dass sie plattformübergreifend funktioniert, ist der, dass
 PortAudio in der Programmiersprache C geschrieben wurde. \hfill \break
 
 Die Kommunikation mit PortAudio verläuft über eine \ac{API} Schnittstelle.
 Diese entnimmt den Datenstrom entgegen, welche abgespielt werden soll. Während
-des Abspiel- oder Aufnahmprozesses von Audiodateien benutzt PortAudio entweder
+des Abspiel- oder Aufnahmeprozess von Audiodateien benutzt PortAudio entweder
 eine Callback-Funktion oder einen blockierendes Read/Write Interface.
 \href{http://www.portaudio.com/}{Portaudio}
 
@@ -94,7 +94,7 @@ eine Callback-Funktion oder einen blockierendes Read/Write Interface.
 libsoundio ist genau wie PortAudio eine Open Source Bibliothek, die eine
 Schnittstelle zur Ein- und Ausgabe von Audiostreams ermöglicht. Sie zeichnet
 sich dadurch aus, dass sie plattformübergreifend und sehr gut dokumentiert ist.
-libsoundio stellt eine leichtgewichtige Abstraktion über verchiedenste
+libsoundio stellt eine leichtgewichtige Abstraktion über verschiedenste
 Soundtreiber dar.
 
 \subsection{Entscheidung}
@@ -119,7 +119,7 @@ Da wir im Rahmen der Arbeit auch die Möglichkeit zum Abspielen von MP3-Dateien
 bieten wollen, muss bei der Implementierung auch auf einen MP3 Decoder zur
 Dekodierung der MP3-Dateien zurückgegriffen werden. Entschieden haben wir uns
 zu diesem Zweck für die Go-Bibliothek \textit{go-mpg123}. Diese greift im
-Hintergrund auf die Bibliothek libmpg123. Aktuell befindet sich die Bibliothek
+Hintergrund auf die Bibliothek \textit{libmpg123} zu. Aktuell befindet sich die Bibliothek
 noch in der Entwicklung, allerdings bietet sie bereits die geforderte
 Funktionalität zur Dekodierung an.
 \href{https://github.com/bobertlo/go-mpg123}{MP3 Decoder}
