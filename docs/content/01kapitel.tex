@@ -2,14 +2,14 @@
 
 \chapter{Einleitung}
 Aktuell kann der Trend beobachtet werden, dass etablierte Applikationen oder
-Programme dazu übergehen, zusätzliche Funktionalitäten zu ihren Grundfeatures
+Programme dazu übergehen zusätzliche Funktionalitäten zu ihren Grundfeatures
 hinzuzufügen. So umfasst beispielsweise die beliebteste Handyapplikation in China namens
 \textit{WeChat} weitaus mehr Funktionen als nur zum einfachen
 Nachrichtenaustausch, wofür sie anfänglich entwickelt wurde. Mittlerweile
 bietet die Applikation sogar Möglichkeiten zur Navigation, zum
 Einkaufen von Artikeln, zum Managen von Flügen oder auch zur Verwaltung von
 Zahlungen \autocite{was_ist_wechat?_2019}. Auch \textit{WhatsApp} hat begonnen ihren
-Fokus auf zusätzliche Funktionen zu erweitern. So stellt WhatsApp mittlerweile
+Fokus um weitere Funktionen zu erweitern. So stellt WhatsApp inzwischen
 Möglichkeiten für Internetanrufe und Videochat zur Verfügung, und arbeitet
 aktuell an der Einführung eines Bezahl-Features \autocite{shead_2019}. \hfill
 
@@ -25,20 +25,20 @@ nur die Grundfunktionalitäten enthalten. \hfill
 
 Durch die zuvor genannten Punkte, hat sich auch in den letzten Jahren der Trend
 von \acp{API} weiter fortgesetzt. Immer mehr Entwickler setzen darauf
-Schnittstelle anzubieten, die den einfachen Austausch von Informationen mit den
-Programmen ermöglichen. Dies vereinfacht das Verknüpfen von verschiedenen
+Schnittstelle anzubieten, die den einfachen Austausch von Informationen zwischen verschiedenen
+Programmen ermöglichen. Dies vereinfacht das Verknüpfen von unabhängigen
 Programmen ungemein, und bietet den großen Vorteil, dass man als Entwickler auf
 etablierte Speziallösungen zurückgreifen kann, und nicht alles von Grund auf
-neu entwickeln muss. So entstehen anstatt riesiger in sich geschlossener Programme
+neu entwickeln muss. Dadurch entstehen anstatt riesiger in sich geschlossener Programme
 dynamische Softwarepakete, welche von unterschiedlichsten Entwicklern weiter
 entwickelt werden \autocite{babati_2018} \autocite{sandoval_2018}. \hfill \break
 
 Im Rahmen dieser Arbeit soll keinesfalls eine perfekt ausgearbeitete
 Komplettlösung erarbeitet werden, sondern ganz nach der ersten Regel der
-Unix-Philosophie:
-\begin{quote}
-\glqq Schreibe Computerprogramme so, dass sie nur eine Aufgabe erledigen und diese gut machen\grqq \autocite{gancarz_1997}
-\end{quote}
+Unix-Philosophie, 
+\begin{enquote}
+Schreibe Computerprogramme so, dass sie nur eine Aufgabe erledigen und diese gut machen \autocite{gancarz_1997}
+\end{enquote}
 lediglich ein Programm, welches die Grundfunktionalitäten eines Musikplayers erfüllt.
 
 
@@ -53,43 +53,48 @@ lediglich ein Programm, welches die Grundfunktionalitäten eines Musikplayers er
 
 
 \section{Ist-Zustand}
-Zur Technikverwaltung einer Theatergruppe wird aktuell bereits ein Raspberry
-Pi eingesetzt, um während des Spiels die Steuerung des Lichts übernehmen zu
-können. So können die Lichter von einer zentralen Stelle aus gesteuert werden,
+Zur Technikverwaltung einer Theatergruppe wird aktuell ein Raspberry
+Pi eingesetzt, um während des Spiels die Steuerung des Lichts zu übernehmen. Dadurch
+können die Lichter von einer zentralen Stelle aus gesteuert werden,
 und automatisierte Lichtabläufe erstellt werden. Während Aufführungen oder
 Proben wird neben Lichteffekte auch noch Musik zur Untermalung des
-Schauspiels eingesetzt. Die Steuerung der Musik wird aktuell noch manuell von
+Schauspiels eingesetzt. Die Steuerung dieser Musik wird aktuell noch manuell von
 einer Musikanlage aus vorgenommen. Diese Anlage befindet sich am Ende des
 Raumes, weshalb zur Steuerung dieser immer ein Kabel quer durch den ganzen
 Raum gelegt werden muss.
 
 \section{Problemstellung}
-Das Problem an der bestehenden Lösung ist zunächst, dass das manuelle
-Kabellegen jedes Mal einen ungewollten Aufwand darstellt, und auch zu einer
-weiteren Fehlerquelle wird, da es durch Personen beispielsweise beschädigt
-werden kann. Des Weiteren gibt es aktuell noch keine Möglichkeit, automatisierte
-Abläufe mit Licht und Musik zu erstellen. Dies führt dazu, dass wiederholende
-Abläufe manuell gesteuert werden muss, was immer ein erhöhtes Fehlerpotenzial
-darstellt. Dies sollte zukünftig vermieden werden.
+Die Problematik hinter der bestehenden Lösung ist, dass das manuelle Kabelverlegen
+ein ungewollten Mehraufwand darstellt, welcher jedes Mal wieder von neuem
+vollzogen werden muss. Des Weiteren stellt das Kabel eine neue mögliche
+Fehlerquelle dar, da es durch die Installation quer durch den Raum von
+Teilnehmern ungewollt beschädigt werden könnte.
+Außerdem gibt es aktuell noch keine Möglichkeit, automatisierte
+Abläufe zu erstellen, welche sowohl Licht als auch Musik umfassen. Dadurch
+müssen wiederholende Abläufe manuell durch das Technikpersonal gesteuert
+werden, was auch eine potentielle Fehlerquelle ist. Dies soll zukünftig
+vermieden werden.
 
 
 \section{Soll-Zustand}
-Zur Vereinfachung der Steuerung einer Theatergruppe sollen zukünftig alle
-relevante Elemente von einem zentralen Ort aus gesteuert werden können. Dies
-soll die Arbeit der Personen hinter der Technik erleichtern, und das Auftauchen
-von Fehlern reduzieren. Auch der Aufbauaufwand wird verringert, da ein
-Kabellegen nicht mehr nötig ist. Des Weiteren soll es möglich sein,
-automatisierte Abläufe mit Musik und Licht zu erstellen, sodass die
-Technikleute nur noch eine passive Überwachungsrolle einnehmen müssen, und ein
-manuelles Eingreifen nur noch im
-Notfall vonnöten ist. 
+Um die Steuerung der Technik einer Theatergruppe zu vereinfachen, sollen
+zukünftig alle relevanten Elemente von einem zentralen Ort aus gesteuert
+werden. Dadurch soll der Aufwand der Personen hinter der Technik wesentlich
+verringert werden, und das Auftauchen durch menschenverursachte Fehler
+reduziert werden. Zusätzlich soll der Installationsaufwand verringert werden,
+indem das Kabellegen für die Musikboxen obsolet gemacht wird.  Des Weiteren
+soll es möglich sein, automatisierte Abläufe mit Musik und Licht zu erstellen,
+sodass die Technikleute nur noch eine passive Überwachungsrolle einnehmen
+müssen, und ein manuelles Eingreifen nur noch im Notfall vonnöten ist. 
 
 
 \section{Aufgabe}
-Im Rahmen dieser Arbeit soll die Verwaltung der Technik einer Theatergruppe
-vereinfacht werden. Dabei soll im Speziellen eine Schnittstelle angelegt
-werden, welche das Abspielen von Musik von einer externen Software aus
-ermöglicht. Das dabei entstehende Programm soll auf einem Raspberry Pi laufen,
-um zukünftig die komplette Steuerung der Technik von diesem Gerät aus zu
-ermöglichen.
+Die Aufgabe der Studienarbeit ist es, die Verwaltung der Technik durch die
+Entwicklung eines Musikplayers zu vereinfachen. Dabei soll im Speziellen eine
+Schnittstelle entwickelt werden, welche das Abspielen von Musik von einer
+externen Software aus ermöglicht. Das dabei entstehende Programm soll auf einem
+Raspberry Pi laufen, um zukünftig die komplette Steuerung der Technik von
+diesem Gerät aus zu ermöglichen. Der große Vorteil dahinter ist, dass der
+Raspberry Pi übers Internet angesteuert werden kann, wodurch das lästige
+Kabellegen nicht mehr nötig ist.
 
