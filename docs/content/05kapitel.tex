@@ -365,17 +365,17 @@ jeweils einzelne Packages dar, die von Go-Programmen aufgerufen werden können. 
 Folgend wird jedes Package kurz beschrieben:  
 \begin{enumerate}
 \item \textbf{logger-Package} \\
-Dieses Package wird von fast allen Funkionen des Audioplayers genutzt um die
-Logdateien zu erstellen. Zudem bietet es auch Funktionen zu initialisieren des
+Dieses Package wird von fast allen Funkionen des Audioplayers zur Erstellung
+von Log-Dateien genutzt. Zudem bietet es auch Funktionen zur Initialisierung des
 Loggers.
 
 \item \textbf{portaudiofunctions-Package} \\
-In diesem Package sind alle Funktionen die für die Verwendung der
-Portaudio-Bibliothek notwendig sind vorhanden. 
+In diesem Package sind alle Funktionen, die für die Verwendung der
+PortAudio-Bibliothek notwendig sind, vorhanden. 
 
 
 \item \textbf{screener-Package} \\
-Das screener-Package besitzt Funktionen welche den Nutzer einen Start- und
+Das screener-Package besitzt Funktionen, welche den Nutzer einen Start- und
 Endbildschirm bei der Verwendung des Audioplayers anzeigt.
 
 
@@ -385,34 +385,32 @@ JSON-Nachrichten für den Client über den Socket.
 
 
 \item \textbf{audiofunctions-Package} \\
-Innerhalb des audiofunctions-Package sind alle implementierten Funktionen von
-dem Audioplayer rund um das Abspielen von Audiodateien vorhanden.
+Innerhalb des audiofunctions-Package befinden sich Funktionen, welche für das
+Abspielen von Audiodateien vonnöten sind.
 
 \item \textbf{connectionfunctions-Package} \\
-Hier sind die Funktionen für das Erstellen des Sockets sowie das Senden,
-Empfangen und Schließen des Sockets vorhanden. Dies wird für den Kommunikation
-zwischen Client und Server benötigt.
+Hier sind die Funktionen für das Erstellen sowie das Senden, Empfangen und
+Schließen des Sockets hinterlegt. Dies wird für den Kommunikation zwischen
+Client und Server benötigt.
 
 \item \textbf{volumefunctions-Package} \\
 Durch dieses Package kann die Lautstärke für die Wiedergabe von Audiodateien
-mit verändert werden.
+verändert werden.
 
 \item \textbf{structs-Package} \\
-Um einheitliche Strukturen von Daten zu haben, die sowohl der Client wie auch
-der Server nutzen können, wurde das structs-Package erstellt welche
-Datenstrukturen als \textit{struct} beinhaltet.
+Um auf die gleichen Strukturen vom Client und Server zugreifen zu können,
+wurden diese in dem Package Struct ausgelagert.
 
 \item \textbf{util-Package} \\
-In dem Package befinden sich sämtliche Funktionen die einen hilfreichen und
-nützlichen Part haben und meist von mehreren Packages genutzt werden. Zum
-Beispiel eine Funktion die kontrolliert ob eine gewissen Zeichenfolge sich in
-einem String-Array befindet.
+In diesem Package befinden sich sämtliche Grundfunktionen, die meist von
+mehreren Packages genutzt werden. Zum Beispiel enthält sie eine Funktion, die
+Strings nach einer bestimmten Zeichenkette durchsucht.
 \end{enumerate}
 
 
 
 \subsection{Konzept des Clients}
-Wie bereits schon zuvor erklärt, hat der Client die Aufgabe die Befehle für den
+Wie bereits zuvor erläutert, hat der Client die Aufgabe die Befehle für den
 Audioplayer vom Nutzer entgegenzunehmen und diese an der Server über einen
 Socket weiterzuleiten.
 
@@ -424,9 +422,9 @@ Socket weiterzuleiten.
         	\change
             \assign[5]{\hfill Starten des Servers\hfill}
         \ifend
-        \ifthenelse[15]{2}{1} {Überprüfen ob Übergabeparameter übergeben wurden}{Ja}{Nein} 
-        	\assign{\hfill Parsen der Informationen in ein JSON Format\hfill}
-            \assign{\hfill Senden des JSONs and den Server\hfill}
+        \ifthenelse[15]{2}{1} {Überprüfen ob Übergabeparameter vorhanden sind}{Ja}{Nein} 
+        	\assign{\hfill Parsen der Informationen in ein \ac{JSON}-Format\hfill}
+            \assign{\hfill Senden des \acp{JSON} an den Server\hfill}
             \while[5]{Bis Nachricht vom Server kommt}
             	\assign{\hfill Warten...\hfill}
             \whileend
@@ -440,27 +438,26 @@ Socket weiterzuleiten.
 \end{figure}
 
 In der Abbildung \ref{lst:client_ablauf} wird der Programmablauf des Clients in
-einem Struktogramm dargestellt und nun kurz erläutert. Als ersten Schritt ließt
+einem Struktogramm dargestellt und nachfolgend kurz erörtert. Als ersten Schritt ließt
 der Client die zuvor erläuterte Konfigurationsdatei ein und initialisiert
 anschließend den Logger, um alle folgenden ausgeführten Aktionen im Client in
 einer Logdatei zu protokollieren. Anschließend wird überprüft ob ein Prozess
 des Serverprogramms bereits existiert und läuft. Falls dies nicht der Fall ist,
-startet der Client das Serverprogramm und wartet, bis der Server hochgefahren
-ist und eine Verbindung über den Socket zum Server besteht. Sobald eine
-Verbindung besteht, wird überprüft ob Übergabeparameter bei dem Aufruf des
-Client mit übergeben wurden sind. Wurden keine Parameter übergeben, wird eine
+startet der Client das Serverprogramm und wartet bis der Server hochgefahren
+ist und eine Verbindung zum Server besteht. Sobald eine
+Verbindung besteht, wird überprüft, ob Übergabeparameter bei dem Aufruf des
+Clients übergeben wurden. Wurden keine Parameter übergeben, wird eine
 Statusmeldung angezeigt und das Clientprogramm beendet sich. Falls jedoch
-Parameter übergeben wurden sind, werden diese Informationen (Befehle) in ein
-\ac{JSON} Format geparst und anschließend über den Socket an den Server
-gesendet. Der Client wartet nun solang, bis er eine Antwort vom Server bekommt,
-dass der Befehl ausgeführt wurden ist welches durch eine entsprechende
-Statusmeldung an den Client realisiert wurde. Die Statusmeldung wird dem Nutzer
-angezeigt worauf sich kurze Zeit später der Client automatisch beendet.
+Parameter übergeben worden sind, werden diese Informationen (Befehle) in ein
+\ac{JSON}-Format geparst und anschließend über den Socket an den Server
+gesendet. Der Client wartet bis er eine Antwort vom Server bekommt, in welcher
+der Server eine Statusmeldung zurückgibt.  Die Statusmeldung wird dem Nutzer
+angezeigt und der Client beendet sich anschließend automatisch.
 
 \subsection{Konzept des Servers}
 
 Der Server stellt das \enquote{Herz} des Audioplayers dar. Nach einmaligem
-starten des Servers, läuft dieser permanent als Prozess im Hintergrund und
+starten des Servers läuft dieser permanent als Prozess im Hintergrund und
 setzt die Funktionen des Audioplayers um.
 
 \begin{figure}[H]
@@ -489,59 +486,56 @@ setzt die Funktionen des Audioplayers um.
 \label{lst:server_ablauf} 
 \end{figure}
 
-In der Abbildung \ref{lst:server_ablauf} wird, wie bereits beim Client zuvor
-auch, der grobe Programmablauf des Server dargestellt und im folgenden noch
-kurz erläutert. Als ersten Schritt liest der Server, genau wie der Client, die
+In der Abbildung \ref{lst:server_ablauf} wird der grobe Programmablauf des
+Server dargestellt. Nachfolgend wird das Konzept nochmal kurz erläutert.
+\newline
+Im ersten Schritt liest der Server, genau wie der Client, die
 Einstellungen aus der Konfigurationsdatei aus und setzt anschließend den Logger
-zum protokollieren der entstehenden Ereignisse auf. Darauf folgend setzt der
+zum Protokollieren der entstehenden Ereignisse auf. Anschließénd setzt der
 Server den Socket für die Kommunikation mit dem Client auf, wozu er den in der
 Konfigurationsdatei festgelegten Pfad zur Erstellung des
 Kommunikationsendpunktes nutzt. Sobald der Socket aufgesetzt ist und läuft,
-beginnt der Server in eine Endlosschleife zu fallen, die folgende Funktionen
-beinhaltet: Der Server hört die ganzen Zeit den Socket ab und wartet darauf das
-Nachrichten eintreffen. Falls eine Nachricht eingetroffen ist, wird die
-eingetroffene Nachricht welche in einem \ac{JSON} Format von Client kommt
-geparst um die darin liegenden Informationen auslesen zu können. Im Falle
-dessen, dass als Befehl das beenden des Server gefordert ist, wird zuerst eine
-Bestätigungsnachricht an den Client zurückgesendet und anschließend die falls
-vorhandene aktuelle Wiedergabe einer Audiodatei gestoppt und der Socket sowie
-das Serverprogramm beendet. Andernfalls, wird der gewünschte Befehl vom Server
-ausgeführt und nach erfolgreicher Ausführung eine Statusmeldung an den Client
+wartet der Server in einer Endlosschleife auf einen Befehl des Clients und
+durchläuft dabei folgende Schritte: \newline
+Falls eine Nachricht durch den Client eingetroffen ist, wird die
+eingetroffene Nachricht, welche in einem \ac{JSON} Format vorliegt,
+geparst, um die darin liegenden Informationen auslesen zu können. Im Falle
+dessen, dass als Befehl das Beenden des Server ankommt, wird zuerst eine
+Bestätigungsnachricht an den Client geschickt. Falls aktuell eine Wiedergabe
+durchgeführt wird, wird diese beendet. Danach wird der Socket geschlossen und
+das Serverprogramm beendet. Bei jedem anderen Befehl wird die gewünschte Aktion
+durchgeführt und nach erfolgreicher Ausführung eine Statusmeldung an den Client
 zurück gesendet.
 	
 
 \section{Kommunikation über Sockets}
-Eines der größten Schwierigkeiten in diesem Projekt war es ein Programm zu
-entwickeln, was einerseits eine Audiodatei abspielt und gleichzeitig noch
-Befehle entgegennehmen kann jedoch dazu aber nicht das System blockiert, sodass
-nichts anderes mehr getätigt werden kann. Um dies zu ermöglichen wurde sich für
-das bereits beschriebene Konzept aus Server und Client entschieden, die über
-einen Socket kommunizieren. \\
-Ein \textit{Socket} ist ein Kommunikationsendpunkt der vom Betriebssystem als
-Objekt bereitgestellt wird. Programme verwenden meistens Sockets um mit anderen
+Die größte Schwierigkeit bei dem Projekt ist es, ein Programm zu entwickeln,
+welches die Steuerung von Audiodateien ermöglicht, aber gleichzeitig noch in
+der Lage ist, Befehle durch den Nutzer entgegen zu nehmen. Im Zuge dessen
+fiel die Entscheidung auf das zuvor benannte
+Client-Server-Modell. Um die Kommunikation dieser beiden zu ermöglichen, wurde
+sich für den Einsatz von einem Socket entschieden. \newline
+Ein \textit{Socket} ist ein Kommunikationsendpunkt, der vom Betriebssystem als
+Objekt bereitgestellt wird. Programme verwenden meistens Sockets, um mit anderen
 Programmen Daten auszutauschen und miteinander zu kommunizieren. Dies ist
 unabhängig davon, ob beide Programme sich auf dem selbem Computer oder einem
-anderen, über das Netzwerk erreichbaren Computer befinden. Sockets
+anderen, über das Netzwerk erreichbaren Computer, befinden. Sockets
 kommunizieren in der Regel bidirektional, was bedeutet, dass über den Socket
 sowohl Daten gesendet wie auch empfangen werden können. Technisch ist der
-Socket ein Speicherbereich in dem Konfigurationsparameter einer Verbindung wie
+Socket ein Speicherbereich, indem Konfigurationsparameter einer Verbindung, wie
 auch ankommende und abgehende Daten zwischengespeichert werden. Aufgrund
-dessen, dass ein Socket vom Betriebssystem bereit gestellt wird, hat man keinen
-direkt zugriff auf den Socket sondern kann nur über Funktionen der
-Programmiersprache auf den Socket zugreifen.
-Ein Socket wird immer von einem Programm bei Bedarf erstellt und ist somit
-diesem Prozess fest zugeordnet \autocite{pollakowski_2012}. \\
-Dies erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und
-Audiodateien abspielen kann und dabei nicht das System "blockiert". Der Client
-der über den Socket mit dem Server kommuniziert wird immer nur für die
-Übertragung eines Befehl übertragen und hat damit nur die Aufgabe den Server
-mit neuen Befehlen zu füllen.
+dessen, dass ein Socket vom Betriebssystem bereitgestellt wird, hat man keinen
+direkt Zugriff auf den Socket, sondern kann nur über Funktionen der
+Programmiersprache auf den Socket zugreifen \autocite{pollakowski_2012}. \\
+Diese Kommunikation erlaubt es, dass der Server im Hintergrund Befehle entgegennehmen und
+Audiodateien abspielen kann, ohne dass das System "blockiert". 
 
 \section{Funktionen des Audioplayers}
-Nachdem nun die Konzepte zur Umsetzung des Audioplayers beschrieben wurden,
-wird nun auf die jeweiligen Funktionen des Audioplayers eingegangen. Dabei wird
+Nach der Beschreibung der Konzepte zur Umsetzung des Audioplayers, 
+wird nun auf die implementierten Funktionen des Audioplayers eingegangen. Dabei wird
 zu jeder Funktion eine kurze Beschreibung sowie die Syntax für den Aufruf
 erläutert.
+
 
 \definecolor{Gray}{gray}{0.9}
 \begin{longtable}{l|l} 
@@ -552,59 +546,61 @@ Audio abspielen & \begin{minipage}[t]{.558\textwidth} Zur Wiedergabe einer Audio
 ./MusicPlayerClient play [File/Folder Path]
 \end{lstlisting} \end{minipage} \\\hline
 
-Audio pausieren & \begin{minipage}[t]{.558\textwidth} Der Audioplayer bietet die Möglichkeit einen aktuell laufenden Song zu pausieren. Technisch gesehen wir dabei der Stream(Das Decoden der Datei) pausiert sodass keine Ausgabe mehr erfolgt. \begin{lstlisting}
+Audio pausieren & \begin{minipage}[t]{.558\textwidth} Der Audioplayer bietet die Möglichkeit einen aktuell laufenden Song zu pausieren. Technisch gesehen wir dabei der Stream - das Decoden der Datei - pausiert, sodass keine Ausgabe mehr erfolgt. \begin{lstlisting}
 ./MusicPlayerClient pause
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio fortfahren & \begin{minipage}[t]{.558\textwidth} Nachdem der Befehl zum pausieren eines laufenden Song ausgeführt wurde, kann der Song auch ab der pausierten Stelle wieder fortgesetzt werden. Der Befehl funktioniert nur wenn ein Lied pausiert ist. \begin{lstlisting}
+Audio fortfahren & \begin{minipage}[t]{.558\textwidth} Nachdem der Befehl zum Pausieren eines laufenden Song ausgeführt wurde, kann der Song ab der pausierten Stelle fortgesetzt werden. Der Befehl funktioniert nur wenn ein Lied pausiert ist. \begin{lstlisting}
 ./MusicPlayerClient resume
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio stoppen & \begin{minipage}[t]{.558\textwidth} Das stoppen einer Wiedergabe bewirkt, dass das aktuell laufende Lied angehalten wird aber sich nicht der Zeitpunkt gespeichert wird. Bei erneutem Starten beginnt der Song wieder von vorne. \begin{lstlisting}
+Audio stoppen & \begin{minipage}[t]{.558\textwidth} Das Stoppen einer Wiedergabe bewirkt, dass das aktuell laufende Lied angehalten wird. Dabei wird sich jedoch nicht der Zeitpunkt der Audiodatei gespeichert. Bei erneutem Starten beginnt der Song wieder von vorne. \begin{lstlisting}
 ./MusicPlayerClient stop
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio-Weiter & \begin{minipage}[t]{.558\textwidth} Falls eine Ordner übergeben wurden ist oder manuell eine Playlist erstellt wurde, kann durch den folgenden Befehl das akutelle laufende Audio gestoppt werden und das nächste Lied in der Playlist wird automatisch gestartet. \begin{lstlisting}
+Audio-Weiter & \begin{minipage}[t]{.558\textwidth} Falls ein Ordner übergeben oder manuell eine Playlist erstellt worden ist, kann durch den folgenden Befehl die aktuell laufende Audiodatei gestoppt werden und das nächste Lied in der Playlist gestartet werden. \begin{lstlisting}
 ./MusicPlayerClient next
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio-Zurück & \begin{minipage}[t]{.558\textwidth} Äquivalent zur Funktion Audio-Weiter, wird bei dieser Funktion das aktuell lafende Audio gestoppt und das sich vorherige in der Playlist befindliche Audio wiedergegeben.  \begin{lstlisting}
+Audio-Zurück & \begin{minipage}[t]{.558\textwidth} Äquivalent zur Audio-Weiter-Funktion wird bei dieser Funktion das aktuell laufende Audio gestoppt und die zuvor abgespieltesich Datei erneut wiedergegeben.  \begin{lstlisting}
 ./MusicPlayerClient back/previous
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio zur Playlist hinzufügen &  \begin{minipage}[t]{.558\textwidth} Falls bereits eine Playlist besteht oder eine neue dadurch erstellt werden soll, kann über diesen Befehl ein Audio oder ein Ordner mit den darin liegenden Audios der Playlist angefügt werden. \begin{lstlisting}
+Audio zur Playlist hinzufügen &  \begin{minipage}[t]{.558\textwidth} Falls bereits eine Playlist besteht oder eine neue erstellt werden soll, kann über diesen Befehl ein Audio oder ein Ordner mit den darin liegenden Audiodateien der Playlist angefügt werden. \begin{lstlisting}
 ./MusicPlayerClient add/addToQueue [File/Folder path]
 \end{lstlisting} \end{minipage} \\ \hline
 
-Audio von Playlist löschen & \begin{minipage}[t]{.558\textwidth} Einzelne Audiodateien in einer Playlist können auch durch den folgenden Befehl wieder entfernt werden. Dazu muss die Nummer in der Playlist angegeben werden die bei der anzeige von Informationen mit ausgegeben wird. \begin{lstlisting}
+Audio von Playlist löschen & \begin{minipage}[t]{.558\textwidth} Einzelne Audiodateien in einer Playlist können auch durch den folgenden Befehl wieder entfernt werden. Dazu muss die Nummer in der Playlist angegeben werden, die bei der Anzeige von Informationen mit ausgegeben wird. \begin{lstlisting}
 ./MusicPlayerClient remove/delete/removeAt/deleteAt [Queue number]
 \end{lstlisting} \end{minipage} \\ \hline
 
-Lautstärke festlegen & \begin{minipage}[t]{.558\textwidth} Die Lautstärke der Ausgabe der Audiodateien kann zwischen 0 und 100 eigentständig selbst bestimmt werden. Dabei mir technisch gesehen die Lautstärke des Audioausgangs des Raspberry Pi verändert. \begin{lstlisting}
+Lautstärke festlegen & \begin{minipage}[t]{.558\textwidth} Die Lautstärke der Ausgabe der Audiodateien kann zwischen 0 und 100 gesetzt werden. Dabei wird technisch gesehen die Lautstärke des Audioausgangs des Raspberry Pi verändert. \begin{lstlisting}
 ./MusicPlayerClient setVolume [0-100]
 \end{lstlisting} \end{minipage} \\ \hline
 
-Lautstärke erhöhen & \begin{minipage}[t]{.558\textwidth} Um die Lautstärke nicht auf einen festen Wert zu setzen, kann auch einfach von dem akutellen Wert der Lautstärke um einen gewissen Grad erhöht werden. Bei jedem Aufruf dieser Funktion wird die Lautstärke um 10 Schritte erhöht. Maximal ist der Wert 100 möglich. \begin{lstlisting}
+Lautstärke erhöhen & \begin{minipage}[t]{.558\textwidth} 
+Um eine relative Laustärkenerhöhung vorzunehmen, kann mit dem folgenden Befehl die Lautstärke um jeweils 10 Punkte erhöht werden. Maximal ist der Wert 100 möglich. \begin{lstlisting}
 ./MusicPlayerClient louder/setVolumeUp
 \end{lstlisting} \end{minipage} \\ \hline
 
-Lautstärke verringern & \begin{minipage}[t]{.558\textwidth} Um die Lautstärke nicht auf einen festen Wert zu setzen, kann auch einfach von dem akutellen Wert der Lautstärke um einen gewissen Grad verringert werden. Bei jedem Aufruf dieser Funktion wird die Lautstärke um 10 Schritte verringert. Minimal ist der Wert 0 möglich. \begin{lstlisting}
+Lautstärke verringern & \begin{minipage}[t]{.558\textwidth} 
+Um eine relative Lautstärkenminderung vorzunehmen, kann mit dem folgenden Befehl die Lautstärke um jeweils 10 Punkte gesenkt werden. Minimal ist der Wert 0 möglich. \begin{lstlisting}
 ./MusicPlayerClient quieter/setVolumeDown
 \end{lstlisting} \end{minipage} \\ \hline
 
-Shuffle-Funktion & \begin{minipage}[t]{.558\textwidth} Die Shuffle-Funktion hat die Aufgabe die Audio in einer Playlist zufällig wiederzugeben. Dazu wird die Playlist per Zufall einmal neu durchgemischt, sodass eine Zufallswiedergabe stattfindet. Ein Aufruf bewirkt ein eimaliges durchmischen der Playlist. \begin{lstlisting}
+Shuffle-Funktion & \begin{minipage}[t]{.558\textwidth} Die Shuffle-Funktion hat die Aufgabe, die Dateien einer Playlist zufällig wiederzugeben. Dazu wird die Playlist per Zufall durchgemischt, sodass anschließend eine zufällige Wiedergabe stattfinden kann. \begin{lstlisting}
 ./MusicPlayerClient shuffle/setShuffle
 \end{lstlisting} \end{minipage} \\ \hline
 
-Loop-Funktion de/-aktivieren & \begin{minipage}[t]{.558\textwidth} Durch das aktivieren/deaktivieren der Loop-Funktion wird eine Playlist nach dem durchlauf wieder von vorne beginnen, also eine Endloswiedergabe. Dies ist auch Möglich wenn nur ein einzelner Song wiedergegeben wird. \begin{lstlisting}
+Loop-Funktion de/-aktivieren & \begin{minipage}[t]{.558\textwidth} Durch das Aktivierung/Deaktivierung der Loop-Funktion wird eine Playlist, nachdem sie einmal komplett durchgelaufen ist, wieder von vorne beginnen. Dies ist auch möglich, wenn nur ein einzelner Song wiedergegeben wird. \begin{lstlisting}
 ./MusicPlayerClient loop/setLoop [on,true/off,false]
 \end{lstlisting} \end{minipage} \\ \hline
 
-aktuellen Song neu starten & \begin{minipage}[t]{.558\textwidth} Durch diese Funktion wird die aktuell laufende Audio gestoppt und die gleiche Audio wieder von Anfang an wiedergegeben. \begin{lstlisting}
+aktuellen Song neu starten & \begin{minipage}[t]{.558\textwidth} Durch diese Funktion wird die aktuell laufende Audiodatei gestoppt und wieder von Anfang an wiedergegeben. \begin{lstlisting}
 ./MusicPlayerClient repeat
 \end{lstlisting} \end{minipage} \\ \hline
 
-Informationen ausgeben & \begin{minipage}[t]{.558\textwidth} Hiermit werden dem Nutzer einige Informationen zum Audioplayer wie z.B. die aktuell laufende Audio sowie den Inhalt der Playlist in einer Tabellenform. Dabei werden die Informationen aus den ID3 Tags der Audiodateien geholt. Zusätzlich werden die aktuellen Lautstärke Einstellungen ausgegeben \begin{lstlisting}
+Informationen ausgeben & \begin{minipage}[t]{.558\textwidth} Hiermit werden dem Nutzer einige Informationen zum Audioplayer, wie unter anderem die aktuell laufende Datei sowie der Inhalt der Playlist in einer Tabellenform, angezeigt. Dabei werden die Informationen aus den ID3 Tags der Audiodateien ausgelesen. Zusätzlich werden die aktuellen Lautstärkeeinstellungen ausgegeben \begin{lstlisting}
 ./MusicPlayerClient info
 \end{lstlisting} \end{minipage} \\
 \caption{Funktionen des Audioplayers im Überblick} % needs to go inside longtable environment
