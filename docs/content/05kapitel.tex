@@ -124,7 +124,7 @@ Die empfohlene Ordnerstruktur sieht wie folgt aus:
 \end{itemize}
 In der folgenden Übersicht wird die Ordnerstruktur nochmals visuell
 dargestellt. Der Ordner \textit{pi} stellt hier den Nutzernamen da, welcher im
-Betriebssytem hinterlegt ist. \newline
+Betriebssystem hinterlegt ist. \newline
 \begin{minipage}[t]{\textwidth}
 \begin{figure}[H]
 \dirtree{%
@@ -171,13 +171,13 @@ welche nun für die Entwicklung auf den lokalen Rechner heruntergeladen werden
 müssen. Um nicht alle Abhängigkeiten einzeln zu installieren, kann Go sich alle
 benötigten Projekte alleine herunterladen. Dies wird durch den folgenden Befehl
 gemacht.
-Starting from \verb|../RaspberryPi_Go_Audioplayer/| :
+Ausgehend von \verb|../RaspberryPi_Go_Audioplayer/| :
 \begin{lstlisting}[caption={Installieren von Go Abhängigkeiten}]
 go get ./... 
 \end{lstlisting}
 
 \subsubsection{Modifizieren der \acs{ALSA} Bibliothek Dateien}
-Die Konfigurationdatei der \acf{ALSA} Bibliothek muss editiert werden, damit die
+Die Konfigurationsdatei der \acf{ALSA} Bibliothek muss editiert werden, damit die
 Fehlermeldungen, welche durch die nicht vorhandenen Anschlüsse am Raspberry Pi
 hervorgerufen werden, nicht immer mit ausgegeben werden. \\
 Die Datei kann durch den Befehl \verb|sudo nano /usr/share/alsa/alsa.conf| aufgerufen werden. \newline
@@ -491,7 +491,7 @@ Server dargestellt. Nachfolgend wird das Konzept nochmal kurz erläutert.
 \newline
 Im ersten Schritt liest der Server, genau wie der Client, die
 Einstellungen aus der Konfigurationsdatei aus und setzt anschließend den Logger
-zum Protokollieren der entstehenden Ereignisse auf. Anschließénd setzt der
+zum Protokollieren der entstehenden Ereignisse auf. Anschließend setzt der
 Server den Socket für die Kommunikation mit dem Client auf, wozu er den in der
 Konfigurationsdatei festgelegten Pfad zur Erstellung des
 Kommunikationsendpunktes nutzt. Sobald der Socket aufgesetzt ist und läuft,
