@@ -78,7 +78,7 @@ das Betriebssystem \textit{Linux} mit der Architektur \textit{ARMv6} benötigt.
 Nachdem das passende Paket auf der Webseite gefunden wurde, muss der
 Direkt-Link zu dem Download in den Zwischenspeicher kopiert werden und
 anschließend der folgende Befehl auf dem Raspberry Pi ausgeführt werden.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Herunterladen einer Datei}]
 Befehl: wget [LINK]
 \end{lstlisting}
 
@@ -91,7 +91,7 @@ dass die Benutzerrechte einer Datei mit gesichert werden und diese beim
 Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das entpacken
 des Archivs wird durch den folgenden Befehl realisiert. Der Dateiname
 entspricht hier der zuvor heruntergeladenen Datei.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Entpacken eines Archivs}]
 tar -C /usr/local -xzf [Filename]
 \end{lstlisting}
 
@@ -102,7 +102,7 @@ ausführbaren Datei von Go in die PATH-Variable eingetragen werden. Die
 Komma-separierten Liste von Ordnern besteht, die die Shell beim der Eingabe
 eines Kommandos durchsucht \autocite{quigley_2000}. Dies bewirkt, dass von
 jedem Standpunkt im System auf Go bzw. den Go Compiler zugegriffen werden kann.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Setzen der Go-Path Variable}]
 export PATH=\$PATH:/usr/local/go/bin
 \end{lstlisting}
 
@@ -112,7 +112,7 @@ korrekt gesetzt wurde, wird nun durch den einfachen Befehl \verb|go version|
 eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Wird
 dabei eine gewisse Version angezeigt, ist Go richtig installiert und im System
 integriert.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Go Version anzeigen}]
 go version -> "go version go x.x.x"
 \end{lstlisting}
 
@@ -128,6 +128,7 @@ In der folgenden Übersicht wird die Ordnerstruktur nochmals visuell
 dargestellt. Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich
 bei jedem System natürlich unterscheiden kann. \\
 \begin{minipage}[t]{\textwidth}
+\begin{figure}[H]
 \dirtree{%
 .1 /. 
 .2 home. 
@@ -137,6 +138,8 @@ bei jedem System natürlich unterscheiden kann. \\
 .5 pkg. 
 .5 bin. 
 }
+\caption{Ordnerstruktur von Go} 
+\end{figure}
 Die Befehle zur Erstellung der Ordnerstruktur sehen wie folgt aus. \\
 Ausgehend von \verb|$Home|:
 \begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
@@ -171,7 +174,7 @@ müssen. Um nicht alle Abhängigkeiten einzeln zu installieren, kann Go sich all
 benötigten Projekte alleine herunterladen. Dies wird durch den folgenden Befehl
 gemacht.
 Starting from \verb|../RaspberryPi_Go_Audioplayer/| :
-\begin{lstlisting}
+\begin{lstlisting}[caption={Installieren von Go Abhängigkeiten}]
 go get ./... 
 \end{lstlisting}
 
@@ -206,17 +209,17 @@ da eine bereits kompilierte Version heruntergeladen und genutzt werden kann.
 Dazu sind folgende Schritte notwendig:
 \begin{enumerate}
 \item \textbf{Herunterladen der neusten \href{https://github.com/alexanderklapdor/RaspberryPi_Go_Audioplayer/releases}{Release} Datei}  \\
-\begin{lstlisting}
+\begin{lstlisting}[caption={Herunterladen einer Datei}]
 wget [LINK]
 \end{lstlisting}
 
 \item \textbf{Entpacken des Archiv} \\
-\begin{lstlisting}
+\begin{lstlisting}[caption={Entpacken eines Archivs}]
 tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
 \end{lstlisting}
 
 \item \textbf{Starten des Audioplayers} \\
-\begin{lstlisting}
+\begin{lstlisting}[caption={Starten des Audioplayers}]
 ./RaspberryPi_Go_Audioplayer_v***/MusicPlayerClient
 \end{lstlisting}
 \end{enumerate}
@@ -231,7 +234,7 @@ zu bekommen.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{Audioplayer_Konzept.png}
-	\caption{Audioplayer - Konzept}
+	\caption{Konzept des Audioplayer}
 	\label{img:Konzept-Audioplayer}
 \end{figure}
 
@@ -284,7 +287,7 @@ in den Programmcode eingreifen zu müssen. Aus diesem Grund befinden sich die
 folgenden dargestellten Einstellungspunkte in unterhalb dargestellten \ac{JSON}
 Datei. 
 Json
-\begin{lstlisting}[language=Json]
+\begin{lstlisting}[language=Json,caption={Konfigurationsdatei des Audioplayers}]
 {
 "Socket_Path" : "/tmp/mp.sock",
 "Log_Dir": "logs/",
@@ -330,7 +333,7 @@ Zusätzlich sollte die Namenskonvention für Packages möglichst kurz aber
 gleichzeitig noch verständlich sein \autocite{crawshaw_2019}. \\
 Der Aufbau des Audioplayers wurde auf Basis dieser Kodierrichtlinie erstellt,
 sodass sich die folgende Ordnerstruktur entwickelt:
-
+\begin{figure}[H]
 \dirtree{%
 .1 /. 
 .2 logger. 
@@ -356,6 +359,8 @@ sodass sich die folgende Ordnerstruktur entwickelt:
 .2 MusicPlayerClient.go.
 .2 MusicPlayerServer.go.
 }
+\caption{Ordnerstruktur des Audioplayers} 
+\end{figure}
 
 Die Hauptprogramme, also der Server und der Client, sowie die erstellte
 Konfigurationsdatei liegen dem \textit{Root-Verzeichnis} des Audioplayers. Wie
@@ -435,7 +440,7 @@ Socket weiterzuleiten.
         \ifend
         \assign[5]{\hfill Beenden des Clients\hfill}
     \end{struktogramm} 
-\caption{Client Programm - Ablauf} 
+\caption{Programmablauf des Clients} 
 \label{lst:client_ablauf} 
 \end{figure}
 
@@ -485,7 +490,7 @@ setzt die Funktionen des Audioplayers um.
         	\ifend
         \whileend
     \end{struktogramm} 
-\caption{Server Programm - Ablauf} 
+\caption{Programmablauf des Servers} 
 \label{lst:server_ablauf} 
 \end{figure}
 
@@ -607,7 +612,7 @@ aktuellen Song neu starten & \begin{minipage}[t]{.558\textwidth} Durch diese Fun
 Informationen ausgeben & \begin{minipage}[t]{.558\textwidth} Hiermit werden dem Nutzer einige Informationen zum Audioplayer wie z.B. die aktuell laufende Audio sowie den Inhalt der Playlist in einer Tabellenform. Dabei werden die Informationen aus den ID3 Tags der Audiodateien geholt. Zusätzlich werden die aktuellen Lautstärke Einstellungen ausgegeben \begin{lstlisting}
 ./MusicPlayerClient info
 \end{lstlisting} \end{minipage} \\
-\caption{Übersicht - Funktionen des Audioplayers} % needs to go inside longtable environment
+\caption{Funktionen des Audioplayers im Überblick} % needs to go inside longtable environment
 \label{tab:funktionendesaudioplayer_longtable}
 \end{longtable}
 
