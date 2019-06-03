@@ -72,7 +72,53 @@ erhöhen.
 
 
 \section{Aussicht}
+Im Zeitraum der Studienarbeit konnten, abgesehen von der Fade-In und Fade-Out
+Funktionalität, alle zu beginn definierten Anforderungen erfüllt werden. Der
+dabei entstanden Musikplayer wurde ausgiebig auf dem bereitgestellten Raspberry Pi
+getestet, sodass dieser im späteren Einsatzrahmen ohne Probleme funktionieren
+sollte. \newline
+Wie in den meisten Projekten mit Deadline, konnten im angegeben Zeitraum nicht
+alle erdachten Funktionalitäten  perfekt umgesetzt werden. So gibt es bei der
+aktuellen Version immernoch Kleinigkeiten, welche bei einem zukünftigen Release
+noch hinzugefügt oder verändert werden könnten. \hfill \break
 
+Eines dieser Funktionalitäten betrifft den Austausch von Daten zwischen 
+Server und Client. So gibt der Server dem Client aktuell nur einen einfachen
+String zurück, welcher Informationen zu der ausgeführten Aktion enthält. Dieser
+könnte in Zukunft durch ein \ac{JSON}-Array ersetzt werden, um noch mehr
+relevante Informationen mit zu übertragen. Dadurch könnten Informationen wie
+Lautstärke oder Warteliste mitübergeben werden, sodass der Client nicht mehr
+jede Information manuell erfragen muss. \newline
+Wenn man die Kommunikation auf \ac{JSON}-Arrays geändert hätte, könnte man für
+den Client auch noch eine kleine \ac{GUI} bauen. Dadurch könnten dem Benutzer alle
+aktuellen Informationen angezeigt werden, ohne das manuelle Anfragen durch den
+Anwender abgeschickt werden müssen. Zusätzlich könnten in der Benutzeroberfläche
+Shortcuts hinterlegt werden, sodass der Benutzer nicht mehr mühselig alle
+Befehle einzeln eintragen muss, sondern vordefinierte Tastenkürzel für gängige
+Aktionen wie beispielsweise Start, Stop, etc. verwenden kann. Dies würde zu mehr Übersicht
+führen und dem Anwender eine leichtere Benutzung ermöglichen. \hfill \break
+
+Ein weiteres optionales Feature, welches in zukünftigen Releases behandelt werden könnte,
+ist die Unterstützung von weiteren Audioformaten. Aktuell wird nur das
+Audioformat \ac{MP3} unterstützt. Um noch weiter Audioformate wie
+beispielsweise \ac{MP4}, \ac{FLAC} oder \ac{WAVE} abzuspielen,
+müssten noch weitere Decoder implementiert werden. \newline
+Auch wäre es denkbar einen Dienst zum Abspielen von Internet-Streams
+hinzuzufügen. So könnte zukünftig das Abspielen von Internet-Radios oder
+ähnlichem ermöglicht werden. \hfill \break
+
+Weit in der Zukunft wäre die Änderung der Kommunikationsschnittstelle zwischen
+Server und Client denkbar. Aktuell kommunizieren die beiden noch über einen
+\textit{\ac{POSIX} local \ac{IPC} Socket}. Dieser ermöglicht nur die lokale
+Kommunikationsverbindung zwischen Prozessen. Zukünftig könnte diese durch einen
+\textit{WebSocket} ersetzt werden, wodurch eine Kommunikation übers Netzwerk
+auch ermöglicht werden würde. Dadurch könnten andere Geräte, welche sich im
+gleichen Netzwerk wie der Server befinden, auch Befehle an diesen schicken. 
+Im Zuge dessen könnten Netzwerkgeräte wie beispielsweise Sprachsteuerungen in
+der Art von \textit{Amazon Echo} oder \textit{Google Home} auch auf den
+Musikplayer zugreifen und diesen über Spracheingaben steuern.
+
+\begin{comment}
 Was noch gemacht werden kann bzw. was noch coole und Sinnvolle Erweiterungen wären.
 \begin{itemize}
 \item Zurückkommende Nachricht auch als JSON - dadurch können andere Sachen übergeben werden und nicht nur text
@@ -82,7 +128,5 @@ Was noch gemacht werden kann bzw. was noch coole und Sinnvolle Erweiterungen wä
 \item Client Server Verbindung über TCP machen, sodass die Kommunikation nicht nur auf dem Raspberry Pi stattfindet sondern unabhängig ist.
 \item Intergration von Alexa Steuerung (Sehr weit gedacht)
 \end{itemize}
-
-\section{Zusammenfassung}
-Hier kommt der Scheiß ist zustand rein
+\end{comment}
 
