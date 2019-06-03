@@ -9,22 +9,22 @@
 Zusammenfassend kann festgehalten werden, dass der im Rahmen dieser
 Studienarbeit entstanden Musikplayer für den Raspberry Pi, sich in einem
 Zustand befindet, in welchem er so gut wie alle zu Beginn definierten
-Anforderungen erfüllen kann. Er ist in der Lage Musik zu starten, stoppen oder
-zu pausieren, er kann die Audiolautstärke anpassen, Lieder überspringen, Lieder
-zu einer Warteschlange hinzufügen oder auch einzelne Lieder wieder löschen. Die
+Anforderungen erfüllen kann. Er ist in der Lage die Wiedergabe einer Audiodatei zu starten, stoppen oder
+zu pausieren, er kann die Audiolautstärke anpassen, Audiodateien überspringen, Audiodateien
+zu einer Warteschlange hinzufügen oder auch einzelne Audios daraus wieder löschen. Die
 einzige Funktionalität, welche bislang noch nicht implementiert wurde, ist das
-Fade-In und Fade-Out von Liedern. Die Problemantik hinter dieser Funktion ist
+Fade-In und Fade-Out. Die Problematik hinter dieser Funktion ist
 es, dass wir bislang noch keine Möglichkeit gefunden haben, wie wir uns die
 aktuelle Position eines Liedes während des Abspielens auslesen können. 
 
 
 \section{Reflexion}
 Im Rahmen der Studienarbeit konnte viel neues Wissen transferiert werden. So
-hatten wir beispielsweise unser ersten Berührungspunkte mit der
+hatten wir beispielsweise unseren ersten Berührungspunkte mit der
 Programmiersprache Go, welche sich in den letzten Jahren immer größerer
-Beliebtheit erfreut. (%todo: add stack overflow reference%) 
+Beliebtheit erfreut \autocite{stack_overflow_2019}.
 Insgesamt fiel uns das Lernen von Go sehr leicht, da die Sprache von der Syntax
-her sehr an C erinnert, aber dennoch von den Bibliotheken her sehr umfangreich
+her sehr an die Programmiersprache C erinnert, aber dennoch von den Bibliotheken her sehr umfangreich
 ist. \newline
 
 Das Entwickeln mit dem Raspberry Pi ist uns auch leichter gefallen, als zu
@@ -35,16 +35,16 @@ Raspbian ein Debian-basiertes Betriebssystem ist, und so sich nicht all zu sehr
 von anderen Debian-basierten Distributionen unterscheidet.  \newline
 
 Die Entwicklung als Zweierteam lief zusammenfassend sehr gut ab.
-Zu beginn lief die Entwicklung als Zweierteam noch etwas chaotisch ab, aber
+Zu beginn war die Entwicklung noch etwas chaotisch, aber
 nachdem wir uns auf ein finales Grundkonzept geeinigt hatten, funktionierte die
 Zusammenarbeit doch sehr gut. Wir haben bei der Umsetzungen die Entwicklung
 verschiedener Funktionalitäten unter uns aufgeteilt und uns ansonsten sehr oft
 zu Besprechungen zusammengesetzt. Ansonsten haben wir sehr darauf geachtet, dass
 wir gegenseitig über unseren Code drüber schauen, um mögliche Fehler frühstens
 entdecken zu können. Als Kritikpunkt sollte noch genannt werden, dass wir uns
-zu beginn auf keine wirklichen Kodierrichtlinien geeinigt haben, was bei der
-Entwicklung öfter mal zu abweichend  oder ähnliches
-geführt. Dies sollte in Zukunft vor der Umsetzung beachtet werden. \newline
+zu Beginn auf keine wirklichen Kodierrichtlinien geeinigt haben, was bei der
+Entwicklung öfter mal zu abweichender Variablenbezeichnung oder ähnliches
+geführt hat. Dies sollte in Zukunft vor der Umsetzung beachtet werden. \newline
 
 Ein weiterer Punkt, welcher beim nächsten Mal noch optimiert werden könnte ist
 die Phase der Testung. Wie es in den meisten Softwareprojekten der Fall ist, %todo: reference
@@ -79,7 +79,7 @@ getestet, sodass dieser im späteren Einsatzrahmen ohne Probleme funktionieren
 sollte. \newline
 Wie in den meisten Projekten mit Deadline, konnten im angegeben Zeitraum nicht
 alle erdachten Funktionalitäten  perfekt umgesetzt werden. So gibt es bei der
-aktuellen Version immernoch Kleinigkeiten, welche bei einem zukünftigen Release
+aktuellen Version immer noch Kleinigkeiten, welche bei einem zukünftigen Release
 noch hinzugefügt oder verändert werden könnten. \hfill \break
 
 Eines dieser Funktionalitäten betrifft den Austausch von Daten zwischen 
@@ -87,7 +87,7 @@ Server und Client. So gibt der Server dem Client aktuell nur einen einfachen
 String zurück, welcher Informationen zu der ausgeführten Aktion enthält. Dieser
 könnte in Zukunft durch ein \ac{JSON}-Array ersetzt werden, um noch mehr
 relevante Informationen mit zu übertragen. Dadurch könnten Informationen wie
-Lautstärke oder Warteliste mitübergeben werden, sodass der Client nicht mehr
+Lautstärke oder Warteliste mit übergeben werden, sodass der Client nicht mehr
 jede Information manuell erfragen muss. \newline
 Wenn man die Kommunikation auf \ac{JSON}-Arrays geändert hätte, könnte man für
 den Client auch noch eine kleine \ac{GUI} bauen. Dadurch könnten dem Benutzer alle

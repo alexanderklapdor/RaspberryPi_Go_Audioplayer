@@ -32,30 +32,26 @@ voneinander abzutrennen, geht man aktuell immer mehr dazu über, die einzelnen
 Phasen miteinander zu verknüpfen. \newline
 Das \enquote{Shift left testing} ist ein Ansatz, welcher das Testen und
 Entwickeln sehr stark miteinander verbindet. Das Ziel dabei ist es, Fehler
-früher im Lebenszyklus zu finden und so das Beheben dieser einfacher zu
-machen, was schlussendlicher zu einer signifikanten Kostensenkung führt. Denn
+früher im Lebenszyklus zu erkennen und so das Beheben dieser zu erleichtern, was schlussendlich zu einer signifikanten Kostensenkung führt. Denn
 je später ein Fehler im Entwicklungszyklus entdeckt wird, desto mehr Kosten
-verursacht er. \hfill \break
+verursacht er \autocite{isaacs_2019}. \hfill \break
 
 
 \section{Vorgehensweise}
 Aufgrund der Überschaubarkeit des Projektes fällt die Entscheidung auf
 paralleles Testen und Entwickeln durch Debugging. Dabei wird die Software
-direkt auf dem Raspberry Pi entworfen, um umgesetze Features unmittelbar in
-einer anwendungsnahen Umgebung im Betrieb sehen zu können. Dies bietet den
+direkt auf dem Raspberry Pi entworfen, um umgesetzte Features unmittelbar in
+einer anwendungsnahen Umgebung im Betrieb testen zu können. Dies bietet den
 großen Vorteil, dass Fehler schneller auffallen und entsprechende
 Gegenmaßnahmen direkt gestartet werden können. \newline
 Des Weiteren wird bei der Entwicklung noch das \textit{Code Reviewing}
 eingesetzt. Dabei schauen mehrere Personen über den Programmcode des
 Entwicklers, um mögliche Schwachstellen frühzeitig dem Entwickler aufzuzeigen
-zu können. 
-
-http://www.professionalqa.com/assets/images/continuous-testing.gif
-\\
+zu können \autocite{isaacs_2019}. 
 
 \section{Logging}
-Um beim Debuggen schneller Fehler zu erkennnen und um besser nachvollziehen zu
-können, was das Programm aktuell macht, haben wir auf den Eisatz eines
+Um beim Debuggen Fehler schneller zu erkennen und besser nachvollziehen zu
+können, welche Funktionen das Programm ausführt, wurde auf den Einsatz eines
 selbstgeschriebenen \textit{Loggers} gesetzt. Dieser protokolliert wichtige
 Ereignisse von Softwareprozessen, und gibt diese dem Entwickler sichtbar aus.
 Diese Ausgabe kann je nach Einstellung sowohl in eine Datei erfolgen, als auch
@@ -72,7 +68,7 @@ Starten/Stoppen eines Services, Änderung von Konfigurationen, etc.).
 \item[Notice] \hfil \\ 
 \textit{Notice} ist ein einfaches Statement, welches von einer nicht
 handlungsgesteuerten Aktion ausgelöst wird. Beispiele dafür wären kleine
-passive Benachrichtigungen an den Benutzer, wenn beispielsweise einr Aktion
+passive Benachrichtigungen an den Benutzer, wenn beispielsweise eine Aktion
 erfolgreich abgeschlossen wurde.
 \item[Warn] \hfil \\ 
 Mit \textit{Warn} werden ungewöhnliche Aktionen gekennzeichnet, welche die
