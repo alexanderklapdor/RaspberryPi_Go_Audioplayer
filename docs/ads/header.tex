@@ -121,17 +121,12 @@
 	bookmarksnumbered=true 	% Überschriftsnummerierung im PDF Inhalt anzeigen.
 }
 
-\lstnewenvironment{jsonlisting}
-{
-	\lstset{
-    	string=[s]{"}{"},
+\lstdefinelanguage{Json}{
+		string=[s]{"}{"},
     	stringstyle=\color{blue},
     	comment=[l]{:},
     	commentstyle=\color{black}
-	}
-  }
-  {
-  }
+}
 
 % Workaround um Fehler in Hyperref, muss hier stehen bleiben
 \usepackage{bookmark} %nur ein latex-Durchlauf für die Aktualisierung von Verzeichnissen nötig
