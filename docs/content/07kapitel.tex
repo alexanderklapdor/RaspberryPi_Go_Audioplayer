@@ -7,7 +7,7 @@
 %label wird zum referenzieren benutzt, muss einzigartig sein.
 \section{Zusammenfassung}
 Zusammenfassend kann festgehalten werden, dass der im Rahmen dieser
-Studienarbeit entstanden Musikplayer für den Raspberry Pi, sich in einem
+Studienarbeit entstanden Audioplayer für den Raspberry Pi, sich in einem
 Zustand befindet, in welchem er so gut wie alle zu Beginn definierten
 Anforderungen erfüllen kann. Er ist in der Lage die Wiedergabe einer Audiodatei zu starten, stoppen oder
 zu pausieren, er kann die Audiolautstärke anpassen, Audiodateien überspringen, Audiodateien
@@ -28,14 +28,14 @@ her sehr an die Programmiersprache C erinnert, aber dennoch von den Bibliotheken
 ist. \newline
 
 Das Entwickeln mit dem Raspberry Pi ist uns auch leichter gefallen, als zu
-beginn vermutet. Es hat uns sehr fasziniert, was man mit so einem kleinen
+Beginn vermutet. Es hat uns sehr fasziniert, was man mit so einem kleinen
 Minicomputer alles anstellen kann. Ansonsten verlief das Arbeiten mit dem
 Raspberry Pi reibungslos, was unter anderem daran gelegen haben könnte, dass
 Raspbian ein Debian-basiertes Betriebssystem ist, und so sich nicht all zu sehr
 von anderen Debian-basierten Distributionen unterscheidet.  \newline
 
 Die Entwicklung als Zweierteam lief zusammenfassend sehr gut ab.
-Zu beginn war die Entwicklung noch etwas chaotisch, aber
+Zu Beginn war die Entwicklung noch etwas chaotisch, aber
 nachdem wir uns auf ein finales Grundkonzept geeinigt hatten, funktionierte die
 Zusammenarbeit doch sehr gut. Wir haben bei der Umsetzungen die Entwicklung
 verschiedener Funktionalitäten unter uns aufgeteilt und uns ansonsten sehr oft
@@ -47,7 +47,7 @@ Entwicklung öfter mal zu abweichender Variablenbezeichnung oder ähnliches
 geführt hat. Dies sollte in Zukunft vor der Umsetzung beachtet werden. \newline
 
 Ein weiterer Punkt, welcher beim nächsten Mal noch optimiert werden könnte ist
-die Phase der Testung. Wie es in den meisten Softwareprojekten der Fall ist, %todo: reference
+die Phase der Testung. Wie es in den meisten Softwareprojekten der Fall ist, 
 kam auch in unserem Projekt die Phase des Testens eher zu kurz. Dabei hätte man
 beispielsweise während des Entwicklungsprozesses ohne großen Aufwand statische
 Codeanalyse-Tools einsetzen können, um einfache Fehler wie der Einsatz von
@@ -73,12 +73,12 @@ erhöhen.
 
 \section{Aussicht}
 Im Zeitraum der Studienarbeit konnten, abgesehen von der Fade-In und Fade-Out
-Funktionalität, alle zu beginn definierten Anforderungen erfüllt werden. Der
-dabei entstanden Musikplayer wurde ausgiebig auf dem bereitgestellten Raspberry Pi
+Funktionalität, alle zu Beginn definierten Anforderungen erfüllt werden. Der
+dabei entstanden Audioplayer wurde ausgiebig auf dem bereitgestellten Raspberry Pi
 getestet, sodass dieser im späteren Einsatzrahmen ohne Probleme funktionieren
 sollte. \newline
 Wie in den meisten Projekten mit Deadline, konnten im angegeben Zeitraum nicht
-alle erdachten Funktionalitäten  perfekt umgesetzt werden. So gibt es bei der
+alle erdachten Funktionalitäten perfekt umgesetzt werden. So gibt es bei der
 aktuellen Version immer noch Kleinigkeiten, welche bei einem zukünftigen Release
 noch hinzugefügt oder verändert werden könnten. \hfill \break
 
@@ -92,16 +92,17 @@ jede Information manuell erfragen muss. \newline
 Wenn man die Kommunikation auf \ac{JSON}-Arrays geändert hätte, könnte man für
 den Client auch noch eine kleine \ac{GUI} bauen. Dadurch könnten dem Benutzer alle
 aktuellen Informationen angezeigt werden, ohne das manuelle Anfragen durch den
-Anwender abgeschickt werden müssen. Zusätzlich könnten in der Benutzeroberfläche
+Anwender abgeschickt werden müssten. Zusätzlich könnten in der Benutzeroberfläche
 Shortcuts hinterlegt werden, sodass der Benutzer nicht mehr mühselig alle
-Befehle einzeln eintragen muss, sondern vordefinierte Tastenkürzel für gängige
-Aktionen wie beispielsweise Start, Stop, etc. verwenden kann. Dies würde zu mehr Übersicht
-führen und dem Anwender eine leichtere Benutzung ermöglichen. \hfill \break
+Befehle einzeln eingeben muss, sondern vordefinierte Tastenkürzel für gängige
+Aktionen wie beispielsweise Start, Stop, etc. verwenden kann. Dies würde zu
+einer besseren Übersicht führen und dem Anwender eine leichtere Benutzung
+ermöglichen. \hfill \break
 
 Ein weiteres optionales Feature, welches in zukünftigen Releases behandelt werden könnte,
 ist die Unterstützung von weiteren Audioformaten. Aktuell wird nur das
 Audioformat \ac{MP3} unterstützt. Um noch weiter Audioformate wie
-beispielsweise \ac{MP4}, \ac{FLAC} oder \ac{WAVE} abzuspielen,
+beispielsweise \ac{MP4}, \ac{FLAC} oder \ac{WAVE} abspielen zu können,
 müssten noch weitere Decoder implementiert werden. \newline
 Auch wäre es denkbar einen Dienst zum Abspielen von Internet-Streams
 hinzuzufügen. So könnte zukünftig das Abspielen von Internet-Radios oder
@@ -113,10 +114,10 @@ Server und Client denkbar. Aktuell kommunizieren die beiden noch über einen
 Kommunikationsverbindung zwischen Prozessen. Zukünftig könnte diese durch einen
 \textit{WebSocket} ersetzt werden, wodurch eine Kommunikation übers Netzwerk
 auch ermöglicht werden würde. Dadurch könnten andere Geräte, welche sich im
-gleichen Netzwerk wie der Server befinden, auch Befehle an diesen schicken. 
+gleichen Netzwerk wie der Server befinden, Befehle an diesen schicken. 
 Im Zuge dessen könnten Netzwerkgeräte wie beispielsweise Sprachsteuerungen in
-der Art von \textit{Amazon Echo} oder \textit{Google Home} auch auf den
-Musikplayer zugreifen und diesen über Spracheingaben steuern.
+der Art von \textit{Amazon Echo} oder \textit{Google Home} auf den
+Audioplayer zugreifen und diesen über Spracheingaben steuern.
 
 \begin{comment}
 Was noch gemacht werden kann bzw. was noch coole und Sinnvolle Erweiterungen wären.
