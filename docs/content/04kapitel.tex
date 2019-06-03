@@ -50,7 +50,7 @@ Betriebssystem aufgelistet:
     Spielkonsolen ermöglicht.
 \end{description}
 
-Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Musik, allerdings
+Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Audiodateien, allerdings
 soll dafür ein eigenständiges Tool entwickelt werden. Da Raspbian das
 offizielle Betriebssystem für den Raspberry Pi ist, es am verbreitetsten ist
 und es dafür die meisten Pakete gibt, wird sich im Bezug auf diese Arbeit für
@@ -68,26 +68,22 @@ Raspbian nutzen. Da wir in unserem Projekt auch nur Raspbian verwenden werden,
 haben wir uns für die zweite Variante entschieden. \autocite{monk_2019}
 
 
-\section{Abspielen der Musik}
-Um bei der Umsetzung nicht komplett von Null anfangen zu müssen, geht es
-zunächst an die Analyse einer geeigneten Audio Bibliothek, um das Abspielen von
-Audiodateien zu ermöglichen. Dabei ist es wichtig, dass die Bibliothek frei zu
-verwenden, gut dokumentiert ist und eine Schnittstelle für Go besitzt.  Im
-ersten Schritt der Analyse geht es an die Entscheidung einer geeigneter Audio
-Bibliothek, um das Abspielen von Audiodateieen zu ermöglichen. Wichtig dabei
+\section{Abspielen von Audiodateien}
+Im ersten Schritt der Analyse geht es an die Entscheidung einer geeigneter Audiobibliothek, um das Abspielen von Audiodateien zu ermöglichen. Wichtig dabei
 ist, dass die Bibliothek keine Einschränkungen bei der Benutzung hat, gut
 dokumentiert ist und dass die Bibliothek bestenfalls eine bestehende
 Schnittstelle für Go besitzt.
+
 \subsection{Bibliotheken}
 \paragraph{PortAudio}
 PortAudio ist eine Open Source Bibliothek, welche das Abspielen und Aufnehmen
 von Audiodateien ermöglicht. Sie bietet eine plattformübergreifende Lösung,
 wodurch sie auf den gängigsten Betriebssystemen problemlos läuft. Einer der
 Gründe dafür, dass sie plattformübergreifend funktioniert, ist der, dass
-PortAudio in der Programmiersprache C geschrieben wurde. \hfill \break
+PortAudio in der Programmiersprache C geschrieben wurde. \hfill
 
 Die Kommunikation mit PortAudio verläuft über eine \ac{API} Schnittstelle.
-Diese entnimmt den Datenstrom entgegen, welche abgespielt werden soll. Während
+Diese entnimmt den Datenstrom entgegen, welcher abgespielt werden soll. Während
 des Abspiel- oder Aufnahmeprozess von Audiodateien benutzt PortAudio entweder
 eine Callback-Funktion oder einen blockierendes Read/Write Interface
 \autocite{PortAudio_2019}.
@@ -100,43 +96,42 @@ libsoundio stellt eine leichtgewichtige Abstraktion über verschiedenste
 Soundtreiber dar \autocite{libsoundio_2019}.
 
 \subsection{Entscheidung}
-Nach unseren Recherchen können wir keine großartigen Unterschiede zwischen den
-beiden Grundkonzepten der Audio-Bibliotheken feststellen. Ein Vorteil von
+Nach einigen Recherchen konnten keine großartigen Unterschiede zwischen den
+beiden Grundkonzepten der Audio-Bibliotheken festgestellt werden. Ein Vorteil von
 libsoundio ist ganz klar, dass sie eine ausgesprochen umfangreiche
 Dokumentation besitzt, in der der Entwickler einen großen Fokus auf
 Vollständigkeit gelegt hat. PortAudio hingegen ist insgesamt weiter verbreitet.
 Da es in Go eine Bibliothek gibt, welche im Hintergrund auf die Schnittstelle
-von PortAudio zurückgreift, haben wir uns im Rahmen der Arbeit für die
+von PortAudio zurückgreift, wurde sich im Rahmen der Arbeit für die
 Verwendung von PortAudio entschieden.
 
 \section{MP3 Decoder}
-Bei MP3-Dateien handelt es sich um komprimierte Audio-Dateien. Im Vergleich zu
-anderen Audioformaten, setzt MP3 auf das Psychoakustik-Modell. Dieses besagt,
-dass Menschen nur in einer Frequenz von 20 Hz bis 20 kHz hören kann. MP3
+Bei \ac{MP3}-Dateien handelt es sich um komprimierte Audio-Dateien. Im Vergleich zu
+anderen Audioformaten, setzt \ac{MP3} auf das Psychoakustik-Modell. Dieses besagt,
+dass Menschen nur in einer Frequenz von 20 Hz bis 20 kHz hören kann. \ac{MP3}
 filtert deshalb alle anderen für den Menschen nicht hörbaren Bereich raus, und
 erreicht so eine Speicherersparnis um mehr als den Faktor 10 im Vergleich zum
-Rohformat. Auch durch die geringe Speichergröße hat sich MP3 zu einer der weitverbreitetsten Formate für Audiodateien entwickelt. 
+Rohformat. Auch durch die geringe Speichergröße hat sich \ac{MP3} zu einer der weitverbreitetsten Formate für Audiodateien entwickelt. 
 Deshalb sollte dieses Format unbedingt auch durch den zu entwickelnden Musikplayer unterstützt werden
-\autocite{mp3}. \hfill \break
+\autocite{mp3}. \hfill
 
-Um die Unterstützung für das Abspielen von MP3-Dateien zu ermöglichen,
- muss bei der Implementierung auch auf einen MP3 Decoder zum
-Dekodierung der MP3-Dateien zurückgegriffen werden. Entschieden haben wir uns
+Um die Unterstützung für das Abspielen von \ac{MP3}-Dateien zu ermöglichen, muss bei der Implementierung auch auf einen \ac{MP3} Decoder zum
+Dekodierung der \ac{MP3}-Dateien zurückgegriffen werden. Entschieden haben wir uns
 zu diesem Zweck für die Go-Bibliothek \textit{go-mpg123}. Diese greift im
 Hintergrund auf die Bibliothek \textit{libmpg123} zu. Aktuell befindet sich die Bibliothek
 noch in der Entwicklung, allerdings bietet sie bereits die geforderte
 Funktionalität zur Dekodierung an \autocite{mp3_decoder}.
 
 \section{MP3 Tag Info Reader}
-MP3 Dateien können neben den reinen Audiodaten auch noch zusätzliche
-Informationen speichern (Metadaten). Dafür verwendet MP3 ein Format namens
-\textit{ID3} (identity an MP3), welches einzelne Information in
-sogenannten \textit{ID3-Tags} speichert. In diesen Tags werden meist
+\ac{MP3} Dateien können neben den reinen Audiodaten auch noch zusätzliche
+Informationen (Metadaten) speichern. Dafür verwendet \ac{MP3} ein Format namens
+\ac{ID3}, welches einzelne Information in
+sogenannten \textit{\ac{ID3}-Tags} speichert. In diesen Tags werden meist
 Informationen wie Interpreten, Titel oder auch Albumname gespeichert. Da diese
-Informationen in einem Musikplayer optimalerweise angezeigt werden sollten,
+Informationen in einem Audioplayer optimalerweise angezeigt werden sollten,
 muss nach einer Möglichkeit zum Auslesen dieser Tags gesucht werden \autocite{id3}. \hfill
 \break
-Aktuell unterstützt \textit{go-mp3} noch nicht das Auslesen der ID3 Tags.
+Aktuell unterstützt \textit{go-mp3} noch nicht das Auslesen der \ac{ID3}-Tags.
 Deswegen muss nach einer anderen Bibliothek zur Auslesung dieser Daten gesucht
 werden. Die Entscheidung fiel dabei auf die Go-Bibliothek \textit{ID3 Decoder},
 da diese einfach zu verwenden ist und die meist-verbreitetste Go-Bibliothek
