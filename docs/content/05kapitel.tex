@@ -2,27 +2,22 @@
 
 \chapter{Umsetzung}
 
-Nach dem der Schritt der Planung und der Analyse abgeschlossen ist, kann es nun
-weiter zur tatsächlichen Entwicklung gehen. Dazu müssen zunächst die einzelnen
-Entwicklungsumgebungen vorbereitet werden, anschließend die ersten Konzepte für
-die Umsetzung aufgestellt werden, bis es abschließend zur tatsächlichen
-Realisierung kommt. 
-
-%title wird unter dem Bsp. abgedruckt
-%caption wird im Verzeichnis abgedruckt
-%label wird zum referenzieren benutzt, muss einzigartig sein.
+Nachdem der Schritt der Planung und der Analyse abgeschlossen ist, kann nun mit
+der tatsächlichen Entwicklung fortgefahren werden. Dazu müssen zunächst die einzelnen
+Entwicklungsumgebungen vorbereitet werden und die ersten Konzepte für
+die Umsetzung aufgestellt und abschließend realisiert werden.
 
 \section{Voraussetzungen}
-Für die Nutzung des Audioplayer auf dem Raspberry Pi bzw. für die weitere
-Entwicklung, müssen vorerst einige Anpassungen und Installationen getätigt
-werden. Diese Schritte sind notwendig damit der Audioplayer wie vorgesehen
-funktioniert und keine unvorhergesehen Zustände entstehen.
+Um mit der Entwicklung des Audioplayers beginnen zu können, müssen zunächst
+einige Anpassungen und Installationen getätigt werden. Diese Schritte sind
+notwendig, damit die zu verwenden Bibliotheken wie vorgesehen funktioniert und
+keine ungewollten Zustände entstehen.
 
 \subsection{Pakete installieren und Raspberry Pi updaten}
 Standardmäßig besitzt der Raspberry Pi das Betriebssystem \textit{Raspbian}.
 Dieses gilt es zuerst auf die neuste Version zu aktualisieren. Zusätzlich
-werden alle installierten Pakete des System auf die neuste Version zu
-aktualisieren. Dieses Vorhaben wird mit den folgenden Befehlen durchgeführt:
+sollten alle installierten Pakete des System auf die neuste Version aktualisiert
+werden. Dies kann durch die folgenden Befehle durchgeführt werden:
 \begin{lstlisting}[caption={Aktualisieren des Raspberry Pi}]
 sudo apt-get update 
 sudo apt-get upgrade 
@@ -30,46 +25,48 @@ sudo apt-get install rpi-update
 sudo rpi-update
 \end{lstlisting}
 Die ersten drei Befehle werden mit \ac{APT} ausgeführt. \ac{APT} ist ein
-Paketverwaltungssystem welches für den Bereich der Debian Betriebssysteme
-entwickelt wurde. Das Tool verwaltet Debian Pakete und somit auch die
-installierten Applikationen auf dem Raspberry Pi
+Paketverwaltungssystem, welches für den Bereich der Debian Betriebssysteme
+entwickelt wurde. Da Raspbian ein debian-basiertes Betriebssystem ist, können
+die installierten Pakete des Raspberry Pis durch \ac{APT} verwalten werden
 \autocite{apt-debian-wiki_2019}. Zusätzlich wird für alle durchzuführende
-Befehle der \verb|sudo| Befehl benutzt. \ac{Sudo} wird meistens dafür benutzt
-bestimmte Befehle mit Root-Rechten also mit Administratorrechten auszuführen.
-Der Vorteil liegt darin, dass der Nutzer eben nicht ein Administrator sein
-muss, um kurzfristig einen Befehl als Administrator auszuführen
+Befehle der \verb|sudo| Befehl benutzt. \ac{Sudo} wird benutzt, um
+bestimmte Befehle mit Root-Rechten (Administratorrechten) auszuführen.
+\ac{Sudo} bietet den Vorteil, dass man nicht zum Administrator-Account wechseln
+muss, um kurz einen Befehl mit dessen Privilegien auszuführen
 \autocite{moeller_2013}. Mit dem Befehl \verb|sudo apt-get update| werden alle
-Paketquellen neu eingelesen - also ein großes Lexikon wo man jedes Paket mit
-der neusten zur Verfügung stehenden Version finden kann. Mit dem Befehl
-\verb|sudo apt-get upgrade| werden alle bereits installierten Paket auf die in
-den Paketquellen vorhandene neuste Version aktualisiert. Dabei werden keine
-neuen Pakete installiert oder alte nicht mehr benötigte Abhängigkeiten
-entfernt. \autocite{apt-get-wiki_2019} Mit dem Befehl \verb|apt-get install rpi-update| 
-wird das Paket \verb|rpi-update| mit allen seinen Abhängigkeiten
-heruntergeladen und installiert. Das Paket ist ein automatisiertes Skript zum
-updaten des Raspberry Pi's Betriebssystem auf die neuste Version. Als letzten
-Schritt wird nun das Paket \verb|rpi-update| ausgeführt und der Raspberry Pi
-lädt automatisch das neuste passende Betriebssystem herunter und installiert
-es. Dabei gehen keine Daten verloren. \\ Nachdem der Raspberry Pi sich
-erfolgreich aktualisiert hat, müssen nun noch die jedenfalls benötigten Pakete
-installiert werden. Dies wird mit den folgenden Befehlen gemacht.
+Paketquellen neu eingelesen. Dafür wird ein Abgleich zu einem externen Lexikon
+gemacht, in welchem zu jedem Paket die aktuellste Versionsnummer steht. Wenn
+sich die lokal installierte Versionsnummer von der externen Liste
+unterscheidet, lädt der Befehl den Link zur neuesten Version runter.
+Mit dem Befehl \verb|sudo apt-get upgrade| wird mit den durch den vorherigen
+Befehl erhaltenen Links zu den neuen Paketversionen die aktualisierten
+Versionen dieser Pakete heruntergeladen und installiert. Die Installation von
+neuen Abhängigkeit oder die Löschung nicht mehr benötigter Abhängigkeiten wird
+durch diesen Befehl nicht vollzogen \autocite{apt-get-wiki_2019}. Mit dem Befehl
+\verb|apt-get install rpi-update| wird das Paket \verb|rpi-update| mit all
+seinen Abhängigkeiten heruntergeladen und installiert. Das Paket ist ein
+automatisiertes Skript, welches das Betriebssystem des des Raspberry Pi's auf die
+neuste Version aktualisiert. Als letzten Schritt wird das Paket \verb|rpi-update|
+ausgeführt, wodurch die tatsächliche Aktualisierung des Betriebssystems gestartet wird.
+\newline 
+Im nächsten Schritt müssen folgende Pakete installiert werden, um später die
+Audiowiedergabe zu ermöglichen. 
 \begin{lstlisting}[caption={Installation benötigter Pakete}]
 sudo apt-get install portaudio19-dev
 sudo apt-get install libmpg123-dev
 sudo apt-get install mp3info 
 \end{lstlisting}
 
-\subsection{Nötige Schritte für Entwicklungszwecke}
-Im folgenden wird auf die einzelnen Schritte eingegangen, die nötig sind um an
-dem erstellten Programm weiter zu entwickeln. Dazu müssen die im Anschluss
-stehenden Befehle auf dem Raspberry Pi ausgeführt werden.
+\subsection{Schritte zur Einrichtung der Entwicklungsumgebung}
+Im Folgenden werden alle erforderlichen Schritte erläutert, welche zur
+Entwicklung des Audioplayers vonnöten sind.
 
 \subsubsection{Installieren von Go}
 Nun wird auf die Installation von Go eingegangen.
 
 \begin{enumerate}
 \item \textbf{Herunterladen von Go} \\
-Als ersten Schritt gilt es die Programmiersprache Go auf den Raspberry Pi
+Im ersten Schritt gilt es die Programmiersprache Go auf den Raspberry Pi
 herunterzuladen. Dazu stellt der Hersteller offizielle Pakete für die
 unterschiedlichen Betriebssysteme und Architekturen zum Download bereit. Diese
 können über die \href{https://golang.org/dl/}{Download-Webseite}
@@ -84,49 +81,50 @@ Befehl: wget [LINK]
 
 \item \textbf{Entpacken des Archivs} \\
 Nachdem das offizielle Archiv für die Programmiersprache Go heruntergeladen
-wurde, muss dieses nun nach den Pfad \verb|/user/local| entpackt werden. Für
-das entpacken des Archivs wird das standardmäßige Archivierungsprogramm für
-Linux \textit{\ac{Tar}} verwendet. Der große Vorteil eines tar-Archivs ist,
-dass die Benutzerrechte einer Datei mit gesichert werden und diese beim
-Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das entpacken
-des Archivs wird durch den folgenden Befehl realisiert. Der Dateiname
-entspricht hier der zuvor heruntergeladenen Datei.
-\begin{lstlisting}[caption={Entpacken eines Archivs}]
+wurde, muss dieses in den Pfad \verb|/user/local| extrahiert werden. Für
+das Entpacken des Archivs wird das standardmäßige Archivierungsprogramm für
+Linux \textit{\ac{Tar}} verwendet. Der große Vorteil eines \ac{tar}-Archivs ist,
+dass die Benutzerrechte einer Datei mitgesichert werden und diese beim
+Entpacken auch wiederhergestellt werden \autocite{tar-wiki_2019}. Das Entpacken
+des Archivs wird durch den Befehl im Listing \ref{lst:extract_with_tar}
+realisiert. Der Dateiname entspricht hier der zuvor heruntergeladenen Datei.
+\begin{lstlisting}[caption={Entpacken eines Archivs},label={lst:extract_with_tar}]
 tar -C /usr/local -xzf [Filename]
 \end{lstlisting}
 
 \item \textbf{Setzen des Export-Pfad} \\
-Damit das Betriebssystem Go auch System weit kennt, muss der Pfad zu der
-ausführbaren Datei von Go in die PATH-Variable eingetragen werden. Die
+Damit das Betriebssystem den Befehl \verb|go| systemweit kennt, muss der Pfad zu der
+ausführbaren Datei von Go zu der PATH-Variable hinzugefügt werden. Die
 \textit{PATH-Variable} ist eine Umgebungsvariable, die aus einer
-Komma-separierten Liste von Ordnern besteht, die die Shell beim der Eingabe
+Komma-separierten Liste von Ordnern besteht, welche die Shell bei der Eingabe
 eines Kommandos durchsucht \autocite{quigley_2000}. Dies bewirkt, dass von
-jedem Standpunkt im System auf Go bzw. den Go Compiler zugegriffen werden kann.
+jedem Standort im System auf Go bzw. den Go Compiler zugegriffen werden kann.
 \begin{lstlisting}[caption={Setzen der Go-Path Variable}]
 export PATH=\$PATH:/usr/local/go/bin
 \end{lstlisting}
 
 \item \textbf{Überprüfen der Go Installation auf Korrektheit} \\
-Um nun zu Überprüfen, ob Go richtig installiert wurde und die Path-Variable
-korrekt gesetzt wurde, wird nun durch den einfachen Befehl \verb|go version|
-eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Wird
-dabei eine gewisse Version angezeigt, ist Go richtig installiert und im System
+Um zu überprüfen, ob Go richtig installiert und die Path-Variable
+korrekt gesetzt wurde, wird nun durch den Befehl \verb|go version|
+eine Abfrage an den Go Compiler zu seiner aktuellen Version erstellt. Falls der
+Befehl keinen Fehler wirft und die Ausgabe die Versionsnummer der
+Go-Installation anzeigt, wurde Go korrekt installiert und im System
 integriert.
 \begin{lstlisting}[caption={Go Version anzeigen}]
 go version -> "go version go x.x.x"
 \end{lstlisting}
 
 \item \textbf{Go-Ordnerstruktur anlegen} \\
-Go empfiehlt es eine Gewisse Ordnerstruktur für die Go Projekte anzulegen.
-Diese mit den folgenden Befehlen angelegt und besteht aus:
+Go empfiehlt eine bestimmte Ordnerstruktur für die Go Projekte anzulegen.
+Die empfohlene Ordnerstruktur sieht wie folgt aus:
 \begin{itemize}
 \item \textbf{bin} - enthält alle Go-Executable's, die mit dem Befehl \verb|go install| installiert wurden.
 \item \textbf{pkg} - enthält alle kompilierten Pakete, die in Projekte importiert werden können. 
 \item \textbf{src} - enthält alle Quelldateien, entweder die eigenen oder aus externen Repositories heruntergeladene Quellen.
 \end{itemize}
 In der folgenden Übersicht wird die Ordnerstruktur nochmals visuell
-dargestellt. Der Ordner \textit{pi} stellt hier den Nutzernamen da, der sich
-bei jedem System natürlich unterscheiden kann. \\
+dargestellt. Der Ordner \textit{pi} stellt hier den Nutzernamen da, welcher im
+Betriebssytem hinterlegt ist. \newline
 \begin{minipage}[t]{\textwidth}
 \begin{figure}[H]
 \dirtree{%
@@ -142,7 +140,7 @@ bei jedem System natürlich unterscheiden kann. \\
 \end{figure}
 Die Befehle zur Erstellung der Ordnerstruktur sehen wie folgt aus. \\
 Ausgehend von \verb|$Home|:
-\begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur}]
+\begin{lstlisting}[caption={Erstellung der Go Ordnerstruktur},label={lst:go_folder_structure}]
 mkdir go
 cd go
 mkdir src
@@ -157,7 +155,7 @@ mkdir bin
 \subsubsection{Klonen des Git Repository}
 Der nächste Schritt ist das Git Repository auf den lokalen PC zu klonen. Go
 schreibt dafür einen Standard vor, wie die Ordnerstruktur dazu bestenfalls
-aufgebaut werden sollte. Im folgenden werden nun die Befehle zur Erstellung
+aufgebaut werden sollen. Im Folgenden werden nun die Befehle zur Erstellung der
 Ordnerstruktur dargestellt. Diese Befehle Starten von \verb|/home/pi/go/src/|:
 \begin{lstlisting}[caption={Klonen des Git Repository}]
 mkdir github.com 
@@ -178,11 +176,11 @@ Starting from \verb|../RaspberryPi_Go_Audioplayer/| :
 go get ./... 
 \end{lstlisting}
 
-\subsubsection{Modifizieren der ALSA Bibliothek Dateien}
-Die Konfigurationdatei der ALSA Bibliothek muss editiert werden damit die
+\subsubsection{Modifizieren der \acs{ALSA} Bibliothek Dateien}
+Die Konfigurationdatei der \acf{ALSA} Bibliothek muss editiert werden, damit die
 Fehlermeldungen, welche durch die nicht vorhandenen Anschlüsse am Raspberry Pi
 hervorgerufen werden, nicht immer mit ausgegeben werden. \\
-Zugriff auf die Datei wird mit dem Befehl \verb|sudo nano /usr/share/alsa/alsa.conf|  \\
+Die Datei kann durch den Befehl \verb|sudo nano /usr/share/alsa/alsa.conf| aufgerufen werden. \newline
 Folgende Einträge müssen aus dieser Datei entfernt werden:
 \begin{lstlisting}[caption={Liste der zu löschenden Einträge}]
 pcm.rear cards.pcm.rear 
@@ -204,7 +202,7 @@ pcm.phoneline cards.pcm.phoneline
 \end{lstlisting}
 
 \subsection{Nötige Schritte für die Nutzung}
-Für die reine Nutzung des Audioplayer sind durchaus weniger Schritte notwendig,
+Für die reine Nutzung des Audioplayers sind nur weniger Schritte notwendig,
 da eine bereits kompilierte Version heruntergeladen und genutzt werden kann.
 Dazu sind folgende Schritte notwendig:
 \begin{enumerate}
@@ -227,9 +225,9 @@ tar -xvf RaspberryPi_Go_Audioplayer_v***.tar
 \section{Konzept}
 Um eine übergreifende Sicht über den Audioplayer zu bieten, werden in den
 folgenden Abschnitten die einzelnen Konzepte für die Umsetzung dargestellt.
-Dazu wird nun als erstes ein übergeordnetes Konzept dargestellt und erläutert
+Dazu wird als erstes ein übergeordnetes Konzept dargestellt und erläutert,
 um einen Überblick über die einzelnen Komponenten des entwickelten Audioplayers
-zu bekommen.
+zu erhalten.
 
 \begin{figure}[h]
 	\centering
@@ -238,7 +236,7 @@ zu bekommen.
 	\label{img:Konzept-Audioplayer}
 \end{figure}
 
-Das in Abbildung \ref{img:Konzept-Audioplayer} dargestellten Konzept spiegelt
+Das in Abbildung \ref{img:Konzept-Audioplayer} dargestellte Konzept spiegelt
 eine übergreifende interaktive Sicht des Audioplayers wieder. Zudem sind in der
 Abbildung alle für den Audioplayer benötigten Komponenten zu erkennen, wie:
 \begin{itemize}
@@ -249,45 +247,42 @@ Abbildung alle für den Audioplayer benötigten Komponenten zu erkennen, wie:
 \item Audioplayer-Server
 \end{itemize}
 
-Der Aufbau dieses Konzeptes wurde bewusst so gewählt, damit keine
-Abhängigkeiten zwischen der Eingabe von Befehlen durch die nutzenden Personen
+Der Aufbau dieses Konzeptes wurde bewusst so gewählt, dass keine
+Abhängigkeiten zwischen der Eingabe von Befehlen durch den Nutzer
 und den technischen Funktionen des Audioplayers zur Wiedergabe und Steuerung
 der Audiodateien besteht. Daher sind der Client und der Server eigenständige
-Programme die über einen Socket kommunizieren. Ein weiterer Vorteil dieses
-Aufbau ist, dass theoretisch mehrere Nutzer den selben Audioplayer nutzen und
-auch steuern können, was ganz neue Einsatzmöglichkeiten bietet. \\ 
-Die nutzenden Personen stellen hier den späteren Bediener des Audioplayers da,
-welche über eine Kommandozeilen-Programm (\ac{CMD} bzw. Shell) Befehle an den
+Programme, die über einen Socket kommunizieren. Ein weiterer Vorteil dieses
+Aufbaus ist, dass theoretisch mehrere Nutzer den selben Audioplayer steuern
+können. \newline 
+Die nutzenden Personen stellen den späteren Bediener des Audioplayers dar,
+welche über ein Kommandozeilen-Programm (\ac{CMD} bzw. Shell) Befehle an den
 Audioplayer-Client senden können. Die Befehle werden durch den Aufruf des
 Client mit den entsprechenden Parametern übergeben. Der Client empfängt die
-Befehle des Nutzers und und leitet diese als \ac{JSON} über einen vorher
+Befehle des Nutzers und leitet diese als \ac{JSON} über einen vorher
 erstellten Socket an den Server weiter. Der Server interpretiert den Befehl und
 führt die gewünschte Aktion aus. Anschließend sendet der Server eine
 Statusmeldung (Nachricht) an den Client zurück, welcher diese dem Nutzer über
-das Kommandozeilen-Programm ausgibt. Danach danach beendet sich der Client
-wieder - der Server läuft durchgängig weiter, bis dieser explizit durch einen
+das Kommandozeilen-Programm ausgibt. Danach beendet sich der Client
+wieder, wohingegen der Server weiterläuft, bis dieser explizit durch einen
 \enquote{Beenden} Befehl heruntergefahren wird. \\ 
-Diese Beschreibung des
-Konzeptes stellt nur eine grobe Übersicht der Funktionsweise dar, weshalb in
-den nächsten Kapitalpunkten nochmals genauer auf den Client sowie den Server
-und dem Socket eingegangen wird. Zusätzlich wird die Nutzung von
-Konfigurationsdateien wie auch der Aufbau bzw. die Ordnerstruktur des
-Audioplayers erläutert.
+Diese Beschreibung des Konzeptes stellt nur eine grobe Übersicht der
+Funktionsweise dar, weshalb in den nächsten Kapiteln nochmals genauer auf
+den Client sowie den Server und den Socket eingegangen wird. Zusätzlich wird
+die Nutzung von Konfigurationsdateien, sowie der Aufbau des Audioplayers
+erläutert.
 
 \subsection{Nutzung einer Konfigurationsdatei}
-Unter einer Konfigurationsdatei versteht man in diesem Zusammenhang eine
-Textdatei welche sich auf einem Computer befindet, in der bestimmte
-Einstellungen für Computerprogramme gespeichert werden. Für die Speicherung
-einer Konfigurationsdatei werden viele unterschiedliche Formate wie z.B.
-\ac{INI}, \ac{YAML}, \ac{XML} oder \ac{JSON} verwendet
-\autocite{hard_coding_and_soft_coding_2019} \autocite{lott_2019}. \\ 
+Unter einer Konfigurationsdatei versteht man eine
+Klartext-Datei, in welcher Einstellungen für Computerprogramme gespeichert
+werden. Für die Speicherung einer Konfigurationsdatei werden viele
+unterschiedliche Formate wie z.B.  \ac{INI}, \ac{YAML}, \ac{XML} oder \ac{JSON}
+verwendet \autocite{hard_coding_and_soft_coding_2019} \autocite{lott_2019}. \\ 
+
 Für den erstellten Audioplayer wurde eine Konfigurationsdatei in dem Format
-\ac{JSON} verwendet um wichtige Einstellungen verändern zu können, ohne direkt
-in den Programmcode eingreifen zu müssen. Aus diesem Grund befinden sich die
-folgenden dargestellten Einstellungspunkte in unterhalb dargestellten \ac{JSON}
-Datei. 
-Json
-\begin{lstlisting}[language=Json,caption={Konfigurationsdatei des Audioplayers}]
+\ac{JSON} verwendet, um wichtige Einstellungen verändern zu können, ohne 
+den Programmcode verändern zu müssen. Aus diesem Grund wurden folgende
+Einstellungsmöglichkeiten innerhalb der \ac{JSON}-Konfigurationsdatei festgesetzt.
+\begin{lstlisting}[language=Json,caption={Konfigurationsdatei des Audioplayers},label={lst:kommfick}]
 {
 "Socket_Path" : "/tmp/mp.sock",
 "Log_Dir": "logs/",
@@ -304,35 +299,36 @@ Json
 }
 \end{lstlisting}
 
-Wie in dem Ausschnitt klar zu erkennen ist, werden einige Standardwerte für den
-Audioplayer in der Konfigurationsdatei gespeichert, wie unter anderem z.B. den
-Loop und Shuffle Status oder die Standardlautstärke wie auch die Tiefe für das
-durchsuchen von übergebenen Ordnern. Zusätzlich werden dort auch noch die
-Dateien bzw. Ordner angegeben in denen beispielsweise der Socket erstellt
-werden soll oder die Log Dateien gespeichert werden sollen. Besonders zu
+Wie in dem Ausschnitt  der Konfigurationsdatei im Listing \ref{lst:kommfick}
+klar zu erkennen ist, werden einige Standardwerte für den Audioplayer in der
+Konfigurationsdatei gespeichert, wie unter anderem den \enquote{Loop} und
+\enquote{Shuffle} Status, die Standardlautstärke oder auch die Tiefe für das
+Durchsuchen von übergebenen Ordnern. Zusätzlich werden dort die
+Dateien bzw. Ordner angegeben, in denen unter anderem der Socket erstellt
+oder die Log Dateien gespeichert werden sollen. Besonders zu
 erwähnen ist, dass man über das Feld \verb|Debug_Infos| steuern kann, ob bei
 der Ausführung des Audioplayers Debug-Informationen mit ausgegeben werden
 sollen oder nicht. Dies ist gerade bei der weiteren Entwicklung des
 Audioplayers von hoher Relevanz.
 
 \subsection{Aufbau des Audioplayers}
-Go besitzt einige Kodierrichtlinien, die dazu führen dass der geschriebene
+Go besitzt einige Kodierrichtlinien, die dazu führen, dass der geschriebene
 Programmcode möglichst kurz, einfach und strukturiert ist. Um genau das zu
-erreichen besitzt Go die Kodierrichtlinie zur Verwendung von sogenannten
-\textit{packages}, welche zusammengehörigen Programmcode in eine extra Datei
-bzw. ein \textit{Package} auslagert. In Go ist jeder Programmcode einem Package
+erreichen, besitzt Go die Kodierrichtlinie zur Verwendung von sogenannten
+\textit{Packages}, welche zusammengehörigen Programmcode in eine extra Datei
+bzw. einem Package auslagert. In Go ist jeder Programmcode einem Package
 zugeordnet. So ist z.B. das Hauptprogramm, also das Programm welches beim
-starten eines Go-Programmes aufgerufen wird, immer im \enquote{main}-Package
-ist. Sobald es einige zusammengehörige Funktionen, sei es Sinngemäß oder für
-einen gewissen Zweck, in ein Package ausgelagert werden können, soll man dies
-machen. Für jedes erstellte Package wird ein eigener Ordner in dem Verzeichnis
-angelegt, wo dann alle zu dem Package zugehörige Dateien gespeichert werden.
-Dabei kann ein Package aus mehreren Dateien bestehen die mehrere Funktionen
-exportieren oder aus nur einer Datei die nur eine Funktion exportiert.
-Zusätzlich sollte die Namenskonvention für Packages möglichst kurz aber
-gleichzeitig noch verständlich sein \autocite{crawshaw_2019}. \\
+starten eines Go-Programmes aufgerufen wird, immer im \enquote{main}-Package.
+Sobald es einige zusammengehörige Funktionen, sei es sinngemäß oder für
+einen gewissen Zweck, in ein Package ausgelagert werden können, soll dies gemacht werden.
+Für jedes erstellte Package wird ein eigener Ordner in dem Verzeichnis
+angelegt, indem alle zu dem Package zugehörige Dateien gespeichert werden.
+Dabei kann ein Package aus mehreren Dateien bestehen, die mehrere Funktionen
+exportieren oder aus nur einer Datei, die nur eine Funktion exportiert.
+Zusätzlich sollte die Namenskonvention für Packages möglichst kurz, aber
+dennoch verständlich sein \autocite{crawshaw_2019}. \\
 Der Aufbau des Audioplayers wurde auf Basis dieser Kodierrichtlinie erstellt,
-sodass sich die folgende Ordnerstruktur entwickelt:
+sodass sich die folgende Ordnerstruktur ergibt:
 \begin{figure}[H]
 \dirtree{%
 .1 /. 
@@ -363,11 +359,10 @@ sodass sich die folgende Ordnerstruktur entwickelt:
 \end{figure}
 
 Die Hauptprogramme, also der Server und der Client, sowie die erstellte
-Konfigurationsdatei liegen dem \textit{Root-Verzeichnis} des Audioplayers. Wie
+Konfigurationsdatei liegen im \textit{Root-Verzeichnis} des Audioplayers. Wie
 zu erkennen, stellen die restlichen Ordner mit den beinhaltenden Dateien
-jeweils einzelne Packages dar, die von den Hauptprogrammen wie aber auch von
-anderen Packages genutzt werden können. \\
-Im folgenden wird kurz zu jedem Package eine kleine Beschreibung folgenden.
+jeweils einzelne Packages dar, die von Go-Programmen aufgerufen werden können. \\
+Folgend wird jedes Package kurz beschrieben:  
 \begin{enumerate}
 \item \textbf{logger-Package} \\
 Dieses Package wird von fast allen Funkionen des Audioplayers genutzt um die

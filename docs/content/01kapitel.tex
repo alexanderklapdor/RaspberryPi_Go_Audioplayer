@@ -2,7 +2,7 @@
 
 \chapter{Einleitung}
 Aktuell kann der Trend beobachtet werden, dass etablierte Applikationen oder
-Programme dazu übergehen zusätzliche Funktionalitäten zu ihren Grundfeatures
+Programme dazu übergehen zusätzliche Funktionalitäten zu ihren Kernfunktionen
 hinzuzufügen. So umfasst beispielsweise die beliebteste Handyapplikation in China namens
 \textit{WeChat} weitaus mehr Funktionen als nur zum einfachen
 Nachrichtenaustausch, wofür sie anfänglich entwickelt wurde. Mittlerweile
@@ -23,15 +23,16 @@ Softwarepakete meist den Einsatz von Spezialprogrammen nicht ersetzen, da diese
 nur die Grundfunktionalitäten enthalten. \hfill
 
 
-Durch die zuvor genannten Punkte, hat sich auch in den letzten Jahren der Trend
+Durch die zuvor genannten Punkte hat sich auch in den letzten Jahren der Trend
 von \acp{API} weiter fortgesetzt. Immer mehr Entwickler setzen darauf
-Schnittstelle anzubieten, die den einfachen Austausch von Informationen zwischen verschiedenen
+Schnittstellen anzubieten, die den einfachen Austausch von Informationen zwischen verschiedenen
 Programmen ermöglichen. Dies vereinfacht das Verknüpfen von unabhängigen
 Programmen ungemein, und bietet den großen Vorteil, dass man als Entwickler auf
 etablierte Speziallösungen zurückgreifen kann, und nicht alles von Grund auf
-neu entwickeln muss. Dadurch entstehen anstatt riesiger in sich geschlossener Programme
-dynamische Softwarepakete, welche von unterschiedlichsten Entwicklern weiter
-entwickelt werden \autocite{babati_2018} \autocite{sandoval_2018}. \hfill \break
+neu entwickeln muss. Anstatt riesiger in sich geschlossener Programme entstehen dadurch
+dynamische Softwarepakete, welche von unterschiedlichsten Entwicklern
+weiterentwickelt werden \autocite{babati_2018} \autocite{sandoval_2018}. \hfill
+\break
 
 Im Rahmen dieser Arbeit soll keinesfalls eine perfekt ausgearbeitete
 Komplettlösung erarbeitet werden, sondern, ganz nach der ersten Regel der
@@ -55,22 +56,22 @@ Zur Technikverwaltung einer Theatergruppe wird aktuell ein Raspberry
 Pi eingesetzt, um während des Spiels die Steuerung des Lichts zu übernehmen. Dadurch
 können die Lichter von einer zentralen Stelle aus gesteuert werden,
 und automatisierte Lichtabläufe erstellt werden. Während Aufführungen oder
-Proben wird neben Lichteffekte auch noch Musik zur Untermalung des
-Schauspiels eingesetzt. Die Steuerung dieser Musik wird aktuell noch manuell von
-einer Musikanlage aus vorgenommen. Diese Anlage befindet sich am Ende des
-Raumes, weshalb zur Steuerung dieser immer ein Kabel quer durch den ganzen
+Proben wird neben Lichteffekte noch Musik zur Untermalung des
+Schauspiels eingesetzt. Die Steuerung dieser Musik wird aktuell manuell von
+einer Musikanlage vorgenommen. Diese Anlage befindet sich am Ende des
+Raumes, weshalb zur Steuerung dieser bei jedem Aufbau ein Kabel durch den ganzen
 Raum gelegt werden muss.
 
 \section{Problemstellung}
 Die Problematik hinter der bestehenden Lösung ist, dass das manuelle Kabelverlegen
-ein ungewollten Mehraufwand darstellt, welcher jedes Mal wieder von neuem
-vollzogen werden muss. Des Weiteren stellt das Kabel eine neue mögliche
-Fehlerquelle dar, da es durch die Installation quer durch den Raum von
-Teilnehmern ungewollt beschädigt werden könnte.
+einen ungewollten Mehraufwand darstellt, welcher jedes Mal von neuem
+vollzogen werden muss. Des Weiteren stellt das Kabel eine mögliche
+Fehlerquelle dar, da es durch die Verlegung durch den ganzen Raum von
+Teilnehmern ungewollt beschädigt werden kann.
 Außerdem gibt es aktuell noch keine Möglichkeit, automatisierte
 Abläufe zu erstellen, welche sowohl Licht als auch Musik umfassen. Dadurch
 müssen wiederholende Abläufe manuell durch das Technikpersonal gesteuert
-werden, was auch eine potentielle Fehlerquelle ist. Dies soll zukünftig
+werden, was eine weitere potentielle Fehlerquelle ergibt. Dies soll zukünftig
 vermieden werden.
 
 
@@ -88,11 +89,11 @@ müssen, und ein manuelles Eingreifen nur noch im Notfall vonnöten ist.
 
 \section{Aufgabe}
 Die Aufgabe der Studienarbeit ist es, die Verwaltung der Technik durch die
-Entwicklung eines Musikplayers zu vereinfachen. Dabei soll im Speziellen eine
-Schnittstelle entwickelt werden, welche das Abspielen von Musik von einer
+Entwicklung eines Audioplayer zu vereinfachen. Dabei soll im Speziellen eine
+Schnittstelle entwickelt werden, welche das Audio Abspielen von einer
 externen Software aus ermöglicht. Das dabei entstehende Programm soll auf einem
 Raspberry Pi laufen, um zukünftig die komplette Steuerung der Technik von
-diesem Gerät aus zu ermöglichen. Der große Vorteil dahinter ist, dass der
+einem Gerät aus zu ermöglichen. Der große Vorteil dahinter ist, dass der
 Raspberry Pi übers Netzwerk angesteuert werden kann, wodurch das lästige
 Kabellegen nicht mehr nötig ist.
 
