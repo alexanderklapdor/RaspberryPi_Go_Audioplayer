@@ -54,7 +54,8 @@ Im Rahmen dieser Arbeit geht es zwar um das Abspielen von Musik, allerdings
 soll dafür ein eigenständiges Tool entwickelt werden. Da Raspbian das
 offizielle Betriebssystem für den Raspberry Pi ist, es am verbreitetsten ist
 und es dafür die meisten Pakete gibt, wird sich im Bezug auf diese Arbeit für
-das Betriebssystem Raspbian entschieden. \hfill \break
+das Betriebssystem Raspbian entschieden. \autocite{Best_Raspberry_Pi_distros_2019}
+\hfill \break
 
 Beim Installieren von Raspbian kann man auf einen :
 Um Raspbian auf dem Raspberry Pi zu installieren gibt es zwei Möglichkeiten:
@@ -64,7 +65,7 @@ Standardmäßig kommt er mit einer Installation von Raspbian und LibeELEC, kann
 aber zusätzlich noch weitere Betriebssysteme laden. Wenn man nur Raspbian
 verwenden will, kann man sich die Installation von \ac{NOOBS} sparen und direkt
 Raspbian nutzen. Da wir in unserem Projekt auch nur Raspbian verwenden werden,
-haben wir uns für die zweite Variante entschieden.
+haben wir uns für die zweite Variante entschieden. \autocite{monk_2019}
 
 
 \section{Abspielen der Musik}
@@ -88,15 +89,15 @@ PortAudio in der Programmiersprache C geschrieben wurde. \hfill \break
 Die Kommunikation mit PortAudio verläuft über eine \ac{API} Schnittstelle.
 Diese entnimmt den Datenstrom entgegen, welche abgespielt werden soll. Während
 des Abspiel- oder Aufnahmeprozess von Audiodateien benutzt PortAudio entweder
-eine Callback-Funktion oder einen blockierendes Read/Write Interface.
-\href{http://www.portaudio.com/}{Portaudio}
+eine Callback-Funktion oder einen blockierendes Read/Write Interface
+\autocite{PortAudio_2019}.
 
 \paragraph{libsoundio}
 libsoundio ist genau wie PortAudio eine Open Source Bibliothek, die eine
 Schnittstelle zur Ein- und Ausgabe von Audiostreams ermöglicht. Sie zeichnet
 sich dadurch aus, dass sie plattformübergreifend und sehr gut dokumentiert ist.
 libsoundio stellt eine leichtgewichtige Abstraktion über verschiedenste
-Soundtreiber dar.
+Soundtreiber dar \autocite{libsoundio_2019}.
 
 \subsection{Entscheidung}
 Nach unseren Recherchen können wir keine großartigen Unterschiede zwischen den
@@ -114,16 +115,17 @@ anderen Audioformaten, setzt MP3 auf das Psychoakustik-Modell. Dieses besagt,
 dass Menschen nur in einer Frequenz von 20 Hz bis 20 kHz hören kann. MP3
 filtert deshalb alle anderen für den Menschen nicht hörbaren Bereich raus, und
 erreicht so eine Speicherersparnis um mehr als den Faktor 10 im Vergleich zum
-Rohformat. \hfill \break
+Rohformat. Auch durch die geringe Speichergröße hat sich MP3 zu einer der weitverbreitetsten Formate für Audiodateien entwickelt. 
+Deshalb sollte dieses Format unbedingt auch durch den zu entwickelnden Musikplayer unterstützt werden
+\autocite{mp3}. \hfill \break
 
-Da wir im Rahmen der Arbeit auch die Möglichkeit zum Abspielen von MP3-Dateien
-bieten wollen, muss bei der Implementierung auch auf einen MP3 Decoder zur
+Um die Unterstützung für das Abspielen von MP3-Dateien zu ermöglichen,
+ muss bei der Implementierung auch auf einen MP3 Decoder zum
 Dekodierung der MP3-Dateien zurückgegriffen werden. Entschieden haben wir uns
 zu diesem Zweck für die Go-Bibliothek \textit{go-mpg123}. Diese greift im
 Hintergrund auf die Bibliothek \textit{libmpg123} zu. Aktuell befindet sich die Bibliothek
 noch in der Entwicklung, allerdings bietet sie bereits die geforderte
-Funktionalität zur Dekodierung an.
-\href{https://github.com/bobertlo/go-mpg123}{MP3 Decoder}
+Funktionalität zur Dekodierung an \autocite{mp3_decoder}.
 
 \section{MP3 Tag Info Reader}
 MP3 Dateien können neben den reinen Audiodaten auch noch zusätzliche
@@ -132,11 +134,10 @@ Informationen speichern (Metadaten). Dafür verwendet MP3 ein Format namens
 sogenannten \textit{ID3-Tags} speichert. In diesen Tags werden meist
 Informationen wie Interpreten, Titel oder auch Albumname gespeichert. Da diese
 Informationen in einem Musikplayer optimalerweise angezeigt werden sollten,
-muss nach einer Möglichkeit zum Auslesen dieser Tags gesucht werden. \hfill
+muss nach einer Möglichkeit zum Auslesen dieser Tags gesucht werden \autocite{id3}. \hfill
 \break
 Aktuell unterstützt \textit{go-mp3} noch nicht das Auslesen der ID3 Tags.
 Deswegen muss nach einer anderen Bibliothek zur Auslesung dieser Daten gesucht
 werden. Die Entscheidung fiel dabei auf die Go-Bibliothek \textit{ID3 Decoder},
 da diese einfach zu verwenden ist und die meist-verbreitetste Go-Bibliothek
-dafür ist.
-\href{https://github.com/mikkyang/id3-go}{ID3 Decoder}
+dafür ist \autocite{id3_go_2015}.
